@@ -99,7 +99,7 @@ public class FileChooserDemo extends JPanel
                 //This is where a real application would open the file.
                 try {
                     final BufferedImage img = ImageIO.read(file);
-                    file = getValidFileByImage(file.getAbsolutePath(), img, "jpg");
+                    file = getTempFileByImage(file.getName(), img, "jpg");
                     new Cluster().segmentation(file, false);
                     log.append("Opening: " + file.getName() + "." + newline);
                     log.append("Please choose image" + newline);
@@ -133,7 +133,7 @@ public class FileChooserDemo extends JPanel
                     mimeType = connection.getContentType();
                     final BufferedImage img = ImageIO.read(connection.getInputStream());
                     if (img != null) {
-                        file = getValidFileByImage(fileName, img, "jpg");
+                        file = getTempFileByImage(fileName, img, "jpg");
                     } else {
                         log.append("Incorrect URL of image. Mime type:" + mimeType + newline);
                     }
@@ -169,7 +169,7 @@ public class FileChooserDemo extends JPanel
                                     continue;
                                 }
                                 if (img != null) {
-                                    image = getValidFileByImage(image.getAbsolutePath(), img, "jpg");
+                                    image = getTempFileByImage(image.getName(), img, "jpg");
                                     new Cluster().segmentation(image, true);
                                     publish(image);
                                 }
@@ -179,7 +179,7 @@ public class FileChooserDemo extends JPanel
 
                         @Override
                         protected void done() {
-                            super.done();
+                            log.append("Processing finished."+ newline);
                         }
 
                         @Override
@@ -199,7 +199,7 @@ public class FileChooserDemo extends JPanel
         }
     }
 
-    private File getValidFileByImage(String fileName, BufferedImage img, String imageFormat) throws IOException {
+    private File getTempFileByImage(String fileName, BufferedImage img, String imageFormat) throws IOException {
         File file;
         file = new File(System.getProperty("java.io.tmpdir"), fileName);
         ImageIO.write(img, imageFormat, file);
