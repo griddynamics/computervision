@@ -460,6 +460,14 @@ public class Cluster {
         public String getName() {
             return name;
         }
+
+        @Override
+        public String toString() {
+            return "ColorCode{" +
+                    "name='" + name + '\'' +
+                    ", code=" + Arrays.toString(code) +
+                    '}';
+        }
     }
 
 }

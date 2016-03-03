@@ -8,7 +8,7 @@ public class Launcher {
             System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         } catch (Throwable ex) {
             String libraryPath = System.getProperty("java.library.path");
-            System.err.print("Check opencv dynamic libraries path '" + libraryPath + "'");
+            System.err.println("Check opencv dynamic libraries path '" + libraryPath + "'");
             ex.printStackTrace();
         }
     }
