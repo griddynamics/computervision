@@ -107,11 +107,11 @@ public class Cluster {
             }
         }
 
-        for (ColorCode colorCode : colorCodes) {
-            System.out.print("\n" + colorCode.getName() + " ");
-            System.out.print("{" + (int) (colorCode.getCode()[0] / 2.55) + ",  " + (int) (colorCode.getCode()[1] - 128) + ",  " + (int) (colorCode.getCode()[2] - 128) + "}");
-        }
-        System.out.println();
+//        for (ColorCode colorCode : colorCodes) {
+//            System.out.print("\n" + colorCode.getName() + " ");
+//            System.out.print("{" + (int) (colorCode.getCode()[0] / 2.55) + ",  " + (int) (colorCode.getCode()[1] - 128) + ",  " + (int) (colorCode.getCode()[2] - 128) + "}");
+//        }
+//        System.out.println();
 
 
         double sumOfPixels = 0;
@@ -125,17 +125,20 @@ public class Cluster {
             String name = colorNames.get(index);
             int percent = (int) (counts.get(index) / sumOfPixels * 100);
             if (nameAndPercents.containsKey(name)) {
-                System.out.println(name + " " + percent + "%" + "(merged) common val:" + (nameAndPercents.get(name) + percent) + "%");
+//                System.out.println(name + " " + percent + "%" + "(merged) common val:" + (nameAndPercents.get(name) + percent) + "%");
                 nameAndPercents.put(name, nameAndPercents.get(name) + percent);
             } else {
                 nameAndPercents.put(name, percent);
-                System.out.println(name + " " + percent + "%");
+//                System.out.println(name + " " + percent + "%");
             }
         }
 
-        Map<String, Integer> SortedByPercent = MapUtils.sortByValue(nameAndPercents);
+        Map<String, Integer> sortedByPercent = MapUtils.sortByValue(nameAndPercents);
+        for (Map.Entry<String, Integer> colorEntry : sortedByPercent.entrySet()) {
+            System.out.println("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%");
+        }
 
-        Iterator<Map.Entry<String, Integer>> iterator = SortedByPercent.entrySet().iterator();
+        Iterator<Map.Entry<String, Integer>> iterator = sortedByPercent.entrySet().iterator();
         Map.Entry<String, Integer> first = null;
         Map.Entry<String, Integer> second = null;
         Map.Entry<String, Integer> third = null;
@@ -147,12 +150,13 @@ public class Cluster {
         if (iterator.hasNext()) fourth = iterator.next();
         if (iterator.hasNext()) fifth = iterator.next();
 
-        if (first == null)
+        if (first == null) {
             throw new IllegalArgumentException("No colors found");
+        }
 
-        SortedByPercent = MapUtils.sortByValue(nameAndPercents);
+        sortedByPercent = MapUtils.sortByValue(nameAndPercents);
 
-        iterator = SortedByPercent.entrySet().iterator();
+        iterator = sortedByPercent.entrySet().iterator();
         ArrayList<Map.Entry<String, Integer>> colorArea = new ArrayList<>();
 
         while ((iterator.hasNext())) colorArea.add(iterator.next());
