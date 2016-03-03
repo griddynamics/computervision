@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -100,9 +101,11 @@ public class FileChooserDemo extends JPanel
                 try {
                     final BufferedImage img = ImageIO.read(file);
                     file = getTempFileByName(file.getName(), img, "jpg");
-                    new Cluster().segmentation(file, false);
+                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false);
                     log.append("Opening: " + file.getName() + "." + newline);
-                    log.append("Please choose image" + newline);
+                    for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
+                        log.append("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%"+ newline);
+                    }
                 } catch (IOException ex) {
                     log.append("IOException: " + ex.getMessage() + newline);
                 }
@@ -141,7 +144,10 @@ public class FileChooserDemo extends JPanel
                     log.append("IOException: " + ex.getMessage() + newline);
                 }
                 if (file != null) {
-                    new Cluster().segmentation(file, false);
+                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false);
+                    for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
+                        log.append("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%"+ newline);
+                    }
                 }
             } else {
                 if (urlString != null) {

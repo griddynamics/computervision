@@ -15,7 +15,6 @@ import utils.MapUtils;
 import utils.ColorAndPercents;
 
 import static utils.ImageShow.imshow;
-import static utils.ImageShow.showExpl;
 
 import static utils.Colors.*;
 
@@ -37,7 +36,7 @@ public class Cluster {
     ArrayList<String> colorNames;
     ArrayList<ColorCode> colorCodes;
 
-    public Image segmentation(File file, boolean isBatched) {
+    public Map<String, Integer> segmentation(File file, boolean isBatched) {
 
         Mat image = Imgcodecs.imread(file.getAbsolutePath());
         Mat imageForSegmentation = image.clone();
@@ -304,7 +303,7 @@ public class Cluster {
         counts = new HashMap<Integer, Integer>();
         colorByLabel = new ArrayList<ColorAndPercents>();
 
-        return ImageShow.toBufferedImage(colorExp);
+        return sortedByPercent;
     }
 
     private Mat checkAndResize(final Mat imageForResizing) {
