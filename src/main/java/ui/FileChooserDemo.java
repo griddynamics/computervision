@@ -40,14 +40,11 @@ public class FileChooserDemo extends JPanel
 
         //Create a file chooser
         fc = new JFileChooser();
+        fc.removeChoosableFileFilter(fc.getFileFilter());
 
-        String[] suffices = ImageIO.getReaderFileSuffixes();
-
-// Add a file filter for each one
-        for (int i = 0; i < suffices.length; i++) {
-            javax.swing.filechooser.FileFilter filter = new FileNameExtensionFilter(suffices[i] + " files", suffices[i]);
-            fc.addChoosableFileFilter(filter);
-        }
+        javax.swing.filechooser.FileFilter imageFilter = new FileNameExtensionFilter(
+                "Image files", ImageIO.getReaderFileSuffixes());
+        fc.addChoosableFileFilter(imageFilter);
 
         //Uncomment one of the following lines to try a different
         //file selection mode.  The first allows just directories
