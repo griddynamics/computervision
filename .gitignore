@@ -1,5 +1,12 @@
 *.class
 
+# IDE stuff
+*.iml
+.idea
+
+# OS stuff
+.DS_Store
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
