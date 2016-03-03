@@ -46,11 +46,11 @@ public class Mask {
 
         Imgproc.drawContours(mask, countours, -1, new Scalar(255), -1);
 
-        if (isItBoots) {
-            Mat rect = Mat.zeros(image.size(), image.type());
-            Imgproc.rectangle(rect, new Point(x, y), new Point(x + w, y + (int) (h * 0.8)), new Scalar(255, 255, 255), -1);
-            Core.bitwise_and(mask, rect, mask);
-        }
+//        if (isItBoots) {
+//            Mat rect = Mat.zeros(image.size(), image.type());
+//            Imgproc.rectangle(rect, new Point(x, y), new Point(x + w, y + (int) (h * 0.8)), new Scalar(255, 255, 255), -1);
+//            Core.bitwise_and(mask, rect, mask);
+//        }
 
 //        imshow(mask, "cont");
 

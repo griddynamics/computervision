@@ -35,7 +35,7 @@ public class FileChooserDemo extends JPanel
         super(new BorderLayout());
 
         String workDir = System.getProperty("user.dir");
-        File workingDir = new File(workDir);
+        File workingDir = new File(workDir + "/demo");
 
         //Create the log first, because the action listeners
         //need to refer to it.

@@ -20,7 +20,7 @@ import static utils.Colors.*;
 
 public class Cluster {
 
-    File pathForSort = new File("./sort");
+    File pathForSort = new File("./demo/sort");
 
     static Mat cl = new Mat();
     static Mat center = new Mat();
