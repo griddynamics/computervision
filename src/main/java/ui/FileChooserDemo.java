@@ -6,9 +6,10 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileFilter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.*;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.SwingUtilities;
@@ -26,7 +27,8 @@ public class FileChooserDemo extends JPanel
     JButton openUrlButton;
     JButton batchButton;
     JTextArea log;
-    JFileChooser fc;
+    JFileChooser imageChooser;
+    JFileChooser folderChooser;
 
     public FileChooserDemo() {
         super(new BorderLayout());
@@ -39,12 +41,16 @@ public class FileChooserDemo extends JPanel
         JScrollPane logScrollPane = new JScrollPane(log);
 
         //Create a file chooser
-        fc = new JFileChooser();
-        fc.removeChoosableFileFilter(fc.getFileFilter());
+        imageChooser = new JFileChooser();
+        imageChooser.removeChoosableFileFilter(imageChooser.getFileFilter());
 
         javax.swing.filechooser.FileFilter imageFilter = new FileNameExtensionFilter(
                 "Image files", ImageIO.getReaderFileSuffixes());
-        fc.addChoosableFileFilter(imageFilter);
+        imageChooser.addChoosableFileFilter(imageFilter);
+
+        folderChooser = new JFileChooser();
+        folderChooser.removeChoosableFileFilter(folderChooser.getFileFilter());
+        folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         //Uncomment one of the following lines to try a different
         //file selection mode.  The first allows just directories
@@ -53,8 +59,8 @@ public class FileChooserDemo extends JPanel
         //to be selected.  If you leave these lines commented out,
         //then the default mode (FILES_ONLY) will be used.
         //
-        //fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        //fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        //imageChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        //imageChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
         //Create the open button.  We use the image from the JLF
         //Graphics Repository (but we extracted it from the jar).
@@ -82,27 +88,29 @@ public class FileChooserDemo extends JPanel
 
         //Handle open button action.
         if (e.getSource() == openButton) {
-            int returnVal = fc.showOpenDialog(FileChooserDemo.this);
+            int returnVal = imageChooser.showOpenDialog(FileChooserDemo.this);
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
+                File file = imageChooser.getSelectedFile();
                 //This is where a real application would open the file.
-                if (file.isFile() && (file.toString().endsWith(".jpg")
-                        || file.toString().endsWith(".jpeg"))) {
-                    new Cluster().segmentation(file);
+                try {
+                    final BufferedImage img = ImageIO.read(file);
+                    file = getValidFileByImage(file.getAbsolutePath(), img, "jpg");
+                    new Cluster().segmentation(file, false);
                     log.append("Opening: " + file.getName() + "." + newline);
-                } else {
-                    log.append("Please choose JPG/JPEG file" + newline);
+                    log.append("Please choose image" + newline);
+                } catch (IOException ex) {
+                    log.append("IOException: " + ex.getMessage() + newline);
                 }
             }
             log.setCaretPosition(log.getDocument().getLength());
         } else if (e.getSource() == openUrlButton) {
 
             JPanel panel = new JPanel();
-            UIManager.put("OptionPane.minimumSize",new Dimension(500,80));
+            UIManager.put("OptionPane.minimumSize", new Dimension(500, 80));
 
             String urlString = (String) (JOptionPane.showInputDialog(panel, null,
-                    "Input URL of JPG/JPEG", JOptionPane.PLAIN_MESSAGE,
+                    "Input URL", JOptionPane.PLAIN_MESSAGE,
                     null, null, null));
 
             if (urlString != null && !urlString.isEmpty()) {
@@ -129,13 +137,49 @@ public class FileChooserDemo extends JPanel
                     log.append("IOException: " + ex.getMessage() + newline);
                 }
                 if (file != null) {
-                    new Cluster().segmentation(file);
+                    new Cluster().segmentation(file, false);
                 }
             } else {
                 if (urlString != null) {
                     log.append("Empty url" + newline);
                 }
             }
+        } else if (e.getSource() == batchButton) {
+            int returnVal = folderChooser.showOpenDialog(FileChooserDemo.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                final File file = folderChooser.getSelectedFile();
+                //This is where a real application would open the file.
+                final File[] files = file.listFiles();
+                if (file.isDirectory() && files.length != 0) {
+
+                    new SwingWorker<Void, File>() {
+                        @Override
+                        protected Void doInBackground() throws Exception {
+                            for (File image : files) {
+                                new Cluster().segmentation(file, true);
+                                publish(image);
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        protected void done() {
+                            super.done();
+                        }
+
+                        @Override
+                        protected void process(List<File> chunks) {
+
+//                            progress.set(chunks.size());
+                        }
+                    };
+                    new Cluster().segmentation(file, true);
+                    log.append("Sorting started on " + file.getName() + "." + newline);
+                } else {
+                    log.append(file.getName() + "is not a directory or it is empty." + newline);
+                }
+            }
+            log.setCaretPosition(log.getDocument().getLength());
         }
     }
 

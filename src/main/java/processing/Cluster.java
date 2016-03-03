@@ -21,7 +21,7 @@ import static utils.Colors.*;
 
 public class Cluster {
 
-    File pathForSort = new File("/Users/abelyakov/Development/pet/sort/sneakers/blue");
+    File pathForSort = new File("./sort");
 
     static Mat cl = new Mat();
     static Mat center = new Mat();
@@ -30,17 +30,23 @@ public class Cluster {
     static Map<Integer, Integer> counts = new HashMap<>();
     static List<ColorAndPercents> colorByLabel = new ArrayList<>();
 
+
+    boolean isItBoots = false;
     boolean isHorizontal = false;
 
     ArrayList<String> colorNames;
     ArrayList<ColorCode> colorCodes;
 
-    public Image segmentation(File file) {
+    public Image segmentation(File file, boolean isBatched) {
 
         Mat image = Imgcodecs.imread(file.getAbsolutePath());
         Mat imageForSegmentation = image.clone();
         Mat original = image.clone();
-        Mat mask = Mask.getMask(image);
+
+        isItBoots = isBatched;
+
+        Mat mask = Mask.getMask(image, isItBoots);
+
         Core.bitwise_and(imageForSegmentation, mask, imageForSegmentation);
 
         System.out.println("\n" + file.getName());
@@ -377,11 +383,11 @@ public class Cluster {
         return nonZeroIndexes;
     }
 
-    private void writeOriginalToPath(Mat original, File file, String nameOfDominant) {
-        File path = new File(pathForSort.getAbsolutePath() + File.separator + nameOfDominant);
-        if (!path.exists()) path.mkdirs();
-        Imgcodecs.imwrite(path + File.separator + file.getName(), original);
-    }
+//    private void writeOriginalToPath(Mat original, File file, String nameOfDominant) {
+//        File path = new File(pathForSort.getAbsolutePath() + File.separator + nameOfDominant);
+//        if (!path.exists()) path.mkdirs();
+//        Imgcodecs.imwrite(path + File.separator + file.getName(), original);
+//    }
 
     public static List<Mat> cluster(Mat cutout, Mat mask, int k, ArrayList<Integer> integers) {
         Mat samples32f = new Mat();

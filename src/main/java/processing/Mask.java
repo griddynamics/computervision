@@ -12,7 +12,7 @@ public class Mask {
 
     public static int x, y, h, w = 0;
 
-    public static Mat getMask(Mat image) {
+    public static Mat getMask(Mat image, boolean isItBoots) {
         Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2GRAY);
         List<MatOfPoint> countours = new ArrayList<MatOfPoint>();
 
@@ -42,15 +42,16 @@ public class Mask {
             throw new IllegalStateException();
         }
 
-        Mat rect = Mat.zeros(image.size(), image.type());
-
-        Imgproc.rectangle(rect, new Point(x, y), new Point(x + w, y + (int) (h * 0.8)), new Scalar(255, 255, 255), -1);
-
 //        imshow(rect, "rect");
 
         Imgproc.drawContours(mask, countours, -1, new Scalar(255), -1);
 
-//        Core.bitwise_and(mask, rect, mask);
+        if (isItBoots) {
+            Mat rect = Mat.zeros(image.size(), image.type());
+            Imgproc.rectangle(rect, new Point(x, y), new Point(x + w, y + (int) (h * 0.8)), new Scalar(255, 255, 255), -1);
+            Core.bitwise_and(mask, rect, mask);
+        }
+
 //        imshow(mask, "cont");
 
         image.convertTo(image, CvType.CV_8UC3);
