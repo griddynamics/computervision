@@ -198,54 +198,55 @@ public class Cluster {
 
         Mat crop = original.submat(Mask.y, Mask.y + Mask.h, Mask.x, Mask.x + Mask.w);
 
-
-//        if (first.getValue() >= 60 || (first.getValue() >= 55 && !first.getKey().equals("white"))) {
-//            writeOriginalToPath(original, file, first.getKey());
-//        } else if (first.getValue() >= 50 && (first.getKey().equals("black") || first.getKey().equals("grey"))) {
-//            writeOriginalToPath(original, file, first.getKey());
-//        } else if (first.getValue() >= 50 && !first.getKey().equals("white") && (second != null)) {
-//            if (second.getKey().equals("white") || second.getValue() <= 20) {
-//                writeOriginalToPath(original, file, first.getKey());
-//            }
-//        } else if (first.getValue() >= 20 &&
-//                second != null && second.getValue() >= 20 &&
-//                third != null && third.getValue() >= 20) {
-//            writeOriginalToPath(original, file, "multi");
-//        } else if (first.getValue() >= 40 && !first.getKey().equals("white")) {
-//            if (second != null && second.getValue() >= 10 &&
-//                    third != null && third.getValue() >= 10 &&
-//                    fourth != null && fourth.getValue() >= 10 &&
-//                    fifth != null && fifth.getValue() >= 10) {
-//                writeOriginalToPath(original, file, "multi");
-//            } else if (second != null && second.getValue() >= 20 && !second.getKey().equals("white")) {
-//                writeOriginalToPath(original, file, "multi");
-//            } else {
-//                writeOriginalToPath(original, file, first.getKey());
-//            }
-//        } else if (first.getValue() >= 40) {
-//            if (second != null && second.getValue() >= 10 &&
-//                    third != null && third.getValue() >= 10 &&
-//                    fourth != null && fourth.getValue() >= 10 &&
-//                    fifth != null && fifth.getValue() >= 10) {
-//                writeOriginalToPath(original, file, "multi");
-//            } else if (second != null && second.getValue() >= 30) {
-//                writeOriginalToPath(original, file, second.getKey());
-//            } else {
-//                writeOriginalToPath(original, file, "multi");
-//            }
-//        } else if (first.getValue() >= 30 && !first.getKey().equals("white")) {
-//            if (second != null && second.getKey().equals("white") && second.getValue() >= 20) {
-//                if (third != null && third.getValue() >= 15) {
-//                    writeOriginalToPath(original, file, "multi");
-//                } else {
-//                    writeOriginalToPath(original, file, first.getKey());
-//                }
-//            }
-//        } else if (colorByLabel.size() == 5) {
-//            writeOriginalToPath(original, file, "multi");
-//        } else {
-//            writeOriginalToPath(original, file, "multi");
-//        }
+        if (isBatched) {
+            if (first.getValue() >= 60 || (first.getValue() >= 55 && !first.getKey().equals("white"))) {
+                writeOriginalToPath(original, file, first.getKey());
+            } else if (first.getValue() >= 50 && (first.getKey().equals("black") || first.getKey().equals("grey"))) {
+                writeOriginalToPath(original, file, first.getKey());
+            } else if (first.getValue() >= 50 && !first.getKey().equals("white") && (second != null)) {
+                if (second.getKey().equals("white") || second.getValue() <= 20) {
+                    writeOriginalToPath(original, file, first.getKey());
+                }
+            } else if (first.getValue() >= 20 &&
+                    second != null && second.getValue() >= 20 &&
+                    third != null && third.getValue() >= 20) {
+                writeOriginalToPath(original, file, "multi");
+            } else if (first.getValue() >= 40 && !first.getKey().equals("white")) {
+                if (second != null && second.getValue() >= 10 &&
+                        third != null && third.getValue() >= 10 &&
+                        fourth != null && fourth.getValue() >= 10 &&
+                        fifth != null && fifth.getValue() >= 10) {
+                    writeOriginalToPath(original, file, "multi");
+                } else if (second != null && second.getValue() >= 20 && !second.getKey().equals("white")) {
+                    writeOriginalToPath(original, file, "multi");
+                } else {
+                    writeOriginalToPath(original, file, first.getKey());
+                }
+            } else if (first.getValue() >= 40) {
+                if (second != null && second.getValue() >= 10 &&
+                        third != null && third.getValue() >= 10 &&
+                        fourth != null && fourth.getValue() >= 10 &&
+                        fifth != null && fifth.getValue() >= 10) {
+                    writeOriginalToPath(original, file, "multi");
+                } else if (second != null && second.getValue() >= 30) {
+                    writeOriginalToPath(original, file, second.getKey());
+                } else {
+                    writeOriginalToPath(original, file, "multi");
+                }
+            } else if (first.getValue() >= 30 && !first.getKey().equals("white")) {
+                if (second != null && second.getKey().equals("white") && second.getValue() >= 20) {
+                    if (third != null && third.getValue() >= 15) {
+                        writeOriginalToPath(original, file, "multi");
+                    } else {
+                        writeOriginalToPath(original, file, first.getKey());
+                    }
+                }
+            } else if (colorByLabel.size() == 5) {
+                writeOriginalToPath(original, file, "multi");
+            } else {
+                writeOriginalToPath(original, file, "multi");
+            }
+        }
 
         Imgproc.cvtColor(cl, cl, Imgproc.COLOR_Lab2BGR);
 
@@ -291,7 +292,7 @@ public class Cluster {
 
 //        imshow(crop, colorExp, file.getName());
 
-        imshow(crop, cropCl, colorExp, file.getName(), isHorizontal);
+        if (!isBatched) imshow(crop, cropCl, colorExp, file.getName(), isHorizontal);
 
         cl = new Mat();
         center = new Mat();
@@ -383,11 +384,11 @@ public class Cluster {
         return nonZeroIndexes;
     }
 
-//    private void writeOriginalToPath(Mat original, File file, String nameOfDominant) {
-//        File path = new File(pathForSort.getAbsolutePath() + File.separator + nameOfDominant);
-//        if (!path.exists()) path.mkdirs();
-//        Imgcodecs.imwrite(path + File.separator + file.getName(), original);
-//    }
+    private void writeOriginalToPath(Mat original, File file, String nameOfDominant) {
+        File path = new File(pathForSort.getAbsolutePath() + File.separator + nameOfDominant);
+        if (!path.exists()) path.mkdirs();
+        Imgcodecs.imwrite(path + File.separator + file.getName(), original);
+    }
 
     public static List<Mat> cluster(Mat cutout, Mat mask, int k, ArrayList<Integer> integers) {
         Mat samples32f = new Mat();

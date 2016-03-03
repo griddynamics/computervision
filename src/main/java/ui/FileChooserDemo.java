@@ -8,8 +8,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
 import java.util.List;
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.SwingUtilities;
@@ -33,6 +33,9 @@ public class FileChooserDemo extends JPanel
     public FileChooserDemo() {
         super(new BorderLayout());
 
+        String workDir = System.getProperty("user.dir");
+        File workingDir = new File(workDir);
+
         //Create the log first, because the action listeners
         //need to refer to it.
         log = new JTextArea(5, 15);
@@ -41,15 +44,16 @@ public class FileChooserDemo extends JPanel
         JScrollPane logScrollPane = new JScrollPane(log);
 
         //Create a file chooser
-        imageChooser = new JFileChooser();
+        imageChooser = new JFileChooser(workingDir);
         imageChooser.removeChoosableFileFilter(imageChooser.getFileFilter());
 
         javax.swing.filechooser.FileFilter imageFilter = new FileNameExtensionFilter(
                 "Image files", ImageIO.getReaderFileSuffixes());
         imageChooser.addChoosableFileFilter(imageFilter);
 
-        folderChooser = new JFileChooser();
+        folderChooser = new JFileChooser(workingDir);
         folderChooser.removeChoosableFileFilter(folderChooser.getFileFilter());
+        folderChooser.setFileFilter(new FolderFilter());
         folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         //Uncomment one of the following lines to try a different
@@ -151,13 +155,24 @@ public class FileChooserDemo extends JPanel
                 //This is where a real application would open the file.
                 final File[] files = file.listFiles();
                 if (file.isDirectory() && files.length != 0) {
-
-                    new SwingWorker<Void, File>() {
+                    SwingWorker<Void, File> sworker = new SwingWorker<Void, File>() {
                         @Override
                         protected Void doInBackground() throws Exception {
                             for (File image : files) {
-                                new Cluster().segmentation(file, true);
-                                publish(image);
+                                final BufferedImage img;
+                                if (image.isDirectory()) {
+                                    continue;
+                                }
+                                try {
+                                    img = ImageIO.read(image);
+                                } catch (IIOException ex) {
+                                    continue;
+                                }
+                                if (img != null) {
+                                    image = getValidFileByImage(image.getAbsolutePath(), img, "jpg");
+                                    new Cluster().segmentation(image, true);
+                                    publish(image);
+                                }
                             }
                             return null;
                         }
@@ -169,11 +184,12 @@ public class FileChooserDemo extends JPanel
 
                         @Override
                         protected void process(List<File> chunks) {
-
-//                            progress.set(chunks.size());
+                            for (File chunk : chunks) {
+                                log.append("Processed " + chunk.getName() + newline);
+                            }
                         }
                     };
-                    new Cluster().segmentation(file, true);
+                    sworker.execute();
                     log.append("Sorting started on " + file.getName() + "." + newline);
                 } else {
                     log.append(file.getName() + "is not a directory or it is empty." + newline);
@@ -221,5 +237,17 @@ public class FileChooserDemo extends JPanel
                 createAndShowGUI();
             }
         });
+    }
+
+    private static class FolderFilter extends javax.swing.filechooser.FileFilter {
+        @Override
+        public boolean accept( File file ) {
+            return file.isDirectory();
+        }
+
+        @Override
+        public String getDescription() {
+            return "Folders";
+        }
     }
 }
