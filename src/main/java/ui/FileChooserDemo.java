@@ -99,7 +99,7 @@ public class FileChooserDemo extends JPanel
                 //This is where a real application would open the file.
                 try {
                     final BufferedImage img = ImageIO.read(file);
-                    file = getTempFileByImage(file.getName(), img, "jpg");
+                    file = getTempFileByName(file.getName(), img, "jpg");
                     new Cluster().segmentation(file, false);
                     log.append("Opening: " + file.getName() + "." + newline);
                     log.append("Please choose image" + newline);
@@ -120,7 +120,7 @@ public class FileChooserDemo extends JPanel
             if (urlString != null && !urlString.isEmpty()) {
                 log.append("Opening: " + urlString + newline);
                 File file = null;
-                String mimeType = null;
+                String mimeType;
                 try {
                     String[] splittedUrl = urlString.split("/");
                     String fileName = splittedUrl[splittedUrl.length - 1];
@@ -133,7 +133,7 @@ public class FileChooserDemo extends JPanel
                     mimeType = connection.getContentType();
                     final BufferedImage img = ImageIO.read(connection.getInputStream());
                     if (img != null) {
-                        file = getTempFileByImage(fileName, img, "jpg");
+                        file = getTempFileByName(fileName, img, "jpg");
                     } else {
                         log.append("Incorrect URL of image. Mime type:" + mimeType + newline);
                     }
@@ -169,7 +169,7 @@ public class FileChooserDemo extends JPanel
                                     continue;
                                 }
                                 if (img != null) {
-                                    image = getTempFileByImage(image.getName(), img, "jpg");
+                                    image = getTempFileByName(image.getName(), img, "jpg");
                                     new Cluster().segmentation(image, true);
                                     publish(image);
                                 }
@@ -179,7 +179,7 @@ public class FileChooserDemo extends JPanel
 
                         @Override
                         protected void done() {
-                            log.append("Processing finished."+ newline);
+                            log.append("Processing finished." + newline);
                         }
 
                         @Override
@@ -192,14 +192,14 @@ public class FileChooserDemo extends JPanel
                     sworker.execute();
                     log.append("Sorting started on " + file.getName() + "." + newline);
                 } else {
-                    log.append(file.getName() + "is not a directory or it is empty." + newline);
+                    log.append(file.getName() + " is not a directory or it is empty." + newline);
                 }
             }
             log.setCaretPosition(log.getDocument().getLength());
         }
     }
 
-    private File getTempFileByImage(String fileName, BufferedImage img, String imageFormat) throws IOException {
+    private File getTempFileByName(String fileName, BufferedImage img, String imageFormat) throws IOException {
         File file;
         file = new File(System.getProperty("java.io.tmpdir"), fileName);
         ImageIO.write(img, imageFormat, file);
@@ -214,7 +214,7 @@ public class FileChooserDemo extends JPanel
     private static void createAndShowGUI() {
         //Create and set up the window.
         JFrame frame = new JFrame("Choose JPG");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new FlowLayout());
 
         //Add content to the window.
