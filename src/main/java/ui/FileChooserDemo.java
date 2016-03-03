@@ -201,7 +201,7 @@ public class FileChooserDemo extends JPanel
 
     private File getValidFileByImage(String fileName, BufferedImage img, String imageFormat) throws IOException {
         File file;
-        file = new File(fileName);
+        file = new File(System.getProperty("java.io.tmpdir"), fileName);
         ImageIO.write(img, imageFormat, file);
         return file.isFile() ? file : null;
     }
