@@ -12,9 +12,11 @@ public class Mask {
 
     public static int x, y, h, w = 0;
 
+    public static int percents = 1;
+
     public static Mat getMask(Mat image, boolean isItBoots) {
         Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2GRAY);
-        List<MatOfPoint> countours = new ArrayList<MatOfPoint>();
+        List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 
         Imgproc.threshold(image, image, 250, 255, Imgproc.THRESH_BINARY_INV);
 
@@ -25,19 +27,31 @@ public class Mask {
         Mat kernelClose = Mat.ones(new Size(5, 5), Imgproc.MORPH_CLOSE);
         Imgproc.morphologyEx(image, image, Imgproc.MORPH_CLOSE, kernelClose);
         Mat morph = image.clone();
-        Imgproc.findContours(morph, countours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(morph, contours, new Mat(), Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
         Mat mask = Mat.zeros(image.rows(), image.cols(), CvType.CV_8U);
         int max = 0;
 
-        if (!countours.isEmpty()) {
+        ArrayList<Integer> indexesForDraw = new ArrayList<>();
+        double maxArea = 0;
+        if (!contours.isEmpty()) {
             max = 0;
-            for (int i = 1; i < countours.size(); i++) {
-                if (countours.get(max).height() < countours.get(i).height() ||
-                        countours.get(max).width() < countours.get(i).width()) {
-                    max = i;
+            for (MatOfPoint contour : contours) {
+                double area = Imgproc.contourArea(contour);
+                if (area > maxArea) {
+                    maxArea = area;
+                    max = contours.indexOf(contour);
                 }
             }
-            Rect boundingRect = Imgproc.boundingRect(countours.get(max));
+
+            for (MatOfPoint contour : contours) {
+                double area = Imgproc.contourArea(contour);
+
+                if ((area / maxArea * 100) > percents) {
+                    indexesForDraw.add(contours.indexOf(contour));
+                }
+            }
+
+            Rect boundingRect = Imgproc.boundingRect(contours.get(max));
             x = boundingRect.x;
             y = boundingRect.y;
             h = boundingRect.height;
@@ -46,9 +60,15 @@ public class Mask {
             throw new IllegalStateException();
         }
 
-        Imgproc.drawContours(mask, countours, max, new Scalar(255), -1);
+        for (Integer index : indexesForDraw) {
+            if (Imgproc.contourArea(contours.get(index)) == maxArea) {
+                Imgproc.drawContours(mask, contours, index, new Scalar(255), -1);
+            } else {
+                Imgproc.drawContours(mask, contours, index, new Scalar(0), -1);
+            }
+        }
 
-        Core.bitwise_and(image, mask, mask);
+//        Core.bitwise_and(image, mask, mask);
 
 //        if (isItBoots) {
 //            Mat rect = Mat.zeros(image.size(), image.type());
