@@ -10,7 +10,6 @@ import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import utils.DeltaE;
-import utils.ImageShow;
 import utils.MapUtils;
 import utils.ColorAndPercents;
 
@@ -22,12 +21,12 @@ public class Cluster {
 
     File pathForSort = new File("./demo/sort");
 
-    static Mat cl = new Mat();
-    static Mat center = new Mat();
-    static Mat label = new Mat();
-    static int k = 5;
-    static Map<Integer, Integer> counts = new HashMap<>();
-    static List<ColorAndPercents> colorByLabel = new ArrayList<>();
+     Mat cl = new Mat();
+     Mat center = new Mat();
+     Mat label = new Mat();
+     int k = 5;
+     Map<Integer, Integer> counts = new HashMap<>();
+     List<ColorAndPercents> colorByLabel = new ArrayList<>();
 
 
     boolean isItBoots = false;
@@ -36,7 +35,7 @@ public class Cluster {
     ArrayList<String> colorNames;
     ArrayList<ColorCode> colorCodes;
 
-    public Map<String, Integer> segmentation(File file, boolean isBatched) {
+    public ImageProcessingResult segmentation(File file, boolean isBatched) {
 
         Mat image = Imgcodecs.imread(file.getAbsolutePath());
         Mat imageForSegmentation = image.clone();
@@ -48,7 +47,7 @@ public class Cluster {
 
         Core.bitwise_and(imageForSegmentation, mask, imageForSegmentation);
 
-        System.out.println("\n" + file.getName());
+//        System.out.println("\n" + file.getName());
 
         Imgproc.medianBlur(imageForSegmentation, imageForSegmentation, 3);
         Imgproc.cvtColor(imageForSegmentation, imageForSegmentation, Imgproc.COLOR_BGR2Lab);
@@ -133,9 +132,9 @@ public class Cluster {
         }
 
         Map<String, Integer> sortedByPercent = MapUtils.sortByValue(nameAndPercents);
-        for (Map.Entry<String, Integer> colorEntry : sortedByPercent.entrySet()) {
-            System.out.println("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%");
-        }
+//        for (Map.Entry<String, Integer> colorEntry : sortedByPercent.entrySet()) {
+//            System.out.println("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%");
+//        }
 
         Iterator<Map.Entry<String, Integer>> iterator = sortedByPercent.entrySet().iterator();
         Map.Entry<String, Integer> first = null;
@@ -295,7 +294,7 @@ public class Cluster {
 
 //        imshow(crop, colorExp, file.getName());
 
-        if (!isBatched) imshow(crop, cropCl, colorExp, file.getName(), isHorizontal);
+//        if (!isBatched) imshow(crop, cropCl, colorExp, file.getName(), isHorizontal);
 
         cl = new Mat();
         center = new Mat();
@@ -303,7 +302,7 @@ public class Cluster {
         counts = new HashMap<Integer, Integer>();
         colorByLabel = new ArrayList<ColorAndPercents>();
 
-        return sortedByPercent;
+        return new ImageProcessingResult(sortedByPercent,crop,cropCl,colorExp, file.getName());
     }
 
     private Mat checkAndResize(final Mat imageForResizing) {
@@ -393,7 +392,7 @@ public class Cluster {
         Imgcodecs.imwrite(path + File.separator + file.getName(), original);
     }
 
-    public static List<Mat> cluster(Mat cutout, Mat mask, int k, ArrayList<Integer> integers) {
+    public  List<Mat> cluster(Mat cutout, Mat mask, int k, ArrayList<Integer> integers) {
         Mat samples32f = new Mat();
         cutout.convertTo(samples32f, CvType.CV_32F, 1.0 / 255.0);
         Mat labels = new Mat();
@@ -404,7 +403,7 @@ public class Cluster {
         return showClusters(cutout, mask, labels, centers, integers);
     }
 
-    private static List<Mat> showClusters(Mat cutout, Mat mask, Mat labels, Mat centers, ArrayList<Integer> integers) {
+    private  List<Mat> showClusters(Mat cutout, Mat mask, Mat labels, Mat centers, ArrayList<Integer> integers) {
         centers.convertTo(centers, CvType.CV_8UC1, 255.0);
         centers.reshape(3);
         List<Mat> clusters = new ArrayList<Mat>();
@@ -435,7 +434,12 @@ public class Cluster {
                     clusters.get(label).put(y, x, b, g, r);
                     cluster.put(y, x, b, g, r);
                     index++;
-                    counts.put(label, (counts.get(label) + 1));
+                    try {
+                        counts.put(label, (counts.get(label) + 1));
+                    } catch (Exception ex){
+                        System.out.println("Smth happends" +counts);
+                    }
+
                 }
                 nums++;
             }
@@ -445,6 +449,44 @@ public class Cluster {
         cl = cluster;
 
         return clusters;
+    }
+
+    public static class ImageProcessingResult {
+
+        private Map<String, Integer> sortedByPercent;
+        private Mat crop;
+        private Mat cropCl;
+        private Mat colorExp;
+        private String name;
+
+        public ImageProcessingResult(Map<String, Integer> sortedByPercent, Mat crop, Mat cropCl, Mat colorExp, String name) {
+
+            this.sortedByPercent = sortedByPercent;
+            this.crop = crop;
+            this.cropCl = cropCl;
+            this.colorExp = colorExp;
+            this.name = name;
+        }
+
+        public Map<String, Integer> getSortedByPercent() {
+            return sortedByPercent;
+        }
+
+        public Mat getCrop() {
+            return crop;
+        }
+
+        public Mat getCropCl() {
+            return cropCl;
+        }
+
+        public Mat getColorExp() {
+            return colorExp;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
     class ColorCode {

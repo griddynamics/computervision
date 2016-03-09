@@ -101,7 +101,7 @@ public class FileChooserDemo extends JPanel
                 try {
                     final BufferedImage img = ImageIO.read(file);
                     file = getTempFileByName(file.getName(), img, "jpg");
-                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false);
+                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false).getSortedByPercent();
                     log.append("Opening: " + file.getName() + "." + newline);
                     for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
                         log.append("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%"+ newline);
@@ -144,7 +144,7 @@ public class FileChooserDemo extends JPanel
                     log.append("IOException: " + ex.getMessage() + newline);
                 }
                 if (file != null) {
-                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false);
+                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false).getSortedByPercent();
                     for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
                         log.append("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%"+ newline);
                     }
