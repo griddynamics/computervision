@@ -12,7 +12,7 @@ public class Mask {
 
     public static int x, y, h, w = 0;
 
-    public static int percents = 1;
+    public static double percents = 1;
 
     public static Mat getMask(Mat image, boolean isItBoots) {
         Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2GRAY);
@@ -45,7 +45,6 @@ public class Mask {
 
             for (MatOfPoint contour : contours) {
                 double area = Imgproc.contourArea(contour);
-
                 if ((area / maxArea * 100) > percents) {
                     indexesForDraw.add(contours.indexOf(contour));
                 }
@@ -67,6 +66,8 @@ public class Mask {
                 Imgproc.drawContours(mask, contours, index, new Scalar(0), -1);
             }
         }
+
+//        imshow(mask, "MASK");
 
 //        Core.bitwise_and(image, mask, mask);
 
