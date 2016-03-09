@@ -16,11 +16,6 @@ import javax.swing.*;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-/*
- * FileChooserDemo.java uses these files:
- *   images/Open16.gif
- *   images/Save16.gif
- */
 public class FileChooserDemo extends JPanel
         implements ActionListener {
     static private final String newline = "\n";
