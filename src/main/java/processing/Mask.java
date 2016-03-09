@@ -22,11 +22,15 @@ public class Mask {
 
         Imgproc.morphologyEx(image, image, Imgproc.MORPH_OPEN, kernel);
 
-        Imgproc.findContours(image, countours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        Mat kernelClose = Mat.ones(new Size(5, 5), Imgproc.MORPH_CLOSE);
+        Imgproc.morphologyEx(image, image, Imgproc.MORPH_CLOSE, kernelClose);
+        Mat morph = image.clone();
+        Imgproc.findContours(morph, countours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         Mat mask = Mat.zeros(image.rows(), image.cols(), CvType.CV_8U);
+        int max = 0;
 
         if (!countours.isEmpty()) {
-            int max = 0;
+            max = 0;
             for (int i = 1; i < countours.size(); i++) {
                 if (countours.get(max).height() < countours.get(i).height() ||
                         countours.get(max).width() < countours.get(i).width()) {
@@ -42,9 +46,9 @@ public class Mask {
             throw new IllegalStateException();
         }
 
-//        imshow(rect, "rect");
+        Imgproc.drawContours(mask, countours, max, new Scalar(255), -1);
 
-        Imgproc.drawContours(mask, countours, -1, new Scalar(255), -1);
+        Core.bitwise_and(image, mask, mask);
 
 //        if (isItBoots) {
 //            Mat rect = Mat.zeros(image.size(), image.type());
@@ -52,9 +56,7 @@ public class Mask {
 //            Core.bitwise_and(mask, rect, mask);
 //        }
 
-//        imshow(mask, "cont");
-
-        image.convertTo(image, CvType.CV_8UC3);
+//        image.convertTo(image, CvType.CV_8UC3);
         Imgproc.cvtColor(image, image, Imgproc.COLOR_GRAY2BGR);
         Imgproc.cvtColor(mask, mask, Imgproc.COLOR_GRAY2BGR);
 
