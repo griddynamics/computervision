@@ -21,15 +21,13 @@ public class Cluster {
 
     File pathForSort = new File("./demo/sort");
 
-     Mat cl = new Mat();
-     Mat center = new Mat();
-     Mat label = new Mat();
-     int k = 5;
-     Map<Integer, Integer> counts = new HashMap<>();
-     List<ColorAndPercents> colorByLabel = new ArrayList<>();
+    Mat cl = new Mat();
+    Mat center = new Mat();
+    Mat label = new Mat();
+    int k = 5;
+    Map<Integer, Integer> counts = new HashMap<>();
+    List<ColorAndPercents> colorByLabel = new ArrayList<>();
 
-
-    boolean isItBoots = false;
     boolean isHorizontal = false;
 
     ArrayList<String> colorNames;
@@ -40,14 +38,8 @@ public class Cluster {
         Mat image = Imgcodecs.imread(file.getAbsolutePath());
         Mat imageForSegmentation = image.clone();
         Mat original = image.clone();
-
-        isItBoots = isBatched;
-
-        Mat mask = Mask.getMask(image, isItBoots);
-
+        Mat mask = Mask.getMask(image);
         Core.bitwise_and(imageForSegmentation, mask, imageForSegmentation);
-
-//        System.out.println("\n" + file.getName());
 
         Imgproc.medianBlur(imageForSegmentation, imageForSegmentation, 3);
         Imgproc.cvtColor(imageForSegmentation, imageForSegmentation, Imgproc.COLOR_BGR2Lab);
@@ -159,7 +151,8 @@ public class Cluster {
 
         while ((iterator.hasNext())) colorArea.add(iterator.next());
 
-        if (colorArea.isEmpty()) throw new IllegalArgumentException("No colors were found");
+        if (colorArea.isEmpty())
+            throw new IllegalArgumentException("No colors were found");
 
         int sumWithoutDominantAndWhite = 0;
 
@@ -168,28 +161,6 @@ public class Cluster {
                 sumWithoutDominantAndWhite = sumWithoutDominantAndWhite + colorArea.get(i).getValue();
             }
         }
-
-//        if (colorArea.isEmpty()) throw new IllegalArgumentException("No colors were found");
-//
-//        int sumWithoutDominantAndWhite = 0;
-//
-//        for (int i = 1; i < colorArea.size(); i++) {
-//            if (!colorArea.get(i).getKey().equals("white")) {
-//                sumWithoutDominantAndWhite = sumWithoutDominantAndWhite + colorArea.get(i).getValue();
-//            }
-//        }
-
-//        if (colorArea.get(0).getValue() >= 70) {
-//            writeOriginalToPath(original, file, colorArea.get(0).getKey());
-//        } else if (colorArea.get(0).getValue() >= 55 && !colorArea.get(0).getKey().equals("white")) {
-//            writeOriginalToPath(original, file, colorArea.get(0).getKey());
-//        } else if (colorArea.get(0).getValue() >= 55 && colorArea.get(0).getKey().equals("white")) {
-//            if (colorArea.size() >=2 && colorArea.get(1).getValue() >= 45) {
-//                writeOriginalToPath(original, file, colorArea.get(1).getKey());
-//            } else if (colorArea.size() >=3 && colorArea.get(2).getValue() >= 45) {
-//                if (DeltaE.deltaE2000())
-//            }
-//        }
 
         for (Integer index : counts.keySet()) {
             int x = (int) center.get(index, 2)[0];
@@ -282,17 +253,7 @@ public class Cluster {
             x = xd;
         }
 
-//        imshow(cropCl, colorExp, "segmented");
-
-//        imshow(colorExp, "Colour explanation");
-
-//        showExpl(colorExp, colorByLabel);
-
         Imgproc.cvtColor(imageForSegmentation, imageForSegmentation, Imgproc.COLOR_Lab2BGR);
-
-//        imshow(imageForSegmentation, colorExp, "segmented");
-
-//        imshow(crop, colorExp, file.getName());
 
 //        if (!isBatched) imshow(crop, cropCl, colorExp, file.getName(), isHorizontal);
 
@@ -302,13 +263,11 @@ public class Cluster {
         counts = new HashMap<Integer, Integer>();
         colorByLabel = new ArrayList<ColorAndPercents>();
 
-        return new ImageProcessingResult(sortedByPercent,crop,cropCl,colorExp, file.getName());
+        return new ImageProcessingResult(sortedByPercent, crop, cropCl, colorExp, file.getName());
     }
 
     private Mat checkAndResize(final Mat imageForResizing) {
-
         Mat resized = new Mat();
-
         Rectangle rect = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 
         double rectHeight = rect.getHeight();
@@ -392,7 +351,7 @@ public class Cluster {
         Imgcodecs.imwrite(path + File.separator + file.getName(), original);
     }
 
-    public  List<Mat> cluster(Mat cutout, Mat mask, int k, ArrayList<Integer> integers) {
+    public List<Mat> cluster(Mat cutout, Mat mask, int k, ArrayList<Integer> integers) {
         Mat samples32f = new Mat();
         cutout.convertTo(samples32f, CvType.CV_32F, 1.0 / 255.0);
         Mat labels = new Mat();
@@ -403,7 +362,7 @@ public class Cluster {
         return showClusters(cutout, mask, labels, centers, integers);
     }
 
-    private  List<Mat> showClusters(Mat cutout, Mat mask, Mat labels, Mat centers, ArrayList<Integer> integers) {
+    private List<Mat> showClusters(Mat cutout, Mat mask, Mat labels, Mat centers, ArrayList<Integer> integers) {
         centers.convertTo(centers, CvType.CV_8UC1, 255.0);
         centers.reshape(3);
         List<Mat> clusters = new ArrayList<Mat>();
@@ -436,8 +395,8 @@ public class Cluster {
                     index++;
                     try {
                         counts.put(label, (counts.get(label) + 1));
-                    } catch (Exception ex){
-                        System.out.println("Smth happends" +counts);
+                    } catch (Exception ex) {
+                        System.out.println("Smth happends" + counts);
                     }
 
                 }

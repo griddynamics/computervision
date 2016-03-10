@@ -2,6 +2,7 @@ package processing;
 
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.HOGDescriptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,21 +15,34 @@ public class Mask {
 
     public static double percents = 1;
 
-    public static Mat getMask(Mat image, boolean isItBoots) {
-        Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2GRAY);
+    public static Mat getMask(Mat image) {
+
+        Mat threeChannel = new Mat();
+        Imgproc.cvtColor(image, threeChannel, Imgproc.COLOR_BGR2GRAY);
+
+        Imgproc.threshold(threeChannel, threeChannel, 250, 255, Imgproc.THRESH_BINARY);
+
+        Mat fg = new Mat(image.size(),CvType.CV_8U);
+        Imgproc.erode(threeChannel,fg,new Mat(),new Point(-1,-1),2);
+
+        Mat bg = new Mat(image.size(),CvType.CV_8U);
+
+        Imgproc.dilate(threeChannel,bg,new Mat(),new Point(-1,-1),3);
+        Imgproc.threshold(bg,bg,1, 128,Imgproc.THRESH_BINARY_INV);
+        Mat markers = new Mat(image.size(),CvType.CV_8U, new Scalar(0));
+        Core.add(fg, bg, markers);
+
+        WatershedSegmenter segmenter = new WatershedSegmenter();
+        segmenter.setMarkers(markers);
+        Mat result = segmenter.process(image);
+
+        Imgproc.threshold(result, result, 250, 255, Imgproc.THRESH_BINARY_INV);
+
         List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 
-        Imgproc.threshold(image, image, 250, 255, Imgproc.THRESH_BINARY_INV);
+        Mat cont = result.clone();
+        Imgproc.findContours(cont, contours, new Mat(), Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
 
-        Mat kernel = Mat.ones(new Size(3, 3), Imgproc.MORPH_OPEN);
-
-        Imgproc.morphologyEx(image, image, Imgproc.MORPH_OPEN, kernel);
-
-        Mat kernelClose = Mat.ones(new Size(5, 5), Imgproc.MORPH_CLOSE);
-        Imgproc.morphologyEx(image, image, Imgproc.MORPH_CLOSE, kernelClose);
-        Mat morph = image.clone();
-        Imgproc.findContours(morph, contours, new Mat(), Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
-        Mat mask = Mat.zeros(image.rows(), image.cols(), CvType.CV_8U);
         int max = 0;
 
         ArrayList<Integer> indexesForDraw = new ArrayList<>();
@@ -59,28 +73,25 @@ public class Mask {
             throw new IllegalStateException();
         }
 
-        for (Integer index : indexesForDraw) {
-            if (Imgproc.contourArea(contours.get(index)) == maxArea) {
-                Imgproc.drawContours(mask, contours, index, new Scalar(255), -1);
-            } else {
-                Imgproc.drawContours(mask, contours, index, new Scalar(0), -1);
-            }
+        Imgproc.cvtColor(result,result,Imgproc.COLOR_GRAY2BGR);
+
+        return result;
+    }
+
+    static class WatershedSegmenter{
+        public Mat markers = new Mat();
+
+        public void setMarkers(Mat markerImage)
+        {
+            markerImage.convertTo(markers, CvType.CV_32S);
         }
 
-//        imshow(mask, "MASK");
-
-//        Core.bitwise_and(image, mask, mask);
-
-//        if (isItBoots) {
-//            Mat rect = Mat.zeros(image.size(), image.type());
-//            Imgproc.rectangle(rect, new Point(x, y), new Point(x + w, y + (int) (h * 0.8)), new Scalar(255, 255, 255), -1);
-//            Core.bitwise_and(mask, rect, mask);
-//        }
-
-//        image.convertTo(image, CvType.CV_8UC3);
-        Imgproc.cvtColor(image, image, Imgproc.COLOR_GRAY2BGR);
-        Imgproc.cvtColor(mask, mask, Imgproc.COLOR_GRAY2BGR);
-
-        return mask;
+        public Mat process(Mat image)
+        {
+            Imgproc.watershed(image, markers);
+            markers.convertTo(markers,CvType.CV_8U);
+            return markers;
+        }
     }
 }
+
