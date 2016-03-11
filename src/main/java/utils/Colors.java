@@ -149,11 +149,11 @@ public class Colors {
         COLORS.put(new double[]{+29.00, +07.00, +08.00}, "brown");
 
         COLORS.put(new double[]{+29.00, +07.00, +08.00}, "brown");
-        COLORS.put(new double[]{+16.02, +03.58, +02.79}, "brown");
+//        COLORS.put(new double[]{+16.02, +03.58, +02.79}, "brown");
         COLORS.put(new double[]{+07.96, +05.00, +03.23}, "brown");
         COLORS.put(new double[]{+11.04, +02.94, +07.04}, "brown");
         COLORS.put(new double[]{+21.50, +04.86, +03.23}, "brown");
-        COLORS.put(new double[]{+13.55, +03.65, -01.60}, "brown");
+//        COLORS.put(new double[]{+13.55, +03.65, -01.60}, "brown");
         COLORS.put(new double[]{+25.92, +04.69, -00.97}, "brown");
         COLORS.put(new double[]{+08.66, +03.72, +03.59}, "brown");
         COLORS.put(new double[]{+61.00, +15.00, +39.00}, "brown");
