@@ -110,7 +110,7 @@ public class ProcessImagesJob {
                     File image = DataCollectionJobUtils.downOrloadImage(DataCollectionJobUtils.buildURL(upc.getImageId().intValue()), DOWNLOAD_IMAGES_FOLDER);
                     if (image != null) {
 
-                        Cluster.ImageProcessingResult segmentationResult = cluster.segmentation(image, false);
+                        Cluster.ImageProcessingResult segmentationResult = cluster.segmentation(image, false, outPutResult.getCategory().getCategoryName());
                         Map<String, Integer> segmentationMap = segmentationResult.getSortedByPercent();
                         upc.setComputerVisionResult(segmentationMap);
                         Imgcodecs.imwrite(image.getParentFile() + "/procesed_" + segmentationResult.getName(), segmentationResult.getCropCl());

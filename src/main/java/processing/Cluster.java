@@ -12,6 +12,7 @@ import org.opencv.imgproc.Imgproc;
 import utils.DeltaE;
 import utils.MapUtils;
 import utils.ColorAndPercents;
+import utils.Shoes;
 
 import static utils.ImageShow.imshow;
 
@@ -33,12 +34,12 @@ public class Cluster {
     ArrayList<String> colorNames;
     ArrayList<ColorCode> colorCodes;
 
-    public ImageProcessingResult segmentation(File file, boolean isBatched) {
+    public ImageProcessingResult segmentation(File file, boolean isBatched, String category) {
 
         Mat image = Imgcodecs.imread(file.getAbsolutePath());
         Mat imageForSegmentation = image.clone();
         Mat original = image.clone();
-        Mat mask = Mask.getMask(image);
+        Mat mask = Mask.getMask(image, Shoes.LIST.contains(category));
         Core.bitwise_and(imageForSegmentation, mask, imageForSegmentation);
 
         Imgproc.medianBlur(imageForSegmentation, imageForSegmentation, 3);
@@ -255,7 +256,7 @@ public class Cluster {
 
         Imgproc.cvtColor(imageForSegmentation, imageForSegmentation, Imgproc.COLOR_Lab2BGR);
 
-//        if (!isBatched) imshow(crop, cropCl, colorExp, file.getName(), isHorizontal);
+       // if (!isBatched) imshow(crop, cropCl, colorExp, file.getName(), isHorizontal);
 
         cl = new Mat();
         center = new Mat();
@@ -354,12 +355,16 @@ public class Cluster {
     public List<Mat> cluster(Mat cutout, Mat mask, int k, ArrayList<Integer> integers) {
         Mat samples32f = new Mat();
         cutout.convertTo(samples32f, CvType.CV_32F, 1.0 / 255.0);
-        Mat labels = new Mat();
-        TermCriteria criteria = new TermCriteria(TermCriteria.COUNT, 100, 1);
-        Mat centers = new Mat();
-        Core.kmeans(samples32f, k, labels, criteria, 1, Core.KMEANS_PP_CENTERS, centers);
-        label = labels;
-        return showClusters(cutout, mask, labels, centers, integers);
+        if (cutout.height() != 0) {
+            Mat labels = new Mat();
+            TermCriteria criteria = new TermCriteria(TermCriteria.COUNT, 100, 1);
+            Mat centers = new Mat();
+            Core.kmeans(samples32f, k, labels, criteria, 1, Core.KMEANS_PP_CENTERS, centers);
+            label = labels;
+            return showClusters(cutout, mask, labels, centers, integers);
+        } else {
+            return null;
+        }
     }
 
     private List<Mat> showClusters(Mat cutout, Mat mask, Mat labels, Mat centers, ArrayList<Integer> integers) {

@@ -19,6 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class FileChooserDemo extends JPanel
         implements ActionListener {
     static private final String newline = "\n";
+    static private final String demo = "demo";
     JButton openButton;
     JButton openUrlButton;
     JButton batchButton;
@@ -96,7 +97,7 @@ public class FileChooserDemo extends JPanel
                 try {
                     final BufferedImage img = ImageIO.read(file);
                     file = getTempFileByName(file.getName(), img, "jpg");
-                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false).getSortedByPercent();
+                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false, demo).getSortedByPercent();
                     log.append("Opening: " + file.getName() + "." + newline);
                     for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
                         log.append("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%"+ newline);
@@ -139,7 +140,7 @@ public class FileChooserDemo extends JPanel
                     log.append("IOException: " + ex.getMessage() + newline);
                 }
                 if (file != null) {
-                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false).getSortedByPercent();
+                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false, demo).getSortedByPercent();
                     for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
                         log.append("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%"+ newline);
                     }
@@ -171,7 +172,7 @@ public class FileChooserDemo extends JPanel
                                 }
                                 if (img != null) {
                                     image = getTempFileByName(image.getName(), img, "jpg");
-                                    new Cluster().segmentation(image, true);
+                                    new Cluster().segmentation(image, true, demo);
                                     publish(image);
                                 }
                             }

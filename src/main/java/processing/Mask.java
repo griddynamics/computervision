@@ -15,7 +15,7 @@ public class Mask {
 
     public static double percents = 1;
 
-    public static Mat getMask(Mat image) {
+    public static Mat getMask(Mat image, boolean isBoots) {
 
         Mat threeChannel = new Mat();
         Imgproc.cvtColor(image, threeChannel, Imgproc.COLOR_BGR2GRAY);
@@ -70,10 +70,19 @@ public class Mask {
             h = boundingRect.height;
             w = boundingRect.width;
         } else {
-            throw new IllegalStateException();
+            x = 0;
+            y = 0;
+            h = image.height();
+            w = image.width();
         }
 
         Imgproc.cvtColor(result,result,Imgproc.COLOR_GRAY2BGR);
+
+         if (isBoots) {
+            Mat rect = Mat.zeros(image.size(), image.type());
+            Imgproc.rectangle(rect, new Point(x, y), new Point(x + w, y + (int) (h * 0.8)), new Scalar(255, 255, 255), -1);
+            Core.bitwise_and(result, rect, result);
+        }
 
         return result;
     }
