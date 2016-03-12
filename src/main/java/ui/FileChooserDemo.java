@@ -97,10 +97,10 @@ public class FileChooserDemo extends JPanel
                 try {
                     final BufferedImage img = ImageIO.read(file);
                     file = getTempFileByName(file.getName(), img, "jpg");
-                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false, demo).getSortedByPercent();
+                    Map<Integer,String> segmentationMap = new Cluster().segmentation(file, false, demo).getSortedByPercent();
                     log.append("Opening: " + file.getName() + "." + newline);
-                    for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
-                        log.append("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%"+ newline);
+                    for (Map.Entry<Integer, String> colorEntry : segmentationMap.entrySet()) {
+                        log.append("Color='" + colorEntry.getValue()  + "' \t\t percent=" + colorEntry.getKey()  + "%"+ newline);
                     }
                 } catch (IOException ex) {
                     log.append("IOException: " + ex.getMessage() + newline);
@@ -140,10 +140,10 @@ public class FileChooserDemo extends JPanel
                     log.append("IOException: " + ex.getMessage() + newline);
                 }
                 if (file != null) {
-                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false, demo).getSortedByPercent();
-                    for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
-                        log.append("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%"+ newline);
-                    }
+//                    Map<String, Integer> segmentationMap = new Cluster().segmentation(file, false).getSortedByPercent();
+//                    for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
+//                        log.append("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%"+ newline);
+//                    }
                 }
             } else {
                 if (urlString != null) {

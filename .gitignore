@@ -16,6 +16,7 @@
 *.ear
 target
 
+rootFolder
 downloaded
 processed
 dataCollectionJonOutput

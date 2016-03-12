@@ -1,0 +1,30 @@
+This archive contains some computations, represented as json files (result.json), grouped by categories to folders with parent folder named 9079_DB_5000_limit_result. 
+
+Also it has index.html to view available computations by entering needed categoryId to input on this html page.
+
+Another files located there are some usefull staff for index.html page.
+
+How to use:
+
+1) Open index.html with any browser.
+2) Enter categoryId to input "Category ID:" and click "Enter" (representation can take up to 10 seconds)
+3) If categoryId was valid*, you will see divs with products and upcs.
+4) Product's div header is a link to Stella UI.
+5) To view another category products go to point 3).
+
+* - valid category ids:
+
+		"5449" : "Dresses",
+		"20640" : "Polo",
+		"255" : "Top",	
+		"13247" : "Shoes",
+		"16908" : "LUGGAGE",
+		"24479" : "LUGGAGE",
+		"46971" : "LUGGAGE",
+		"29722" : "LUGGAGE",
+		"25691" : "LUGGAGE",
+		"62074" : "LUGGAGE",
+		"71198" : "LUGGAGE",
+		"20688" : "LUGGAGE",
+		"28602" : "LUGGAGE",
+		"28617" : "LUGGAGE"

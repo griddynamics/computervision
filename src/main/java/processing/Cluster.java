@@ -417,7 +417,7 @@ public class Cluster {
 
     public static class ImageProcessingResult {
 
-        private Map<String, Integer> sortedByPercent;
+        private TreeMap<Integer ,String> sortedByPercent;
         private Mat crop;
         private Mat cropCl;
         private Mat colorExp;
@@ -425,14 +425,17 @@ public class Cluster {
 
         public ImageProcessingResult(Map<String, Integer> sortedByPercent, Mat crop, Mat cropCl, Mat colorExp, String name) {
 
-            this.sortedByPercent = sortedByPercent;
+            this.sortedByPercent = new TreeMap<>();
+            for (Map.Entry<String, Integer> entry : sortedByPercent.entrySet()){
+                this.sortedByPercent.put(entry.getValue(), entry.getKey());
+            }
             this.crop = crop;
             this.cropCl = cropCl;
             this.colorExp = colorExp;
             this.name = name;
         }
 
-        public Map<String, Integer> getSortedByPercent() {
+        public TreeMap<Integer, String> getSortedByPercent() {
             return sortedByPercent;
         }
 

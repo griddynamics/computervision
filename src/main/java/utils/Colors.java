@@ -117,23 +117,23 @@ public class Colors {
         COLORS.put(new double[]{+22.75, -03.26, +03.00}, "green");
         COLORS.put(new double[]{+77.00, -06.26, +07.00}, "green");
 
-        COLORS.put(new double[]{+57.00, -03.36, -04.97}, "grey");
-        COLORS.put(new double[]{+62.00, -02.42, -04.37}, "grey");
-        COLORS.put(new double[]{+65.00, +00.07, -01.00}, "grey");
-        COLORS.put(new double[]{+48.00, -01.89, +00.65}, "grey");
-        COLORS.put(new double[]{+39.00, -02.87, +04.10}, "grey");
-        COLORS.put(new double[]{+40.00, -02.30, +01.93}, "grey");
-        COLORS.put(new double[]{+39.00, -02.18, -03.35}, "grey");
-        COLORS.put(new double[]{+41.00, -02.23, -02.01}, "grey");
-        COLORS.put(new double[]{+54.00, -01.00, -00.03}, "grey");
-        COLORS.put(new double[]{+62.00, -01.90, -00.62}, "grey");
-        COLORS.put(new double[]{+36.00, -02.00, -00.03}, "grey");
-        COLORS.put(new double[]{+61.00, -01.63, -02.52}, "grey");
-        COLORS.put(new double[]{+56.00, -01.88, -03.53}, "grey");
-        COLORS.put(new double[]{+32.00, +00.00, -00.00}, "grey");
-        COLORS.put(new double[]{+73.00, -02.00, +08.00}, "grey");
-        COLORS.put(new double[]{+73.60, -03.41, -04.59}, "grey");
-        COLORS.put(new double[]{+32.11, +01.26, -02.84}, "grey");
+        COLORS.put(new double[]{+57.00, -03.36, -04.97}, "gray");
+        COLORS.put(new double[]{+62.00, -02.42, -04.37}, "gray");
+        COLORS.put(new double[]{+65.00, +00.07, -01.00}, "gray");
+        COLORS.put(new double[]{+48.00, -01.89, +00.65}, "gray");
+        COLORS.put(new double[]{+39.00, -02.87, +04.10}, "gray");
+        COLORS.put(new double[]{+40.00, -02.30, +01.93}, "gray");
+        COLORS.put(new double[]{+39.00, -02.18, -03.35}, "gray");
+        COLORS.put(new double[]{+41.00, -02.23, -02.01}, "gray");
+        COLORS.put(new double[]{+54.00, -01.00, -00.03}, "gray");
+        COLORS.put(new double[]{+62.00, -01.90, -00.62}, "gray");
+        COLORS.put(new double[]{+36.00, -02.00, -00.03}, "gray");
+        COLORS.put(new double[]{+61.00, -01.63, -02.52}, "gray");
+        COLORS.put(new double[]{+56.00, -01.88, -03.53}, "gray");
+        COLORS.put(new double[]{+32.00, +00.00, -00.00}, "gray");
+        COLORS.put(new double[]{+73.00, -02.00, +08.00}, "gray");
+        COLORS.put(new double[]{+73.60, -03.41, -04.59}, "gray");
+        COLORS.put(new double[]{+32.11, +01.26, -02.84}, "gray");
 
         COLORS.put(new double[]{+48.00, +06.77, +27.17}, "brown");
         COLORS.put(new double[]{+49.00, +17.53, +35.95}, "brown");
@@ -160,6 +160,8 @@ public class Colors {
         COLORS.put(new double[]{+32.61, +03.03, +03.07}, "brown");
         COLORS.put(new double[]{+58.61, +01.00, +12.07}, "brown");
         COLORS.put(new double[]{+76.08, +08.00, +51.00}, "brown");
+
+
 
         COLORS.put(new double[]{+90.00, +00.61, +06.97}, "white");
         COLORS.put(new double[]{+85.00, -00.97, +03.88}, "white");

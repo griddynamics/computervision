@@ -12,6 +12,7 @@ public class Shoes {
         LIST.add("Finish Line Athletic Shoes");
         LIST.add("Dress Shoes");
         LIST.add("Boots");
+        LIST.add("Shoes");
         LIST.add("Boat Shoes");
     }
 }
