@@ -142,7 +142,7 @@ public class Colors {
 //        new double[]{+94.00, -00.49, +03.97},
 //        new double[]{+93.00, -00.72, +01.87},
 //        new double[]{+80.00, +02.00, +02.00}
-//     
+//
                 ));
 
         CatalogPalette.put(BLACK, Arrays.asList(
@@ -157,7 +157,7 @@ public class Colors {
         new double[]{+98.43, -04.00, +12.00},
         new double[]{+96.86, -03.00, +08.00},
         new double[]{+97.64, -03.00, +10.00}
-                
+
                 ));
 
         CatalogPalette.put(PINK, Arrays.asList(
