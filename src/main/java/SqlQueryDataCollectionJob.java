@@ -81,7 +81,7 @@ public class SqlQueryDataCollectionJob {
         options.put("password", "macys");
         options.put("url", "jdbc:oracle:thin:@//mdc2vr9079.federated.fds:1521/starsdev");
 
-        final int processedRowPerCategory = 2000;
+        final int processedRowPerCategory = 1000;
 
 
         //createRootFolderAndCategorySubFolders
@@ -282,9 +282,9 @@ public class SqlQueryDataCollectionJob {
         }
         if (dominantColor.toLowerCase().equals(colorNormal.toLowerCase())) {
             return 0;
-        } else if (computerVisionResult.values().contains(colorNormal.toLowerCase())) {
+        } else if (computerVisionResult.keySet().contains(colorNormal.toLowerCase())) {
             return 2;
-        } else if (!computerVisionResult.values().contains(colorNormal.toLowerCase())) {
+        } else if (!computerVisionResult.keySet().contains(colorNormal.toLowerCase())) {
             return 3;
         }
         return -1;
