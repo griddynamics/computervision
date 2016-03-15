@@ -12,6 +12,7 @@ import org.apache.spark.sql.SQLContext;
 import org.opencv.core.Core;
 import processor.Product;
 import scala.Tuple2;
+import utils.ColorResultAnalysisHelper;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -78,9 +79,9 @@ public class SqlQueryDataCollectionJob {
         options.put("driver", "oracle.jdbc.OracleDriver");
         options.put("user", "macys");
         options.put("password", "macys");
-        options.put("url", "jdbc:oracle:thin:@//mdc2vr8245.federated.fds:1521/starsdev");
+        options.put("url", "jdbc:oracle:thin:@//mdc2vr9079.federated.fds:1521/starsdev");
 
-        final int processedRowPerCategory = 1000;
+        final int processedRowPerCategory = 2000;
 
 
         //createRootFolderAndCategorySubFolders
@@ -175,7 +176,7 @@ public class SqlQueryDataCollectionJob {
             }).values().cache();
 
             if (debugMode){
-                combinedProducts.saveAsObjectFile(path + "/desializedCollection");
+                combinedProducts.saveAsObjectFile(path + "/hierarchicalOutput");
             }
 
 
@@ -261,25 +262,25 @@ public class SqlQueryDataCollectionJob {
     }
 
     //very naive algorithm to calculate status
-    private static Integer evaluateRecognitionResult(String colorNormal, TreeMap<Integer, String> computerVisionResult) {
+    private static Integer evaluateRecognitionResult(String colorNormal, Map<String, Integer> computerVisionResult) {
         if (colorNormal == null) return -1;
-        String dominantCategory = computerVisionResult.descendingMap().entrySet().iterator().next().getValue();
+        String dominantColor = ColorResultAnalysisHelper.dominantColor(computerVisionResult);
 
         // todo deal with MULTI
         // dominant color = color normal
         if (colorNormal.equals("Multi")){
-            boolean isMulti = true;
-            for (Integer percent: computerVisionResult.keySet()){
-                // todo calculate it in more appropriate way
-                isMulti = isMulti && (20 < percent && percent <30);
-            }
-            if (isMulti){
+//            boolean isMulti = true;
+//            for (Integer percent: computerVisionResult.keySet()){
+//                // todo calculate it in more appropriate way
+//                isMulti = isMulti && (20 < percent && percent <30);
+//            }
+            if (dominantColor.equals("multi")){
                 return 0;
             } else {
                 return 1;
             }
         }
-        if (dominantCategory.toLowerCase().equals(colorNormal.toLowerCase())) {
+        if (dominantColor.toLowerCase().equals(colorNormal.toLowerCase())) {
             return 0;
         } else if (computerVisionResult.values().contains(colorNormal.toLowerCase())) {
             return 2;

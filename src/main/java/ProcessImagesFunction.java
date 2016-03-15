@@ -7,6 +7,7 @@ import scala.Tuple2;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.TreeMap;
 
 
@@ -31,7 +32,7 @@ public class ProcessImagesFunction implements PairFunction<Row, Integer, Product
         if (picture != null) {
             try {
                 Cluster.ImageProcessingResult segmentationResult = cluster.segmentation(picture, false, category.getCategoryId());
-                TreeMap<Integer, String> segmentationMap = segmentationResult.getSortedByPercent();
+                Map<String,Integer> segmentationMap = segmentationResult.getSortedByPercent();
                 Imgcodecs.imwrite(picture.getParentFile() + "/procesed_" + segmentationResult.getName(), segmentationResult.getCropCl());
                 Product.Image image = new Product.Image(image_id, segmentationMap, urlString);
                 return new Tuple2(image_id, image);

@@ -73,7 +73,7 @@ public class Product implements Serializable {
         String colorNormal;
         String displayColorName;
         String imageUrl;
-        TreeMap<Integer, String> computerVisionResult = new TreeMap<>();
+        Map<String, Integer> computerVisionResult = new HashMap<>();
         Integer computerVisionRecognition;
         private String description;
 
@@ -145,11 +145,11 @@ public class Product implements Serializable {
             this.imageUrl = imageUrl;
         }
 
-        public TreeMap<Integer, String> getComputerVisionResult() {
+        public Map<String, Integer> getComputerVisionResult() {
             return computerVisionResult;
         }
 
-        public void setComputerVisionResult(TreeMap<Integer, String> computerVisionResult) {
+        public void setComputerVisionResult(Map<String, Integer> computerVisionResult) {
             this.computerVisionResult = computerVisionResult;
         }
 
@@ -268,9 +268,9 @@ public class Product implements Serializable {
     public static class Image implements Serializable{
         Integer imageId;
         String url;
-        TreeMap<Integer, String> computerVisionResult;
+        Map<String, Integer> computerVisionResult;
 
-        public Image(Integer imageId, TreeMap<Integer, String> computerVisionResult, String url) {
+        public Image(Integer imageId, Map<String, Integer> computerVisionResult, String url) {
             this.imageId = imageId;
             this.computerVisionResult = computerVisionResult;
             this.url = url;
@@ -280,7 +280,7 @@ public class Product implements Serializable {
             return url;
         }
 
-        public TreeMap<Integer, String> getComputerVisionResult() {
+        public Map<String, Integer> getComputerVisionResult() {
             return computerVisionResult;
         }
 
@@ -320,7 +320,7 @@ public class Product implements Serializable {
 
 
         String imageUrl;
-        TreeMap<Integer, String> computerVisionResult = new TreeMap<>();
+        TreeMap<String, Integer> computerVisionResult = new TreeMap<>();
         Integer computerVisionRecognition;
         private String description;
 
@@ -349,7 +349,7 @@ public class Product implements Serializable {
         }
 
 
-        public void setComputerVisionResult(TreeMap<Integer, String> computerVisionResult) {
+        public void setComputerVisionResult(Map<String, Integer> computerVisionResult) {
             this.computerVisionResult.putAll(computerVisionResult);
 
         }

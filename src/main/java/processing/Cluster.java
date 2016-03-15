@@ -91,6 +91,7 @@ public class Cluster {
                 }
             }
             if (key != null) {
+//                System.out.println(key[0] + "," + key[1] + "," + key[2] + ": " + COLORS.get(key));
                 colorNames.add(COLORS.get(key));
                 colorCodes.add(new ColorCode(COLORS.get(key), colors.get(j)));
                 min = Double.MAX_VALUE;
@@ -417,7 +418,7 @@ public class Cluster {
 
     public static class ImageProcessingResult {
 
-        private TreeMap<Integer ,String> sortedByPercent;
+        private HashMap<String ,Integer> sortedByPercent;
         private Mat crop;
         private Mat cropCl;
         private Mat colorExp;
@@ -425,9 +426,9 @@ public class Cluster {
 
         public ImageProcessingResult(Map<String, Integer> sortedByPercent, Mat crop, Mat cropCl, Mat colorExp, String name) {
 
-            this.sortedByPercent = new TreeMap<>();
+            this.sortedByPercent = new HashMap<>();
             for (Map.Entry<String, Integer> entry : sortedByPercent.entrySet()){
-                this.sortedByPercent.put(entry.getValue(), entry.getKey());
+                this.sortedByPercent.put(entry.getKey(), entry.getValue());
             }
             this.crop = crop;
             this.cropCl = cropCl;
@@ -435,7 +436,7 @@ public class Cluster {
             this.name = name;
         }
 
-        public TreeMap<Integer, String> getSortedByPercent() {
+        public Map<String, Integer> getSortedByPercent() {
             return sortedByPercent;
         }
 

@@ -27,7 +27,7 @@ public class Mask {
 
         Mat bg = new Mat(image.size(),CvType.CV_8U);
 
-        Imgproc.dilate(threeChannel,bg,new Mat(),new Point(-1,-1),3);
+        Imgproc.dilate(threeChannel, bg, new Mat(), new Point(-1, -1), 2);
         Imgproc.threshold(bg,bg,1, 128,Imgproc.THRESH_BINARY_INV);
         Mat markers = new Mat(image.size(),CvType.CV_8U, new Scalar(0));
         Core.add(fg, bg, markers);
