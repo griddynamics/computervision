@@ -443,7 +443,7 @@ public class Cluster {
         private Map<String, Integer> sortedByPercent;
     public static class ImageProcessingResult {
 
-        private HashMap<String ,Integer> sortedByPercent;
+        private Map<String, Integer> sortedByPercent;
         private Mat crop;
         private Mat cropCl;
         private Mat colorExp;
