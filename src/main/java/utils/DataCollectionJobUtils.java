@@ -1,3 +1,6 @@
+package utils;
+
+import job.SqlQueryDataCollectionJob;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -102,7 +105,7 @@ public class DataCollectionJobUtils {
         return STARS_SERVICE_PREFIX + String.format("%sfinal/%d-" + SUFFIX_SMALL, builder.reverse().toString(), imageId);
     }
 
-    static void checkFolderExistance(String path) throws IOException {
+    public static void checkFolderExistance(String path) throws IOException {
         File file = new File(path);
         if (file.exists()) {
             FileUtils.deleteDirectory(file);

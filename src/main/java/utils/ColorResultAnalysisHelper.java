@@ -24,11 +24,14 @@ public class ColorResultAnalysisHelper {
             return colorWithPercent.keySet().iterator().next();
 
         double threshold = getOutlierThreshold(toIntArray(colorWithPercent.values()));
+        boolean isMulty = true;
+
         for (Map.Entry<String, Integer> colorPercentageEntry : colorWithPercent.entrySet()) {
-            if (colorPercentageEntry.getValue() > threshold)
-                return colorPercentageEntry.getKey();
+            isMulty = isMulty && (colorPercentageEntry.getValue() < 34);
+//            isMulty = isMulty && (colorPercentageEntry.getValue() < threshold);
+
         }
-        return "multi";
+        return isMulty?"multi":MapUtils.sortByValue(colorWithPercent).entrySet().iterator().next().getKey();
     }
 
     private static double getOutlierThreshold(int[] percentages) {

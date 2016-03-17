@@ -1,4 +1,5 @@
 import org.junit.Test;
+import utils.DataCollectionJobUtils;
 
 import static junit.framework.TestCase.assertEquals;
 

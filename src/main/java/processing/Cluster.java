@@ -1,9 +1,16 @@
 package processing;
 
-import java.awt.*;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.opencv.core.*;
 import org.opencv.core.Point;
@@ -27,6 +34,7 @@ public class Cluster {
     Mat label = new Mat();
     int k = 5;
     Map<Integer, Integer> counts = new HashMap<>();
+    Map<double[], String> nameOfColorByCode = new HashMap<>();
     List<ColorAndPercents> colorByLabel = new ArrayList<>();
 
     boolean isHorizontal = false;
@@ -64,12 +72,13 @@ public class Cluster {
         double dist;
         double min = Double.MAX_VALUE;
         double[] key = null;
+//        double[] howItMatched = null;
 
         colorNames = new ArrayList<String>();
         colorCodes = new ArrayList<ColorCode>();
 
         for (int j = 0; j < colors.size(); j++) {
-            for (double[] doubles : COLORS.keySet()) {
+            for (double[] doubles : Palette.keySet()) {
 
                 double[] lab1 = new double[]{
                         colors.get(j)[0] / 2.55,
@@ -88,12 +97,20 @@ public class Cluster {
                 if (min > dist) {
                     min = dist;
                     key = doubles;
+//                    howItMatched = lab1;
                 }
             }
             if (key != null) {
-//                System.out.println(key[0] + "," + key[1] + "," + key[2] + ": " + COLORS.get(key));
-                colorNames.add(COLORS.get(key));
-                colorCodes.add(new ColorCode(COLORS.get(key), colors.get(j)));
+//                System.out.println(key[0] + "," + key[1] + "," + key[2] + ": " + Palette.get(key));
+//                System.out.println(howItMatched[0] + "," + howItMatched[1] + "," + howItMatched[2] + ": " + Palette.get(key));
+                colorNames.add(Palette.get(key));
+                double[] lab = new double[]{
+                        colors.get(j)[0] / 2.55,
+                        colors.get(j)[1] - 128,
+                        colors.get(j)[2] - 128
+                };
+                nameOfColorByCode.put(lab, Palette.get(key));
+                colorCodes.add(new ColorCode(Palette.get(key), colors.get(j)));
                 min = Double.MAX_VALUE;
                 key = null;
             }
@@ -111,7 +128,7 @@ public class Cluster {
             sumOfPixels = sumOfPixels + integer;
         }
 
-        HashMap<String, Integer> nameAndPercents = new HashMap<String, Integer>();
+        LinkedHashMap<String, Integer> nameAndPercents = new LinkedHashMap<String, Integer>();
 
         for (Integer index : counts.keySet()) {
             String name = colorNames.get(index);
@@ -265,6 +282,13 @@ public class Cluster {
         counts = new HashMap<Integer, Integer>();
         colorByLabel = new ArrayList<ColorAndPercents>();
 
+//        for (Map.Entry<double[], String> stringEntry : nameOfColorByCode.entrySet()) {
+//            System.out.println(stringEntry.getValue() + ": " + stringEntry.getKey()[0] + ", " + stringEntry.getKey()[1] + ", " + stringEntry.getKey()[2] + "\n");
+//        }
+
+        ColorCheck.setNameOfColorByCode(nameOfColorByCode);
+        ColorCheck.setSortedByPercent(sortedByPercent);
+
         return new ImageProcessingResult(sortedByPercent, crop, cropCl, colorExp, file.getName());
     }
 
@@ -323,7 +347,7 @@ public class Cluster {
         }
     }
 
-    private Mat getMatPreparedByNonZeroIndexes(Mat imageInARow, ArrayList<Integer> nonZeroIndexes) {
+    public static Mat getMatPreparedByNonZeroIndexes(Mat imageInARow, ArrayList<Integer> nonZeroIndexes) {
         Mat imagePreparedByMask = Mat.zeros(nonZeroIndexes.size(), 3, imageInARow.type());
 
         for (int j = 0; j < nonZeroIndexes.size(); j++) {
@@ -334,7 +358,7 @@ public class Cluster {
         return imagePreparedByMask;
     }
 
-    private ArrayList<Integer> getNonZeroIndexes(Mat imageInARow) {
+    public static ArrayList<Integer> getNonZeroIndexes(Mat imageInARow) {
         ArrayList<Integer> nonZeroIndexes = new ArrayList<Integer>();
 
         for (int j = 0; j < imageInARow.rows(); j++) {
@@ -416,6 +440,7 @@ public class Cluster {
         return clusters;
     }
 
+        private Map<String, Integer> sortedByPercent;
     public static class ImageProcessingResult {
 
         private HashMap<String ,Integer> sortedByPercent;
@@ -423,12 +448,14 @@ public class Cluster {
         private Mat cropCl;
         private Mat colorExp;
         private String name;
+        private Map<double[], String> nameOfColorByCode;
 
         public ImageProcessingResult(Map<String, Integer> sortedByPercent, Mat crop, Mat cropCl, Mat colorExp, String name) {
 
             this.sortedByPercent = new HashMap<>();
             for (Map.Entry<String, Integer> entry : sortedByPercent.entrySet()){
                 this.sortedByPercent.put(entry.getKey(), entry.getValue());
+                this.sortedByPercent.put(entry.getKey().toLowerCase(), entry.getValue());
             }
             this.crop = crop;
             this.cropCl = cropCl;

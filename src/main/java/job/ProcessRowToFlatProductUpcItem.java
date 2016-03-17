@@ -1,6 +1,8 @@
+package job;
+
 import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.sql.Row;
-import processor.Product;
+import pojo.FlatProductImageUpc;
 import scala.Tuple2;
 
 import java.math.BigDecimal;
@@ -8,7 +10,7 @@ import java.math.BigDecimal;
 /**
  * Created by npakhomova on 3/12/16.
  */
-public class ProcessRowToFlatProductUpcItem implements PairFunction<Row, Integer, Product.FlatProductImageUpc> {
+public class ProcessRowToFlatProductUpcItem implements PairFunction<Row, Integer, FlatProductImageUpc> {
     private final AttributeService starsService;
 
     public ProcessRowToFlatProductUpcItem(AttributeService starsService) {
@@ -16,8 +18,8 @@ public class ProcessRowToFlatProductUpcItem implements PairFunction<Row, Integer
     }
 
     @Override
-    public Tuple2<Integer, Product.FlatProductImageUpc> call(Row row) throws Exception {
-        Product.FlatProductImageUpc flatProductImageUpc = new Product.FlatProductImageUpc();
+    public Tuple2<Integer, FlatProductImageUpc> call(Row row) throws Exception {
+        FlatProductImageUpc flatProductImageUpc = new FlatProductImageUpc();
 
         // todo aa this mess with custing. I WANT SCALA!!!
         flatProductImageUpc.setCategoryId(row.<BigDecimal>getAs("CATEGORY_ID").intValue());

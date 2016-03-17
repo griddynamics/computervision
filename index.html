@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html dir="ltr" lang="ru">
 <head>
@@ -13,53 +14,68 @@
 	<script type="text/javascript" src='http://codepen.io/assets/libs/fullpage/jquery.js'></script>
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+	<!-- Magnific Popup core CSS file -->
+	<link rel="stylesheet" href="magnific-popup_1/magnific-popup.css">
+
+	<!-- jQuery 1.7.2+ or Zepto.js 1.0+ -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+	<!-- Magnific Popup core JS file -->
+	<script src="magnific-popup_1/jquery.magnific-popup.js"></script>
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
 <body>
 <div id="container-100" style="height: 100%;">
 	<div id="container">
 		<div id="content">
-
 			<div class="category-details">
 				<div class="category-details-top">
-					<div class="category-h1 input-group" style="margin-top: 20px; margin-left: 20px; width: 103%;">
+					<div class="category-h1 input-group" style="margin-top: 20px; margin-left: 20px; width: 103.6%;">
 						<div class="input-group">
-							<span class="input-group-addon" id="basic-addon3">Category ID:</span>
-							<input id="selected-category-name" class="form-control" placeholder="Input category id"/>
+							<span class="input-group-addon" id="basic-addon3">Category Name:</span>
+							<select id="selected-category-name" class="form-control">
+								<option value="default">Select category</option>
+							</select>
 						</div>
-					<span class="input-group-btn">
-    	    			<button type="button" class="btn btn-primary" onclick="checkInputAndShowCategoryProducts($('#selected-category-name').val())">Show</button>
-      				</span>
+					</div>
+					<div class="product-filter" style="margin-bottom: 20px; margin-right: -80px;">
+						<div class="sort">
+							<b class="sortb">Filter by color check:</b>
+							<select id="sortSelect" onchange="ownsort($(this))">
+								<option value="none">None</option>
+								<option value="0">Correct color</option>
+								<option value="1">Suspicious (Multi)</option>
+								<option value="2">Wrong dominant color</option>
+								<option value="3">Dominant color missing</option>
+							</select>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div>
-				<div class="product-list"/>
+				<div>
+					<div id="chart_div"></div>
+					<div class="product-list"></div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div id="spinner" class="spinner" style="display:none;">
-	<img id="img-spinner" src="spinner.gif" alt="Loading"/>
-</div>
+		<div id="spinner" class="spinner" style="display:none;">
+			<img id="img-spinner" src="spinner.gif" alt="Loading"/>
+		</div>
 </body>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-	var categoryNameIdMap = {
-		"5449" : "Dresses",
-		"20640" : "Polo",
-		"255" : "Top",
-		"13247" : "Shoes",
-		"16908" : "LUGGAGE",
-		"24479" : "LUGGAGE",
-		"46971" : "LUGGAGE",
-		"29722" : "LUGGAGE",
-		"25691" : "LUGGAGE",
-		"62074" : "LUGGAGE",
-		"71198" : "LUGGAGE",
-		"20688" : "LUGGAGE",
-		"28602" : "LUGGAGE",
-		"28617" : "LUGGAGE"
-	};
-	var categoriesMap = {};
+	var selectedCategoryName;
+	$(document).ready(function() {
+		$.getJSON('rootFolder/categories.json', function(resultJson) {
+			$(resultJson).each(function (index, value){
+				$('#selected-category-name').append('<option value="'+value+'">'+value+'</option>');
+			} );
+		});
+	});
+	$('#sortSelect').change(function() {
+		checkInputAndShowCategoryProducts($('#selected-category-name').val() ,$('#sortSelect').val());
+	});
+
 	function reverse(s) {
 		var o = [];
 		for (var i = 0, len = s.length; i <= len; i++)
@@ -67,52 +83,83 @@
 		return o.join('');
 	}
 
+	google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
 
-	/*$.getJSON("/dataCollectionJonOutput/result.json", function(resultJson) {
-	 alert('success');
-	 if (resultJson && resultJson.categories) {
-	 $(resultJson.categories).each(function(index, value) {
-	 categoriesMap[parseInt(value.categoryId, 10)] = value;
-	 });
-	 }
-	 });*/
+	function drawChart() {
+		$.getJSON('rootFolder/' + selectedCategoryName + '/statistic.json', function(statisticJson) {
+			var data = new google.visualization.DataTable();
+			data.addColumn('string', 'UPC color recognition');
+			data.addColumn('number', 'Amount');
+			data.addColumn({type: 'string', role: 'style'});
 
-	$('#selected-category-name').keypress(function(event){
-		var keycode = (event.keyCode ? event.keyCode : event.which);
-		if(keycode == '13'){
-			checkInputAndShowCategoryProducts($('#selected-category-name').val());
+			data.addRow(['Total Amount', statisticJson.totalUpc, '#3899E2']);
+			data.addRow(['Suspicious', statisticJson.suspicious, '#990000']);
+			data.addRow(['Normal', statisticJson.totalUpc - statisticJson.suspicious, '#009933']);
+			data.addRow(['Suspicious Multi', statisticJson.amountOfSuspiciousMulti, '#E1E100']);
+			data.addRow(['Color_Normal Is No Dominant', statisticJson.amountOfColorNormalIsNoDominant, '#FF9933']);
+			data.addRow(['Color_Normal Is Not In List', statisticJson.amountOfColorNormalIsNotInList, '#990000']);
+
+			var chartWrapper = new google.visualization.ChartWrapper({
+				chartType: 'ColumnChart',
+				containerId: 'chart_div',
+				dataTable: data,
+				options: {
+					isStacked: true	,
+					width : "100%",
+					height : 300,
+					//title: title,
+					curveType: 'function',
+					pointSize:4,
+					legend: {
+						position: 'none'
+					},
+					backgroundColor: '#fcfcfc',
+					hAxis: {
+						gridlines: {
+							count: -1,
+							units: {
+								days: {format: ["MMM dd"]},
+								hours: {format: ["HH:mm", "ha"]}
+							}
+						},
+						minorGridlines: {
+							units: {
+								hours: {format: ["hh:mm:ss a", "ha"]},
+								minutes: {format: ["HH:mm a Z", ":mm"]}
+							}
+						}
+					},
+					vAxis: {
+						title: 'Amount of UPCs'
+					},
+					chartArea: {left: 150, right: 50, bottom: 0, top: 20, width: "80%", height: "60%"}
+				}
+			});
+			chartWrapper.draw();
+		});
+	}
+
+	google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
+
+	$('#selected-category-name').change(function(event){
+		if ($('#selected-category-name').val() != 'Select categoty') {
+			checkInputAndShowCategoryProducts($('#selected-category-name').val() ,$('#sortSelect').val());
+			selectedCategoryName = $('#selected-category-name').val();
+			drawChart();
 		}
 	});
 
-	$(document).ready(function(){
-		$(".dropdown").on("show.bs.dropdown", function(event){
-			var x = $(event.relatedTarget).text(); // Get the button text
-			alert("You clicked on: " + x);
-		});
-	});
-
-	function checkInputAndShowCategoryProducts(categoryId) {
+	function checkInputAndShowCategoryProducts(categoryName, filterItem) {
+		if (categoryName) {
 			$('#spinner').show();
-			$.getJSON('rootFolder/'+categoryId+ '/result.json', function(resultJson) {
-				showProductsAndUpcsFromCategory(resultJson);
+			$.getJSON('rootFolder/' + categoryName + '/result.json', function(resultJson) {
+				document.title = categoryName;
+				showProductsAndUpcsFromCategory(resultJson, filterItem);
 				$('#spinner').hide();
 			});
-		/*{
-		 success: function(resultJson) {
-		 showProductsAndUpcsFromCategory(resultJson);
-		 },
-		 error: function() {
-		 alert('Wrong category id');
-		 }
-		 }
-		 );*/
-		/*var category = categoriesMap[categoryId];
-		 if (category != undefined || category == NaN) {
-		 $('.product').remove();
-		 showProductsAndUpcsFromCategory(category);
-		 } else {
-		 alert('Wrong category id');
-		 }*/
+		} else {
+			alert('Wrong category id');
+		}
 	}
 
 	function getImageSrcForComputerVisionRecognition(value) {
@@ -145,12 +192,14 @@
 		}
 	}
 
-	function showProductsAndUpcsFromCategory(products) {
+	function showProductsAndUpcsFromCategory(products, filterItem) {
 		$('.product').remove();
 		$(products).each(function(index, product) {
 			var productDiv = '<div class="product-list product"><a href="https://stars.macys.com/stella-core/#legacyUI/%2FUI%2Fstella%2Fwebproduct%2Fview.html%3Fid%3D'+product.productID+'%26subtemplate%3DWebProductDisplayOverview%23product%2Fview%2F'+product.productID+'"><h3 style="margin-left: 20px;">Product '+product.productID+'</h3></a><p style="margin-left: 20px;">Description: '+product.productDescription+'</p></div>';
 			$('.product-list').first().append(productDiv);
+			var count = 0;
 			$(product.upcSet).each(function(index, value) {
+				if (filterItem != 'none' && value.computerVisionRecognition != filterItem) return false;
 				var upcDiv = '<div>';
 				upcDiv += '<div class="right">';
 				upcDiv += '<div style="text-align: center;">';
@@ -172,9 +221,17 @@
 					}
 				}
 
-				linkToImage = 'https://stars.macys.com/preview'+reverse(linkToImage) + 'final/'+imageIdInt+'-214x261.jpg';
+				var reversedLink = reverse(linkToImage);
+				linkToImage = 'https://stars.macys.com/preview'+reversedLink + 'final/'+imageIdInt+'-214x261.jpg';
+				var linkToImage2 = 'https://stars.macys.com/preview'+reversedLink + 'final/'+imageIdInt+'-3000x3000.jpg';
 
-				upcDiv += '<div class="image"><a><img src="'+ linkToImage +'"></a></div>';
+				upcDiv += '<div class="image">';
+				upcDiv += '<a class="image-popup-vertical-fit" href="'+linkToImage+'">';
+				upcDiv += '<img src="'+ linkToImage +'"></a>';
+				upcDiv += '</a>';
+				upcDiv += '</div>';
+
+				//upcDiv += '<div class="image"><a><img src="'+ linkToImage +'"></a></div>';
 				upcDiv += '<div class="name"><b>UPC_ID: </b>'+value.upcId+'</div>';
 				upcDiv += '<div class="description" style="white-space: pre; height: 100%;">'
 						+value.description
@@ -182,59 +239,49 @@
 						+'\n<b>colorNormal:</b> '+value.colorNormal
 						+'\n<b>displayColorName:</b> '+value.displayColorName
 						+'\n<b>computerVisionResult:</b> ';
-				$.each(value.computerVisionResult, function(key, value) {
-					upcDiv += '\n\t<b>'+value+':</b> '+key + '%';
+				$.each(value.computerVisionResult, function(index, colorDescription) {
+					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'% '+'\n<b>distanceFromColorNormal:</b>'+colorDescription.distanceFromColorNormal
 				});
 				upcDiv +='</div>';
 				upcDiv += '</div>';
 				$('.product-list').last().append(upcDiv);
+				count++;
 			});
+			if (count == 0) $('.product-list').last().remove();
 		});
 
+		$('.image-popup-vertical-fit').magnificPopup({
+			type: 'image',
+			closeOnContentClick: true,
+			mainClass: 'mfp-img-mobile',
+			image: {
+				verticalFit: true
+			}
 
-		/*$(category.products).each(function(index, product) {
-		 var productDiv = '<div class="product-list product"><a href="https://stars.macys.com/stella-core/#legacyUI/%2FUI%2Fstella%2Fwebproduct%2Fview.html%3Fid%3D'+product.productID+'%26subtemplate%3DWebProductDisplayOverview%23product%2Fview%2F'+product.ProductID+'"><h3 style="margin-left: 20px;">Product '+product.productID+'</h3></a><p style="margin-left: 20px;">Description: '+product.productDescription+'</p></div>';
-		 $('.product-list').append(productDiv);
-		 $(product.upcSet).each(function(index, value) {
-		 var upcDiv = '<div>';
-		 upcDiv += '<div class="right">';
-		 upcDiv += '<div style="text-align: center;">';
-		 upcDiv += '<div class="state">';
-		 upcDiv += '<b>Color check:</b><br/>'
-		 upcDiv += '<img src="'+getImageSrcForComputerVisionRecognition(value)+'" style="margin: 40px 0px 20px 8px;"></img>';
-		 upcDiv += '</div>';
-		 upcDiv += '</div>';
-		 upcDiv += '</div>';
-		 upcDiv += '<div class="left">';
-		 var linkToImage = '/';
+		});
 
-		 var imageIdInt = parseInt(value.imageId, 10);
-		 for (var i=1; i<9; i++) {
+		$('.image-popup-fit-width').magnificPopup({
+			type: 'image',
+			closeOnContentClick: true,
+			image: {
+				verticalFit: false
+			}
+		});
 
-		 linkToImage += parseInt((imageIdInt % parseInt(Math.pow(10,i), 10) / parseInt(Math.pow(10,i-1), 10)), 10);
-		 if ((i % 2) == 0){
-		 linkToImage += '/';
-		 }
-		 }
-
-		 linkToImage = 'https://stars.macys.com/preview'+reverse(linkToImage) + 'final/'+imageIdInt+'-214x261.jpg';
-
-		 upcDiv += '<div class="image"><a><img src="'+ linkToImage +'"></a></div>';
-		 upcDiv += '<div class="name"><b>UPC_ID: </b>'+value.upcId+'</div>';
-		 upcDiv += '<div class="description" style="white-space: pre; height: 100%;">'
-		 +value.description
-		 +'\n<b>colrNormalId:</b> '+value.colrNormalId
-		 +'\n<b>colorNormal:</b> '+value.colorNormal
-		 +'\n<b>displayColorName:</b> '+value.displayColorName
-		 +'\n<b>computerVisionResult:</b> ';
-		 $.each(value.computerVisionResult, function(key, value) {
-		 upcDiv += '\n\t<b style="color: '+(key != 'white' ? key : 'black')+'">'+key+':</b> '+value + '%';
-		 });
-		 upcDiv +='</div>';
-		 upcDiv += '</div>';
-		 $('.product-list').last().append(upcDiv);
-		 });
-		 });	*/
+		$('.image-popup-no-margins').magnificPopup({
+			type: 'image',
+			closeOnContentClick: true,
+			closeBtnInside: false,
+			fixedContentPos: true,
+			mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
+			image: {
+				verticalFit: true
+			},
+			zoom: {
+				enabled: true,
+				duration: 300 // don't foget to change the duration also in CSS
+			}
+		});
 	}
 </script>
 </html>

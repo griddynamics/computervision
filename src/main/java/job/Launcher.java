@@ -1,5 +1,7 @@
+package job;
+
 import org.opencv.core.Core;
-import ui.FileChooserDemo;
+//import ui.FileChooserDemo;
 
 public class Launcher {
 
@@ -14,7 +16,7 @@ public class Launcher {
     }
 
     public static void main(String[] args) {
-        FileChooserDemo fc = new FileChooserDemo();
-        fc.start();
+//        FileChooserDemo fc = new FileChooserDemo();
+//        fc.start();
     }
 }
