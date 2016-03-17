@@ -94,7 +94,7 @@ public class ColorsProcessor {
                 int persent = (int) (cluster.counts.get(j) / sumOfPixels * 100);
 
                 double[] lab1 = new double[]{
-                        color[0] / 2.55,
+                        (int) (color[0] / 2.55),
                         color[1] - 128,
                         color[2] - 128
                 };

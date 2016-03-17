@@ -308,7 +308,7 @@ public class SqlQueryDataCollectionJob {
             ColorDescription nextColor = colorIterator.next();
             if(nextColor.getPercent() >= 34 && nextColor.getDistanceFromColorNormal() < 20){
                 return 0;
-            } if (nextColor.getPercent() < 34 && nextColor.getDistanceFromColorNormal() < 20){
+            } if (10 < nextColor.getPercent() && nextColor.getPercent() < 34 && nextColor.getDistanceFromColorNormal() < 20){
                 return 2;
             }
 

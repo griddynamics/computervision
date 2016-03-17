@@ -64,7 +64,8 @@ public class Colors {
         new double[]{+60.00, +47.00, +69.00},
         new double[]{+62.74, +43.00, +70.00},
         new double[]{+58.82, +50.00, +68.00},
-        new double[]{+61.17, +45.00, +69.00}
+        new double[]{+61.17, +45.00, +69.00},
+                new double[]{30.0, 24.0, -11.0 }
 
 
         ));
@@ -76,7 +77,9 @@ public class Colors {
         new double[]{+48.62, +69.00, +51.00},
         new double[]{+47.45, +69.00, +54.00},
         new double[]{+27, -108, -104},
-                new double[]{+61, -92, -57}
+                new double[]{+61, -92, -57},
+                new double[]{+41, 63, 30},
+                new double[]{+30, 48, 21}
 
 
 
@@ -95,7 +98,8 @@ public class Colors {
                 new double[]{+88.2, -43.7, -18.4}, // turquoise
         new double[]{+86.1, -14.0, -8.01}, // PowderBlue
                 new double[]{+58, 32, 73},
-                new double[]{+19, -66, -29}
+                new double[]{+19, -66, -29},
+                new double[]{6.0, 6.0, -13.0 }
 
         ));
 
@@ -107,14 +111,17 @@ public class Colors {
        new double[]{+59.60, -55.00, +41.00},
        new double[]{+65.88, -57.00, +40.00},
       new double[]{+30.4, -19.3, +15.29}, // Dark green
-                new double[]{+80, 87, 62}
+                new double[]{+80, 87, 62},
+                new double[]{76, 84, -30}
+
         ));
 
         CatalogPalette.put(GRAY, Arrays.asList(
             new double[]{+88.23, +00.00, +00.00},
        new double[]{+81.56, +00.00, +00.00},
        new double[]{+83.92, +00.00, +00.00},
-       new double[]{+86.27, +00.00, +00.00}
+       new double[]{+86.27, +00.00, +00.00},
+                new double[]{43.0, 2.0, -3.0 }
 
 
         ));
@@ -124,7 +131,9 @@ public class Colors {
         new double[]{+30.98, +13.00, +34.00},
         new double[]{+32.15, +13.00, +35.00},
         new double[]{+29.80, +14.00, +33.00},
-        new double[]{+27.05, +13.00, +32.00}
+        new double[]{+27.05, +13.00, +32.00},
+                new double[]{+30, -82, -103}
+
 
 
 
@@ -146,7 +155,9 @@ public class Colors {
                 ));
 
         CatalogPalette.put(BLACK, Arrays.asList(
-                new double[]{+00.00, +00.00, +00.00}
+                new double[]{+00.00, +00.00, +00.00},
+                new double[]{37.0, 0.0, 0.0 },
+                new double[]{78.0, -10.0, 3.0 }
 
         ));
 
@@ -179,9 +190,8 @@ public class Colors {
         new double[]{+30.98, +47.00, -53.00},
         new double[]{+34.90, +49.00, -56.00},
         new double[]{+32.54, +48.00, -54.00},
-                new double[]{+56, 0, 32},
-                new double[]{+49, -13, 35},
-                new double[]{+39, -68, -50}
+                new double[]{60.0, 13.0, -15.0},
+                new double[]{20.0, 20.0, -3.0}
 
 
         ));

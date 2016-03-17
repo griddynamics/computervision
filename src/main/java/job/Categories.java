@@ -72,7 +72,7 @@ public enum Categories implements Serializable {
 //    //        Dinnerware("(53629)"),
 //    DressShirt_TieCombos("(26013)"),
 //    DressShirts("(20635)"),
-    Dresses("(5449,18109,37038,55596)"),
+//    Dresses("(5449,18109,37038,55596)"),
 //    //        Duffels_Totes("(20688)"),
 ////        DuvetCovers("(25045)"),
 ////        Earrings("(10835)"),

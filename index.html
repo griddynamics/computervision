@@ -58,9 +58,11 @@
 				</div>
 			</div>
 		</div>
-		<div id="spinner" class="spinner" style="display:none;">
-			<img id="img-spinner" src="spinner.gif" alt="Loading"/>
-		</div>
+		<!--<div id="spinner" class="spinner" style="display:none;">-->
+			<!--<img id="img-spinner" src="spinner.gif" alt="Loading"/>-->
+		<!--</div>-->
+	</div>
+	</div>
 </body>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
@@ -151,11 +153,11 @@
 
 	function checkInputAndShowCategoryProducts(categoryName, filterItem) {
 		if (categoryName) {
-			$('#spinner').show();
+//			$('#spinner').show();
 			$.getJSON('rootFolder/' + categoryName + '/result.json', function(resultJson) {
 				document.title = categoryName;
 				showProductsAndUpcsFromCategory(resultJson, filterItem);
-				$('#spinner').hide();
+//				$('#spinner').hide();
 			});
 		} else {
 			alert('Wrong category id');
@@ -240,7 +242,7 @@
 						+'\n<b>displayColorName:</b> '+value.displayColorName
 						+'\n<b>computerVisionResult:</b> ';
 				$.each(value.computerVisionResult, function(index, colorDescription) {
-					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'% '+'\n<b>distanceFromColorNormal:</b>'+colorDescription.distanceFromColorNormal
+					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'% LAB: '+colorDescription.labColorDesctiption+' \n<b> distanceFromColorNormal:</b>'+colorDescription.distanceFromColorNormal
 				});
 				upcDiv +='</div>';
 				upcDiv += '</div>';
