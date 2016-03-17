@@ -78,39 +78,43 @@ public class Cluster {
         colorCodes = new ArrayList<ColorCode>();
 
         for (int j = 0; j < colors.size(); j++) {
-            for (double[] doubles : Palette.keySet()) {
+            String colorNameForDescription = null;
+            for (String colorName : getRealColorsPalette().keySet()) {
+                for (double[] doubles : getRealColorsPalette().get(colorName)) {
 
-                double[] lab1 = new double[]{
-                        colors.get(j)[0] / 2.55,
-                        colors.get(j)[1] - 128,
-                        colors.get(j)[2] - 128
-                };
+                    double[] lab1 = new double[]{
+                            colors.get(j)[0] / 2.55,
+                            colors.get(j)[1] - 128,
+                            colors.get(j)[2] - 128
+                    };
 
-                double[] lab2 = new double[]{
-                        doubles[0],
-                        doubles[1],
-                        doubles[2]
-                };
+                    double[] lab2 = new double[]{
+                            doubles[0],
+                            doubles[1],
+                            doubles[2]
+                    };
 
-                dist = DeltaE.deltaE2000(lab1, lab2);
+                    dist = DeltaE.deltaE2000(lab1, lab2);
 
-                if (min > dist) {
-                    min = dist;
-                    key = doubles;
+                    if (min > dist) {
+                        min = dist;
+                        key = doubles;
+                        colorNameForDescription = colorName;
 //                    howItMatched = lab1;
+                    }
                 }
             }
             if (key != null) {
 //                System.out.println(key[0] + "," + key[1] + "," + key[2] + ": " + Palette.get(key));
 //                System.out.println(howItMatched[0] + "," + howItMatched[1] + "," + howItMatched[2] + ": " + Palette.get(key));
-                colorNames.add(Palette.get(key));
+                colorNames.add(colorNameForDescription);
                 double[] lab = new double[]{
                         colors.get(j)[0] / 2.55,
                         colors.get(j)[1] - 128,
                         colors.get(j)[2] - 128
                 };
-                nameOfColorByCode.put(lab, Palette.get(key));
-                colorCodes.add(new ColorCode(Palette.get(key), colors.get(j)));
+                nameOfColorByCode.put(lab, colorNameForDescription);
+                colorCodes.add(new ColorCode(colorNameForDescription, colors.get(j)));
                 min = Double.MAX_VALUE;
                 key = null;
             }

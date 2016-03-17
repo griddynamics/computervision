@@ -291,10 +291,8 @@ public class SqlQueryDataCollectionJob {
 //        Set<String> colors = new HashSet<>();
         for (ColorDescription description : computerVisionResult) {
 //            colors.add(description.getName());
-            description.setDistanceFromColorNormal(Colors.CatalogPalette.get(colorNormal.toLowerCase()));
-//            description.getDistanceFromColorNormal(Colors.CatalogPalette.get(colorNormal.toLowerCase()));
-
-
+            description.setDistanceFromColorNormal(Colors.getCommonPalette().get(colorNormal.toLowerCase()));
+//            description.getDistanceFromColorNormal(Colors.AdditionalPalette.get(colorNormal.toLowerCase()));
         }
 
 

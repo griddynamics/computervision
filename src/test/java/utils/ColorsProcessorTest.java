@@ -63,7 +63,7 @@ public class ColorsProcessorTest {
 
     private void printColorDistance(TreeSet<ColorDescription> colorDescription, String color) {
         for (ColorDescription description : colorDescription){
-            description.setDistanceFromColorNormal(Colors.CatalogPalette.get(color));
+            description.setDistanceFromColorNormal(Colors.getCommonPalette().get(color));
             System.out.println(description.getName() + " distance  " + description.getDistanceFromColorNormal());
         }
     }

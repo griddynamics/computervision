@@ -19,7 +19,6 @@ public class ColorDescription implements Comparable<ColorDescription> , Serializ
     public ColorDescription(String name, double[] color, int percent) {
         this.color = color;
         this.percent = percent;
-        this.color =color;
         this.name = name;
     }
 
@@ -80,7 +79,6 @@ public class ColorDescription implements Comparable<ColorDescription> , Serializ
         for (double[] colorNormal : colorNormalVariations){
             double diff = DeltaE.deltaE2000(color, colorNormal);
             min = diff < min? diff : min;
-
         }
         BigDecimal bigDecimal = new BigDecimal(min);
         this.distanceFromColorNormal= bigDecimal.setScale(2, RoundingMode.HALF_UP).doubleValue();

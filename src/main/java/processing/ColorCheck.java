@@ -41,7 +41,7 @@ public class ColorCheck {
 
         Set<double[]> codesFromResult = getKeysByValue(nameOfColorByCode, dominantColor);
 
-//        Set<double[]> codesFromAllPalette = getKeysByValue(Colors.CatalogPalette, nameOfColorNormalLower);
+//        Set<double[]> codesFromAllPalette = getKeysByValue(Colors.AdditionalPalette, nameOfColorNormalLower);
         Set<double[]> codesFromAllPalette = new HashSet<>();
 //        codesFromAllPalette.addAll(getKeysByValue(Colors.Palette, nameOfColorNormalLower));
 

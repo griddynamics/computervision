@@ -1,7 +1,9 @@
 //package ui;
 //
+//import pojo.ColorDescription;
 //import processing.Cluster;
 //import processing.ColorCheck;
+//import processing.ColorsProcessor;
 //
 //import java.awt.image.BufferedImage;
 //import java.io.*;
@@ -11,6 +13,7 @@
 //import java.net.URL;
 //import java.util.List;
 //import java.util.Map;
+//import java.util.TreeSet;
 //import javax.imageio.IIOException;
 //import javax.imageio.ImageIO;
 //import javax.swing.*;
@@ -98,28 +101,27 @@
 //                try {
 //                    final BufferedImage img = ImageIO.read(file);
 //                    file = getTempFileByName(file.getName(), img, "jpg");
+//                    TreeSet<ColorDescription> colorDescriptions = ColorsProcessor.getColorDescriptions(file);
 //                    Cluster.ImageProcessingResult imageProcessingResult = new Cluster().segmentation(file, false, demo);
 //                    Map<String, Integer> segmentationMap = imageProcessingResult.getSortedByPercent();
-////                    ColorCheck.checkMismatch("yellow");
-////                    ColorCheck.checkMismatch("white");
-////                    ColorCheck.checkMismatch("gray");
-////                    ColorCheck.checkMismatch("green");
-////                    ColorCheck.checkMismatch("pink");
-////                    ColorCheck.checkMismatch("blue");
-////                    ColorCheck.checkMismatch("silver");
-////                    ColorCheck.checkMismatch("gold");
-////                    ColorCheck.checkMismatch("brown");
-////                    ColorCheck.checkMismatch("black");
-////                    ColorCheck.checkMismatch("ivory/cream");
-////                    ColorCheck.checkMismatch("orange");
-////                    ColorCheck.checkMismatch("tan/beige");
-////                    ColorCheck.checkMismatch("red");
-////                    ColorCheck.checkMismatch("purple");
-//                    Map<String , Integer> segmentationMap = new Cluster().segmentation(file, false, demo).getSortedByPercent();
+//                    ColorCheck.checkMismatch("yellow");
+//                    ColorCheck.checkMismatch("white");
+//                    ColorCheck.checkMismatch("gray");
+//                    ColorCheck.checkMismatch("green");
+//                    ColorCheck.checkMismatch("pink");
+//                    ColorCheck.checkMismatch("blue");
+//                    ColorCheck.checkMismatch("silver");
+//                    ColorCheck.checkMismatch("gold");
+//                    ColorCheck.checkMismatch("brown");
+//                    ColorCheck.checkMismatch("black");
+//                    ColorCheck.checkMismatch("ivory/cream");
+//                    ColorCheck.checkMismatch("orange");
+//                    ColorCheck.checkMismatch("tan/beige");
+//                    ColorCheck.checkMismatch("red");
+//                    ColorCheck.checkMismatch("purple");
 //                    log.append("Opening: " + file.getName() + "." + newline);
 //                    for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
-//                    for (Map.Entry<String, Integer> colorEntry : segmentationMap.entrySet()) {
-//                        log.append("Color='" + colorEntry.getKey()  + "' \t\t percent=" + colorEntry.getValue()  + "%"+ newline);
+//                        log.append("Color='" + colorEntry.getValue()  + "' \t\t percent=" + colorEntry.getKey()  + "%"+ newline);
 //                    }
 //                } catch (IOException ex) {
 //                    log.append("IOException: " + ex.getMessage() + newline);
