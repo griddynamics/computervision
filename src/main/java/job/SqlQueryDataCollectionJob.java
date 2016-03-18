@@ -38,6 +38,7 @@ public class SqlQueryDataCollectionJob {
     public static final String ROOT_FOLDER = "rootFolder/";
     public static final String DOWNLOAD_IMAGES_FOLDER = "/downloadedImages";
     public static final Gson gson = new Gson();
+    public static final int COLOR_SIMILARITY_TRESHOLD = 11;
 
     static {
         try {
@@ -68,7 +69,8 @@ public class SqlQueryDataCollectionJob {
             "  join UPC_FEATURE on UPC_FEATURE.UPC_ID = UPC.UPC_ID\n" +
             "  join PRODUCT on PRODUCT.PRODUCT_ID = PRODUCT_IMAGE.PRODUCT_ID\n" +
             "  join CATEGORY on CATEGORY.CATEGORY_ID= PRODUCT.CATEGORY_ID\n" +
-            "WHERE PRODUCT_IMAGE.IMAGE_ID is not null and PRODUCT.STATE_ID = 2 and CATEGORY.CATEGORY_ID in %s and  ROWNUM <= %d";
+            "  JOIN PRODUCT_DESTINATION_CHANNEL ON PRODUCT_DESTINATION_CHANNEL.PRODUCT_ID = PRODUCT_COLORWAY.PRODUCT_ID AND PRODUCT_DESTINATION_CHANNEL.PUBLISH_FLAG='Y' AND PRODUCT_DESTINATION_CHANNEL.CURRENT_FLAG='Y'\n"+
+            "WHERE PRODUCT_IMAGE.IMAGE_ID is not null and PRODUCT.STATE_ID = 2 and CATEGORY.CATEGORY_ID= %d and ROWNUM <=%d ";
 
 
     public static void main(String[] args) throws IOException {
@@ -86,9 +88,9 @@ public class SqlQueryDataCollectionJob {
         options.put("driver", "oracle.jdbc.OracleDriver");
         options.put("user", "macys");
         options.put("password", "macys");
-        options.put("url", "jdbc:oracle:thin:@//mdc2vr9079.federated.fds:1521/starsdev");
+        options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01");
 
-        final int processedRowPerCategory = 2000;
+//        final int processedRowPerCategory = 1000;
 
 
         //createRootFolderAndCategorySubFolders
@@ -104,7 +106,9 @@ public class SqlQueryDataCollectionJob {
         for (final Categories category : Categories.values()){
             final String path = ROOT_FOLDER +category.name();
 
-            String query = String.format(SELECT_QUERY, category.getCategoryId(), processedRowPerCategory);
+//            String query = String.format(SELECT_QUERY, category.getCategoryId());
+//
+            String query = String.format(SELECT_QUERY, category.getCategoryId(), 5000);
             DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + query + ")").load();
             selectDataFrame.cache();
 
@@ -260,7 +264,7 @@ public class SqlQueryDataCollectionJob {
             }
         }).count();
 
-        return new Statistic(category.name(),
+        return new Statistic(category.name(),category.getCategoryId(),
                 amountOfUpc,
                 amountOfSuspiciousUpc,
                 amountOfSuspiciousMulti,
@@ -288,50 +292,29 @@ public class SqlQueryDataCollectionJob {
         }
 
 
-//        Set<String> colors = new HashSet<>();
         for (ColorDescription description : computerVisionResult) {
-//            colors.add(description.getName());
-            description.setDistanceFromColorNormal(Colors.getCommonPalette().get(colorNormal.toLowerCase()));
-//            description.getDistanceFromColorNormal(Colors.AdditionalPalette.get(colorNormal.toLowerCase()));
+            description.setDistanceFromColorNormal(Colors.getRealColorsPalette().get(colorNormal.toLowerCase()));
+
+
         }
 
 
         Iterator<ColorDescription> colorIterator = computerVisionResult.iterator();
         ColorDescription dominantColor = colorIterator.next();
-        if (dominantColor.getDistanceFromColorNormal() < 20){
+        if (dominantColor.getDistanceFromColorNormal() < COLOR_SIMILARITY_TRESHOLD){
             return 0;
         }
         //check next color
         while (colorIterator.hasNext()){
             ColorDescription nextColor = colorIterator.next();
-            if(nextColor.getPercent() >= 34 && nextColor.getDistanceFromColorNormal() < 20){
+            if(nextColor.getPercent() >= 34 && nextColor.getDistanceFromColorNormal() < COLOR_SIMILARITY_TRESHOLD){
                 return 0;
-            } if (nextColor.getPercent() < 34 && nextColor.getDistanceFromColorNormal() < 20){
+            } if (10 <= nextColor.getPercent() && nextColor.getPercent() < 34 && nextColor.getDistanceFromColorNormal() < COLOR_SIMILARITY_TRESHOLD){
                 return 2;
             }
 
         }
         return 3;
-//        if (colorIterator.hasNext()){
-//            ColorDescription secondColor = colorIterator.next();
-//            //if second color presents enought (use case with dual colors)
-//            if(secondColor.getPercent() > 35 && secondColor.getDistanceFromColorNormal() < 20){
-//                return 0;
-//            }
-//        }
-//        String dominantColor = dominantColor.getName();
-//
-//        // todo deal with MULTI
-//        // dominant color = color normal
-//
-//        if (dominantColor.toLowerCase().equals(colorNormal.toLowerCase())) {
-//            return 0;
-//        } else if (colors.contains(colorNormal.toLowerCase())) {
-//            return 2;
-//        } else if (!colors.contains(colorNormal.toLowerCase())) {
-//            return 3;
-//        }
-//        return -1;
     }
 
 }

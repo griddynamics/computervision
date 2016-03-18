@@ -5,6 +5,7 @@ package pojo;
  */
 public class Statistic {
     String categoryName;
+    private int categoryId;
     long totalUpc;
     long suspicious;
     private long amountOfSuspiciousMulti;
@@ -12,12 +13,14 @@ public class Statistic {
     private long amountOfColorNormalIsNotInList;
 
     public Statistic(String categoryName,
+                     int categoryId,
                      long totalUpc,
                      long suspicious,
                      long amountOfSuspiciousMulti,
                      long amountOfColorNormalIsNoDominant,
                      long amountOfColorNormalIsNotInList) {
         this.categoryName = categoryName;
+        this.categoryId = categoryId;
         this.totalUpc = totalUpc;
         this.suspicious = suspicious;
         this.amountOfSuspiciousMulti = amountOfSuspiciousMulti;

@@ -1,5 +1,6 @@
 package utils;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public class ColorResultAnalysisHelperTest {
     String result;
 
     @Test
+    @Ignore
     public void dominantColorTest() {
 
         colorPercentages.clear();

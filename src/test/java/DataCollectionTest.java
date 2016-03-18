@@ -11,7 +11,7 @@ public class DataCollectionTest {
     @Test
     public void buildUrlTest() {
 
-        assertEquals("https://stars.macys.com/preview/02/98/01/04/final/2980104-", DataCollectionJobUtils.buildURL(2980104));
+        assertEquals("https://stars.macys.com/preview/02/98/01/04/final/2980104-214x261.jpg", DataCollectionJobUtils.buildURL(2980104));
 
     }
 }

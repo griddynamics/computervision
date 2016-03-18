@@ -46,13 +46,16 @@ public class Colors {
                 new double[]{+89.80, +04.00, +27.00},
                 new double[]{+91.37, +04.00, +21.00},
                 new double[]{+92.15, +03.00, +20.00},
-                new double[]{+93.33, +02.00, +18.00}));
+                new double[]{+93.33, +02.00, +18.00}
+        ));
 
         ADDITIONAL_PALETTE.put(GRAY, Arrays.asList(
                 new double[]{+88.23, +00.00, +00.00},
                 new double[]{+81.56, +00.00, +00.00},
                 new double[]{+83.92, +00.00, +00.00},
-                new double[]{+86.27, +00.00, +00.00}));
+                new double[]{+86.27, +00.00, +00.00}
+
+        ));
 
         ADDITIONAL_PALETTE.put(WHITE, Arrays.asList(
                 new double[]{+100.0, +00.00, +00.00}));
@@ -94,24 +97,25 @@ public class Colors {
                 new double[]{+94.90, -18.00, +93.00},
                 new double[]{+94.50, -17.00, +93.00},
                 new double[]{+91.76, -14.00, +90.00},
-                new double[]{+92.94, -15.00, +91.00}));
+                new double[]{+92.94, -15.00, +91.00},
+                new double[]{+97.0, -2.0, 13.0},
+                new double[]{+66 ,10 ,50},
+                new double[]{70,7,52}));
 
         REAL_COLORS_PALETTE.put(TAN_BEIGE, Arrays.asList(
                 new double[]{+76.10, -00.56, +26.69},
                 new double[]{+73.80, +05.24, +25.77},
                 new double[]{+60.51, +06.02, +08.65},
-                new double[]{+90.00, +04.96, +16.72}));
+                new double[]{+90.00, +04.96, +16.72},
 
-        REAL_COLORS_PALETTE.put(ORANGE, Arrays.asList(
-                new double[]{+59.00, +34.91, +62.97},
-                new double[]{+72.00, +41.94, +64.58},
-                new double[]{+61.00, +39.14, +58.03},
-                new double[]{+52.41, +51.75, +51.31},
-                new double[]{+63.92, +40.00, +71.00},
-                new double[]{+60.00, +47.00, +69.00},
-                new double[]{+62.74, +43.00, +70.00},
-                new double[]{+58.82, +50.00, +68.00},
-                new double[]{+61.17, +45.00, +69.00}));
+                new double[]{+90.58, +04.00, +23.00},
+                new double[]{+89.80, +04.00, +27.00},
+                new double[]{+91.37, +04.00, +21.00},
+                new double[]{+92.15, +03.00, +20.00},
+                new double[]{+93.33, +02.00, +18.00}
+                ));
+
+
 
         REAL_COLORS_PALETTE.put(RED, Arrays.asList(
                 new double[]{+38.00, +48.91, +32.99},
@@ -212,6 +216,34 @@ public class Colors {
                 new double[]{+59.60, -55.00, +41.00},
                 new double[]{+65.88, -57.00, +40.00}));
 
+        REAL_COLORS_PALETTE.put(SILVER, Arrays.asList(
+                new double[]{+77.64, +00.00, +00.00},
+                new double[]{+93.33, +00.00, +00.00},
+                new double[]{+85.49, +00.00, +00.00},
+                new double[]{+74.90, +00.00, +00.00},
+                new double[]{+71.37, +00.00, +00.00}
+
+//                new double[]{+57.00, -03.36, -04.97},
+//                new double[]{+62.00, -02.42, -04.37},
+//                new double[]{+65.00, +00.07, -01.00},
+//                new double[]{+48.00, -01.89, +00.65},
+//                new double[]{+39.00, -02.87, +04.10},
+//                new double[]{+40.00, -02.30, +01.93},
+//                new double[]{+39.00, -02.18, -03.35},
+//                new double[]{+41.00, -02.23, -02.01},
+//                new double[]{+54.00, -01.00, -00.03},
+//                new double[]{+62.00, -01.90, -00.62},
+//                new double[]{+36.00, -02.00, -00.03},
+//                new double[]{+61.00, -01.63, -02.52},
+//                new double[]{+56.00, -01.88, -03.53},
+//                new double[]{+32.00, +00.00, -00.00},
+//                new double[]{+73.00, -02.00, +08.00},
+//                new double[]{+73.60, -03.41, -04.59},
+//                new double[]{+32.11, +01.26, -02.84},
+//                new double[]{+33.33, +01.00, -07.00},
+//                new double[]{+49.41, +00.00, -08.00}
+        ));
+
 
         REAL_COLORS_PALETTE.put(GRAY, Arrays.asList(
                 new double[]{+57.00, -03.36, -04.97},
@@ -232,7 +264,19 @@ public class Colors {
                 new double[]{+73.60, -03.41, -04.59},
                 new double[]{+32.11, +01.26, -02.84},
                 new double[]{+33.33, +01.00, -07.00},
-                new double[]{+49.41, +00.00, -08.00}));
+                new double[]{+49.41, +00.00, -08.00},
+
+                new double[]{+88.23, +00.00, +00.00},
+                new double[]{+81.56, +00.00, +00.00},
+                new double[]{+83.92, +00.00, +00.00},
+                new double[]{+86.27, +00.00, +00.00},
+
+                new double[]{+77.64, +00.00, +00.00},
+                new double[]{+93.33, +00.00, +00.00},
+                new double[]{+85.49, +00.00, +00.00},
+                new double[]{+74.90, +00.00, +00.00},
+                new double[]{+71.37, +00.00, +00.00}
+                ));
 
         REAL_COLORS_PALETTE.put(BROWN, Arrays.asList(
                 new double[]{+48.00, +06.77, +27.17},
@@ -265,7 +309,10 @@ public class Colors {
                 new double[]{+94.00, -00.95, +00.31},
                 new double[]{+94.00, -00.49, +03.97},
                 new double[]{+93.00, -00.72, +01.87},
-                new double[]{+80.00, +02.00, +02.00}));
+                new double[]{+80.00, +02.00, +02.00},
+
+                new double[]{+100.0, +00.00, +00.00}
+                ));
 
         REAL_COLORS_PALETTE.put(BLACK, Arrays.asList(
                 new double[]{+10.00, +00.81, -00.59},
@@ -277,11 +324,23 @@ public class Colors {
                 new double[]{+20.00, +02.00, -05.00},
                 new double[]{+21.00, +00.00, -00.00},
                 new double[]{+10.00, +02.00, -05.00},
-                new double[]{+11.00, +02.00, -05.00}));
+                new double[]{+11.00, +02.00, -05.00},
+
+                new double[]{30.0, 0.0, 0.0}, //????
+
+                new double[]{+00.00, +00.00, +00.00}
+                ));
 
         REAL_COLORS_PALETTE.put(IVORY_CREAM, Arrays.asList(
                 new double[]{+81.00, +02.40, +22.87},
-                new double[]{+86.00, +02.23, +15.84}));
+                new double[]{+86.00, +02.23, +15.84},
+
+                new double[]{+98.82, -03.00, +11.00},
+                new double[]{+98.03, -03.00, +10.00},
+                new double[]{+98.43, -04.00, +12.00},
+                new double[]{+96.86, -03.00, +08.00},
+                new double[]{+97.64, -03.00, +10.00}
+                ));
 
         REAL_COLORS_PALETTE.put(PINK, Arrays.asList(
                 new double[]{+59.00, +33.61, +12.90},
@@ -305,7 +364,34 @@ public class Colors {
                 new double[]{+33.33, +49.00, -56.00},
                 new double[]{+30.98, +47.00, -53.00},
                 new double[]{+34.90, +49.00, -56.00},
-                new double[]{+32.54, +48.00, -54.00}));
+                new double[]{+32.54, +48.00, -54.00},
+                new double[]{+83.0, +16.0, -17.0 },
+                new double[]{+80.0, 12.0, -9.0},
+                new double[]{+70.0, 36.0, -16.0},
+                new double[]{46,14,-30}));
+
+        REAL_COLORS_PALETTE.put(ORANGE, Arrays.asList(
+                new double[]{+59.00, +34.91, +62.97},
+                new double[]{+72.00, +41.94, +64.58},
+                new double[]{+61.00, +39.14, +58.03},
+                new double[]{+52.41, +51.75, +51.31},
+                new double[]{+63.92, +40.00, +71.00},
+                new double[]{+60.00, +47.00, +69.00},
+                new double[]{+62.74, +43.00, +70.00},
+                new double[]{+58.82, +50.00, +68.00},
+                new double[]{+61.17, +45.00, +69.00},
+                new double[]{+63.0, +35.0, +20.0},
+                new double[]{ 79.0, 14.0, 65.0}));
+
+
+
+
+        REAL_COLORS_PALETTE.put(GOLD, Arrays.asList(
+                new double[]{+85.09, -03.00, +52.00},
+                new double[]{+83.52, -03.00, +68.00},
+                new double[]{+72.15, +02.00, +74.00},
+                new double[]{+85.09, -03.00, +61.00},
+                new double[]{+68.62, +04.00, +72.00}));
     }
 
 

@@ -1,5 +1,6 @@
 package utils;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opencv.core.Core;
 import pojo.ColorDescription;
@@ -7,6 +8,8 @@ import processing.ColorsProcessor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 import static junit.framework.TestCase.assertEquals;
@@ -30,6 +33,7 @@ public class ColorsProcessorTest {
     public static final String JPG = "jpg";
 
     @Test
+    @Ignore
     public  void test1() throws IOException {
         File greenTshort = new File("/Users/npakhomova/codebase/css/computervisionSource/src/test/resources/GreenTshort.jpg");
         File pinkSmth = new File("/Users/npakhomova/codebase/css/computervisionSource/src/test/resources/PinkTShort.jpg");
@@ -61,9 +65,27 @@ public class ColorsProcessorTest {
 
     }
 
+    @Test
+    public void test2(){
+        for (Map.Entry<String, List<double[]>> colorPalete : Colors.getRealColorsPalette().entrySet()){
+            System.out.println("Count distance in group " + colorPalete.getKey());
+            List<double[]> colorCodes = colorPalete.getValue();
+            for(int i =0; i<colorCodes.size(); i++){
+                double[] candidate = colorCodes.get(i);
+                for (int j = i+1; j<colorCodes.size(); j++){
+                    candidate[0]=0;
+                    colorCodes.get(j)[0]=0;
+                    System.out.println(DeltaE.deltaE2000(candidate, colorCodes.get(j)));
+                }
+
+            }
+
+        }
+    }
+
     private void printColorDistance(TreeSet<ColorDescription> colorDescription, String color) {
         for (ColorDescription description : colorDescription){
-            description.setDistanceFromColorNormal(Colors.getCommonPalette().get(color));
+            description.setDistanceFromColorNormal(Colors.getRealColorsPalette().get(color));
             System.out.println(description.getName() + " distance  " + description.getDistanceFromColorNormal());
         }
     }

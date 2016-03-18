@@ -63,25 +63,26 @@ public class ColorsProcessor {
         for (int j = 0; j < colors.size(); j++) {
             double[] color = colors.get(j);
             String colorNameForDescription = null;
+            double[] lab1 = new double[]{
+                    (int)(color[0] / 2.55),
+                    color[1] - 128,
+                    color[2] - 128
+            };
             for (String colorName : getRealColorsPalette().keySet()) {
-                for (double[] doubles : getRealColorsPalette().get(colorName)) {
-                    double[] lab1 = new double[]{
-                            color[0] / 2.55,
-                            color[1] - 128,
-                            color[2] - 128
-                    };
+                for (double[] realColor : getRealColorsPalette().get(colorName)) {
+
 
                     double[] lab2 = new double[]{
-                            doubles[0],
-                            doubles[1],
-                            doubles[2]
+                            realColor[0],
+                            realColor[1],
+                            realColor[2]
                     };
 
                     dist = DeltaE.deltaE2000(lab1, lab2);
 
                     if (min > dist) {
                         min = dist;
-                        key = doubles;
+                        key = realColor;
                         colorNameForDescription = colorName;
                     }
                 }
@@ -93,12 +94,6 @@ public class ColorsProcessor {
                 }
 
                 int persent = (int) (cluster.counts.get(j) / sumOfPixels * 100);
-
-                double[] lab1 = new double[]{
-                        color[0] / 2.55,
-                        color[1] - 128,
-                        color[2] - 128
-                };
 
                 ColorDescription colorDescription = new ColorDescription(colorNameForDescription, lab1, persent);
                 if (colorDescriptionsMap.containsKey(colorDescription.getName())) {
