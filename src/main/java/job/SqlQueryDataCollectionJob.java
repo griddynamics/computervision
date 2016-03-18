@@ -50,7 +50,7 @@ public class SqlQueryDataCollectionJob {
         }
     }
 
-    public static final String SELECT_QUERY = "select distinct\n" +
+    public static final String SELECT_QUERY= "select distinct\n" +
             "  --   *\n" +
             "  PRODUCT_COLORWAY.PRODUCT_ID,\n" +
             "  PRODUCT_COLORWAY.DISPLAY_COLOR_NAME,\n" +
@@ -60,8 +60,9 @@ public class SqlQueryDataCollectionJob {
             "  CATEGORY.CATEGORY_ID,\n" +
             "  CATEGORY.CATEGORY_NAME,\n" +
             "  PRODUCT.PRODUCT_DESC,\n" +
-            "  UPC.UPC_DESC\n" +
-            "\n" +
+            "  UPC.UPC_DESC,\n" +
+            "  mod(PRODUCT_COLORWAY.PRODUCT_ID, %d) AS ID_MOD \n"+
+
             "from PRODUCT_COLORWAY\n" +
             "  join PRODUCT_COLORWAY_IMAGE on PRODUCT_COLORWAY_IMAGE.PRODUCT_COLORWAY_ID = PRODUCT_COLORWAY.PRODUCT_COLORWAY_ID\n" +
             "  join PRODUCT_IMAGE on PRODUCT_IMAGE.PRODUCT_IMAGE_ID = PRODUCT_COLORWAY_IMAGE.PRODUCT_IMAGE_ID and PRODUCT_IMAGE.IMAGE_ATTRIBUTE_TYPE = 'PRODUCT_PORTRAIT_IMAGE'\n" +
@@ -70,7 +71,7 @@ public class SqlQueryDataCollectionJob {
             "  join PRODUCT on PRODUCT.PRODUCT_ID = PRODUCT_IMAGE.PRODUCT_ID\n" +
             "  join CATEGORY on CATEGORY.CATEGORY_ID= PRODUCT.CATEGORY_ID\n" +
             "  JOIN PRODUCT_DESTINATION_CHANNEL ON PRODUCT_DESTINATION_CHANNEL.PRODUCT_ID = PRODUCT_COLORWAY.PRODUCT_ID AND PRODUCT_DESTINATION_CHANNEL.PUBLISH_FLAG='Y' AND PRODUCT_DESTINATION_CHANNEL.CURRENT_FLAG='Y'\n"+
-            "WHERE PRODUCT_IMAGE.IMAGE_ID is not null and PRODUCT.STATE_ID = 2 and CATEGORY.CATEGORY_ID= %d and ROWNUM <=%d ";
+            "WHERE PRODUCT_IMAGE.IMAGE_ID is not null and PRODUCT.STATE_ID = 2 and CATEGORY.CATEGORY_ID= %d ";
 
 
     public static void main(String[] args) throws IOException {
@@ -78,17 +79,25 @@ public class SqlQueryDataCollectionJob {
         boolean debugMode = false;
         final AttributeService starsService = new AttributeService("http://11.120.149.99:8888");
 
+
         SparkConf config = new SparkConf();
         config.setMaster("local[16]");
         config.setAppName("SqlQueryDataCollectionJob");
-        JavaSparkContext context = new JavaSparkContext(config);
-        SQLContext sqlContext = new SQLContext(context);
+        JavaSparkContext sparkContext = new JavaSparkContext(config);
+        SQLContext sqlContext = new SQLContext(sparkContext);
         Map<String, String> options = new HashMap<>();
 
+        int partitions = sparkContext.defaultParallelism();
         options.put("driver", "oracle.jdbc.OracleDriver");
         options.put("user", "macys");
         options.put("password", "macys");
         options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01");
+
+        options.put("partitionColumn", "ID_MOD");
+        options.put("lowerBound", "1");
+        options.put("upperBound", String.valueOf(partitions));
+        options.put("numPartitions", String.valueOf(partitions));
+
 
 //        final int processedRowPerCategory = 1000;
 
@@ -108,8 +117,8 @@ public class SqlQueryDataCollectionJob {
 
 //            String query = String.format(SELECT_QUERY, category.getCategoryId());
 //
-            String query = String.format(SELECT_QUERY, category.getCategoryId(), 100);
-            DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + query + ")").load();
+            String query = String.format(SELECT_QUERY,partitions, category.getCategoryId());
+            DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" +query + ")").load();
             selectDataFrame.cache();
 
             // save it to be able to rerun without connection to DB
