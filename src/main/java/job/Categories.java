@@ -189,7 +189,6 @@ public enum Categories implements Serializable {
     Kids__Bedding(13661),
     Laptop__Messenger_Bags(25547);
 
-
     private int categoryId;
 
     Categories(int categoryId) {

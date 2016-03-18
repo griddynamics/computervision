@@ -315,6 +315,26 @@ public class SqlQueryDataCollectionJob {
 
         }
         return 3;
+//        if (colorIterator.hasNext()){
+//            ColorDescription secondColor = colorIterator.next();
+//            //if second color presents enought (use case with dual colors)
+//            if(secondColor.getPercent() > 35 && secondColor.getDistanceFromColorNormal() < 20){
+//                return 0;
+//            }
+//        }
+//        String dominantColor = dominantColor.getName();
+//
+//        // todo deal with MULTI
+//        // dominant color = color normal
+//
+//        if (dominantColor.toLowerCase().equals(colorNormal.toLowerCase())) {
+//            return 0;
+//        } else if (colors.contains(colorNormal.toLowerCase())) {
+//            return 2;
+//        } else if (!colors.contains(colorNormal.toLowerCase())) {
+//            return 3;
+//        }
+//        return -1;
     }
 
 }

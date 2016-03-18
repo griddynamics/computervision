@@ -30,6 +30,8 @@ public class ColorDescription implements Comparable<ColorDescription> , Serializ
         this.labColorDesctiption = "[ "+ joiner.join( ArrayUtils.toObject(colorLab) ) +" ]";
     }
 
+   
+
     public double getPercent() {
         return percent;
     }
@@ -100,6 +102,10 @@ public class ColorDescription implements Comparable<ColorDescription> , Serializ
 
     public double getDistanceFromColorNormal() {
         return distanceFromColorNormal;
+    }
+
+    public String getLabColorDesctiption() {
+        return labColorDesctiption;
     }
 
     public String getLabColorDesctiption() {

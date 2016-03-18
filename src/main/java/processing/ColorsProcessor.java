@@ -165,6 +165,7 @@ public class ColorsProcessor {
                 }
             }
             return new ImageClusterResult(centers, cluster, counts);
+
         } else {
             return null;
         }
