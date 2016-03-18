@@ -108,9 +108,6 @@ public class ColorDescription implements Comparable<ColorDescription> , Serializ
         return labColorDesctiption;
     }
 
-    public String getLabColorDesctiption() {
-        return labColorDesctiption;
-    }
 
 //    public static class ColorPoint{
 //        double[] colorCode;

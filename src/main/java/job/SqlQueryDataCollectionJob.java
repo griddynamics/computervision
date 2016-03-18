@@ -108,7 +108,7 @@ public class SqlQueryDataCollectionJob {
 
 //            String query = String.format(SELECT_QUERY, category.getCategoryId());
 //
-            String query = String.format(SELECT_QUERY, category.getCategoryId(), 5000);
+            String query = String.format(SELECT_QUERY, category.getCategoryId(), 100);
             DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + query + ")").load();
             selectDataFrame.cache();
 

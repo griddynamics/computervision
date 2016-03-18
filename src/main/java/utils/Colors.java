@@ -391,7 +391,8 @@ public class Colors {
                 new double[]{+83.52, -03.00, +68.00},
                 new double[]{+72.15, +02.00, +74.00},
                 new double[]{+85.09, -03.00, +61.00},
-                new double[]{+68.62, +04.00, +72.00}));
+                new double[]{+68.62, +04.00, +72.00},
+                new double[]{+78,4,52}));
     }
 
 
