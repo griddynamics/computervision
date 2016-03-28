@@ -104,11 +104,11 @@
             <artifactId>ojdbc6</artifactId>
             <version>${oracle.jdbc.version}</version>
         </dependency>
-            <dependency>
-                <groupId>org.apache.spark</groupId>
-                <artifactId>spark-core_2.10</artifactId>
-                <version>${spark.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.apache.spark</groupId>-->
+                <!--<artifactId>spark-core_2.10</artifactId>-->
+                <!--<version>${spark.version}</version>-->
+            <!--</dependency>-->
 
             <dependency>
                 <groupId>org.apache.spark</groupId>
@@ -125,11 +125,11 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <dependencies>
-                <dependency>
-                    <groupId>org.apache.spark</groupId>
-                    <artifactId>spark-core_2.10</artifactId>
-                    <version>${spark.version}</version>
-                </dependency>
+                <!--<dependency>-->
+                    <!--<groupId>org.apache.spark</groupId>-->
+                    <!--<artifactId>spark-core_2.10</artifactId>-->
+                    <!--<version>${spark.version}</version>-->
+                <!--</dependency>-->
 
                 <dependency>
                     <groupId>org.apache.spark</groupId>
@@ -151,21 +151,21 @@
                     <version>${jersey.version}</version>
                 </dependency>
 
-                <dependency>
-                    <groupId>org.apache.spark</groupId>
-                    <artifactId>spark-core_2.10</artifactId>
-                    <version>${spark.version}</version>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.apache.mesos</groupId>
-                            <artifactId>mesos</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.apache.hadoop</groupId>
-                            <artifactId>hadoop-client</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
+                <!--<dependency>-->
+                    <!--<groupId>org.apache.spark</groupId>-->
+                    <!--<artifactId>spark-core_2.10</artifactId>-->
+                    <!--<version>${spark.version}</version>-->
+                    <!--<exclusions>-->
+                        <!--<exclusion>-->
+                            <!--<groupId>org.apache.mesos</groupId>-->
+                            <!--<artifactId>mesos</artifactId>-->
+                        <!--</exclusion>-->
+                        <!--<exclusion>-->
+                            <!--<groupId>org.apache.hadoop</groupId>-->
+                            <!--<artifactId>hadoop-client</artifactId>-->
+                        <!--</exclusion>-->
+                    <!--</exclusions>-->
+                <!--</dependency>-->
 
                 <dependency>
                     <groupId>org.apache.spark</groupId>
