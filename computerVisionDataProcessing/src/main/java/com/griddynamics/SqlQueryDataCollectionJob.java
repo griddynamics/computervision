@@ -21,6 +21,7 @@ import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.SQLContext;
+import org.opencv.core.Core;
 import scala.Tuple2;
 
 import java.io.File;
