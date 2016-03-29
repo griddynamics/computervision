@@ -99,7 +99,7 @@ public class SqlQueryDataCollectionJob {
         options.put("upperBound", String.valueOf(partitions));
         options.put("numPartitions", String.valueOf(partitions));
 
-        final int processedRowPerCategory = 100000;
+        final int processedRowPerCategory = 1000;
 
 
         //createRootFolderAndCategorySubFolders
