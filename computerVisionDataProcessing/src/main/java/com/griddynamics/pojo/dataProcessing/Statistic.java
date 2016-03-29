@@ -5,7 +5,7 @@ package com.griddynamics.pojo.dataProcessing;
  */
 public class Statistic {
     String categoryName;
-    private int categoryId;
+    private String categoryId;
     long totalUpc;
     long suspicious;
     private long amountOfSuspiciousMulti;
@@ -13,7 +13,7 @@ public class Statistic {
     private long amountOfColorNormalIsNotInList;
 
     public Statistic(String categoryName,
-                     int categoryId,
+                     String categoryId,
                      long totalUpc,
                      long suspicious,
                      long amountOfSuspiciousMulti,

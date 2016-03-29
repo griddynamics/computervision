@@ -14,7 +14,7 @@ import java.util.List;
  * Created by npakhomova on 3/28/16.
  */
 
-public class ColorDescription implements Serializable {
+public class ColorDescription implements Serializable , Comparable<ColorDescription> {
 
     // list of arrays of primitive. face palm
     private List<double[]> colors;
@@ -43,10 +43,10 @@ public class ColorDescription implements Serializable {
     }
 
 
-//    @Override
-//    public int compareTo(ColorDescription o) {
-//        return o.getPercent() > this.getPercent() ? 1 : -1;
-//    }
+    @Override
+    public int compareTo(ColorDescription o) {
+        return o.getPercent() > this.getPercent() ? 1 : -1;
+    }
 
     public void merge(ColorDescription colorDescription) {
         assert name.equals(colorDescription.name);

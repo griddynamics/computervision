@@ -73,17 +73,16 @@ public class SqlQueryDataCollectionJob {
             "  join PRODUCT on PRODUCT.PRODUCT_ID = PRODUCT_IMAGE.PRODUCT_ID\n" +
             "  join CATEGORY on CATEGORY.CATEGORY_ID= PRODUCT.CATEGORY_ID\n" +
             "  JOIN PRODUCT_DESTINATION_CHANNEL ON PRODUCT_DESTINATION_CHANNEL.PRODUCT_ID = PRODUCT_COLORWAY.PRODUCT_ID AND PRODUCT_DESTINATION_CHANNEL.PUBLISH_FLAG='Y' AND PRODUCT_DESTINATION_CHANNEL.CURRENT_FLAG='Y'\n"+
-            "WHERE PRODUCT_IMAGE.IMAGE_ID is not null and PRODUCT.STATE_ID = 2 and CATEGORY.CATEGORY_ID= %d and ROWNUM <=100";
+            "WHERE PRODUCT_IMAGE.IMAGE_ID is not null and PRODUCT.STATE_ID = 2 and CATEGORY.CATEGORY_ID in (%s) and ROWNUM <=%d";
 
 
     public static void main(String[] args) throws IOException {
 
-        boolean debugMode = false;
+        boolean debugMode = true;
         final AttributeService starsService = new AttributeService("http://11.120.149.99:8888");
 
-
         SparkConf config = new SparkConf();
-        config.setMaster("local[16]");
+        config.setMaster("local");
         config.setAppName("SqlQueryDataCollectionJob");
         JavaSparkContext sparkContext = new JavaSparkContext(config);
         SQLContext sqlContext = new SQLContext(sparkContext);
@@ -100,8 +99,7 @@ public class SqlQueryDataCollectionJob {
         options.put("upperBound", String.valueOf(partitions));
         options.put("numPartitions", String.valueOf(partitions));
 
-
-//        final int processedRowPerCategory = 1000;
+        final int processedRowPerCategory = 100000;
 
 
         //createRootFolderAndCategorySubFolders
@@ -117,9 +115,7 @@ public class SqlQueryDataCollectionJob {
         for (final Categories category : Categories.values()){
             final String path = ROOT_FOLDER +category.name();
 
-//            String query = String.format(SELECT_QUERY, category.getCategoryId());
-//
-            String query = String.format(SELECT_QUERY,partitions, category.getCategoryId());
+            String query = String.format(SELECT_QUERY,partitions, category.getCategoryList(), processedRowPerCategory);
             DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" +query + ")").load();
             selectDataFrame.cache();
 
@@ -154,7 +150,7 @@ public class SqlQueryDataCollectionJob {
                             .reduceByKey(new Function2<FlatProductImageUpc, FlatProductImageUpc, FlatProductImageUpc>() {
                                 public FlatProductImageUpc call(FlatProductImageUpc v1, FlatProductImageUpc v2) throws Exception {
                                     // we don't need dublicated images.
-                                    // in case if image are the same - color normal nust be the same as well // todo check it?
+                                    // in case if image are the same - color normal must be the same as well // todo check it?
                                     return v1;
 
                                 }
@@ -266,7 +262,7 @@ public class SqlQueryDataCollectionJob {
             }
         }).count();
 
-        return new Statistic(category.name(),category.getCategoryId(),
+        return new Statistic(category.name(),category.getCategoryList(),
                 amountOfUpc,
                 amountOfSuspiciousUpc,
                 amountOfSuspiciousMulti,

@@ -7,12 +7,15 @@
     <groupId>com.imagework</groupId>
     <artifactId>vision</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+
     <modules>
         <module>computerVisionStaticUI</module>
         <module>computerVisionDataProcessing</module>
         <module>computerVisionImageRecognition</module>
     </modules>
-    <packaging>pom</packaging>
+
 
     <properties>
         <junit.vesion>4.12</junit.vesion>
