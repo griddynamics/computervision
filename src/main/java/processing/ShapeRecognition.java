@@ -1,16 +1,18 @@
 package processing;
 
 import org.opencv.core.*;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ShapeRecognition {
 
-    public static Shapes getShape(Mat image) {
-
+    public static Shapes getShape(File imageFile) {
+        Mat image = Imgcodecs.imread(imageFile.getAbsolutePath());
         List<MatOfPoint> contours = getContours(image);
         MatOfPoint contourWithMaxArea = getContourWithMaxArea(contours);
         MatOfPoint2f matOfPoint2fContour = new MatOfPoint2f(contourWithMaxArea.toArray());
@@ -24,15 +26,16 @@ public class ShapeRecognition {
         return shape;
     }
 
-    public static Rational getRatio(Mat image){
-        return getRatio(image, getShape(image));
+    public static Rational getRatio(File imageFile){
+        return getRatio(imageFile, getShape(imageFile));
     }
 
-    public static Rational getRatio(Mat image, Shapes shape) {
+    public static Rational getRatio(File imageFile, Shapes shape) {
         if (!shape.equals(Shapes.RECTANGLE)) {
             throw new IllegalArgumentException(shape.getName() + " doesn't support calculation of ratio");
         }
 
+        Mat image = Imgcodecs.imread(imageFile.getAbsolutePath());
         List<MatOfPoint> contours = getContours(image);
         MatOfPoint contourWithMaxArea = getContourWithMaxArea(contours);
         Rect r = Imgproc.boundingRect(contourWithMaxArea);
