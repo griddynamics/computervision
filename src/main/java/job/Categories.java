@@ -150,7 +150,7 @@ public enum Categories implements Serializable {
 //    //        Quilts_Bedspreads("(22748)"),
 ////        RDPPTestCatHome("(69542)"),
 ////        Rings("(21176)"),
-//    Rugs("(16905)"),
+    Rugs("(16905)", ShapeDetectionStrategy.RUGS),
 //    //        SALE("(26848)"),
 //    Sandals("(17570)"),
 //    Sandals_Flip_Flops("(55640)"),
@@ -216,13 +216,22 @@ public enum Categories implements Serializable {
 
     private String categoryId;
 
-    Categories(String categoryId) {
+    private ShapeDetectionStrategy shapeDetectionStrategy;
 
+    Categories(String categoryId) {
         this.categoryId = categoryId;
     }
 
+    Categories(String categoryId, ShapeDetectionStrategy shapeDetectionStrategy) {
+        this.categoryId = categoryId;
+        this.shapeDetectionStrategy = shapeDetectionStrategy;
+    }
 
     public String getCategoryId() {
         return categoryId;
+    }
+
+    public ShapeDetectionStrategy getShapeDetectionStrategy() {
+        return shapeDetectionStrategy;
     }
 }

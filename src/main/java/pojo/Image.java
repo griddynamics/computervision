@@ -1,5 +1,8 @@
 package pojo;
 
+
+import processing.Shapes;
+
 import java.io.Serializable;
 import java.util.TreeSet;
 
@@ -9,7 +12,9 @@ import java.util.TreeSet;
 public class Image implements Serializable {
     Integer imageId;
     String url;
+    private Shapes shape;
     TreeSet<ColorDescription> computerVisionResult;
+
 
     public Image(Integer imageId, TreeSet<ColorDescription> computerVisionResult, String url) {
         this.imageId = imageId;
@@ -25,6 +30,13 @@ public class Image implements Serializable {
         return computerVisionResult;
     }
 
+    public Shapes getShape() {
+        return shape;
+    }
+
+    public void setShape(Shapes shape) {
+        this.shape = shape;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -46,4 +58,5 @@ public class Image implements Serializable {
         result = 31 * result + (computerVisionResult != null ? computerVisionResult.hashCode() : 0);
         return result;
     }
+
 }

@@ -2,10 +2,12 @@ package job;
 
 import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.sql.Row;
-import pojo.Image;
-import scala.Tuple2;
 import pojo.ColorDescription;
+import pojo.Image;
 import processing.ColorsProcessor;
+import processing.ShapeRecognition;
+import processing.Shapes;
+import scala.Tuple2;
 import utils.DataCollectionJobUtils;
 
 import java.io.File;
@@ -34,8 +36,13 @@ public class ProcessImagesFunction implements PairFunction<Row, Integer, Image> 
         if (picture != null) {
             try {
                 TreeSet<ColorDescription> colorDescriptions = ColorsProcessor.getColorDescriptions(picture);
-//                Imgcodecs.imwrite(picture.getParentFile() + "/procesed_" + segmentationResult.getName(), segmentationResult.getCropCl());
+                //                Imgcodecs.imwrite(picture.getParentFile() + "/procesed_" + segmentationResult.getName(), segmentationResult.getCropCl());
                 Image image = new Image(image_id, colorDescriptions, urlString);
+                ShapeDetectionStrategy shapeDetectionStrategy = category.getShapeDetectionStrategy();
+                if (shapeDetectionStrategy != null && shapeDetectionStrategy.equals(ShapeDetectionStrategy.RUGS)) {
+                    Shapes shape =  ShapeRecognition.getShape(picture);
+                    image.setShape(shape);
+                }
                 return new Tuple2(image_id, image);
             } catch (Exception ex) {
                 System.out.println("unable to process " + urlString);

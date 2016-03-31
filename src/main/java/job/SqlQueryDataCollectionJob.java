@@ -16,6 +16,7 @@ import pojo.FlatProductImageUpc;
 import pojo.Image;
 import pojo.Product;
 import pojo.Statistic;
+import processing.Shapes;
 import scala.Tuple2;
 import pojo.ColorDescription;
 import utils.Colors;
@@ -153,6 +154,8 @@ public class SqlQueryDataCollectionJob {
                 public FlatProductImageUpc call(Tuple2<Integer, Tuple2<FlatProductImageUpc, Image>> v1) throws Exception {
                     FlatProductImageUpc product = v1._2()._1();
                     Image image = v1._2()._2();
+                    product.setShape(image.getShape());
+                    product.setIdenticalShapes(isIdenticalShapes(product.getOriginalShape(), image.getShape()));
                     product.setComputerVisionResult(image.getComputerVisionResult());
                     product.setComputerVisionRecognition(evaluateRecognitionResult(product.getColorNormal(), image.getComputerVisionResult()));
                     product.setImageUrl(image.getUrl());
@@ -191,7 +194,6 @@ public class SqlQueryDataCollectionJob {
             List<Product> result = combinedProducts.collect();
 
 
-
             try {
                 //write converted json data to a file named "result.json"
                 writeToJson(path + "/result.json", gson.toJson(result));
@@ -203,9 +205,7 @@ public class SqlQueryDataCollectionJob {
                 e.printStackTrace();
             }
 
-
         }
-
 
 
     }
@@ -334,4 +334,8 @@ public class SqlQueryDataCollectionJob {
 //        return -1;
     }
 
+    private static boolean isIdenticalShapes(String originalShape, Shapes shape) {
+        // comparison process
+        return false;
+    }
 }

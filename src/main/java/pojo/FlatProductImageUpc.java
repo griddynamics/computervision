@@ -1,5 +1,7 @@
 package pojo;
 
+import processing.Shapes;
+
 import java.io.Serializable;
 import java.util.TreeSet;
 
@@ -21,6 +23,9 @@ public class FlatProductImageUpc implements Serializable {
     TreeSet<ColorDescription> computerVisionResult = new TreeSet<>();
     Integer computerVisionRecognition;
     private String description;
+    private String originalShape;
+    private Shapes shape;
+    private boolean identicalShapes;
 
     //category rows
     Integer categoryId;
@@ -129,6 +134,31 @@ public class FlatProductImageUpc implements Serializable {
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
+
+    public Shapes getShape() {
+        return shape;
+    }
+
+    public void setShape(Shapes shape) {
+        this.shape = shape;
+    }
+
+    public String getOriginalShape() {
+        return originalShape;
+    }
+
+    public void setOriginalShape(String originalShape) {
+        this.originalShape = originalShape;
+    }
+
+    public boolean isIdenticalShapes() {
+        return identicalShapes;
+    }
+
+    public void setIdenticalShapes(boolean identicalShapes) {
+        this.identicalShapes = identicalShapes;
+    }
+
 
     @Override
     public boolean equals(Object o) {
