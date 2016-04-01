@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html dir="ltr" lang="ru">
 <head>
@@ -16,13 +15,13 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 	<!-- Magnific Popup core CSS file -->
-	<link rel="stylesheet" href="magnific-popup_1/magnific-popup.css">
+	<link rel="stylesheet" href="magnific-popup/magnific-popup.css">
 
 	<!-- jQuery 1.7.2+ or Zepto.js 1.0+ -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 	<!-- Magnific Popup core JS file -->
-	<script src="magnific-popup_1/jquery.magnific-popup.js"></script>
+	<script src="magnific-popup/jquery.magnific-popup.js"></script>
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
 <body>
@@ -42,7 +41,7 @@
 					<div class="product-filter" style="margin-bottom: 20px; margin-right: -80px;">
 						<div class="sort">
 							<b class="sortb">Filter by color check:</b>
-							<select id="sortSelect" onchange="ownsort($(this))">
+							<select id="sortSelect">
 								<option value="none">None</option>
 								<option value="0">Correct color</option>
 								<option value="1">Suspicious (Multi)</option>
@@ -58,9 +57,11 @@
 				</div>
 			</div>
 		</div>
-		<div id="spinner" class="spinner" style="display:none;">
-			<img id="img-spinner" src="spinner.gif" alt="Loading"/>
-		</div>
+		<!--<div id="spinner" class="spinner" style="display:none;">-->
+			<!--<img id="img-spinner" src="spinner.gif" alt="Loading"/>-->
+		<!--</div>-->
+	</div>
+	</div>
 </body>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
@@ -149,13 +150,32 @@
 		}
 	});
 
+	var products;
+	var productsForRepresentation;
+	var page = 1;
+	var limit = 50;
+
 	function checkInputAndShowCategoryProducts(categoryName, filterItem) {
 		if (categoryName) {
-			$('#spinner').show();
+//			$('#spinner').show();
 			$.getJSON('rootFolder/' + categoryName + '/result.json', function(resultJson) {
 				document.title = categoryName;
-				showProductsAndUpcsFromCategory(resultJson, filterItem);
-				$('#spinner').hide();
+				if (!filterItem || filterItem !== 'none') {
+					products = $.grep(resultJson, function(i, n) {
+						var productFilterCheck = false;
+						i.upcSet = $.grep(i.upcSet, function(inI, inN) {
+							if (inI.computerVisionRecognition == filterItem) {
+								productFilterCheck = true;
+								return true;
+							}
+						});
+						if (productFilterCheck) return true;
+					});
+				} else {
+					products = resultJson;
+				}
+				showProductsAndUpcsFromCategory(filterItem);
+//				$('#spinner').hide();
 			});
 		} else {
 			alert('Wrong category id');
@@ -192,9 +212,40 @@
 		}
 	}
 
-	function showProductsAndUpcsFromCategory(products, filterItem) {
+	function changePage(ths) {
+    	page = $(ths).attr('value');
+    	var fromCountProduct = (parseInt($(ths).attr('value')) - 1)*limit;
+    	var first = fromCountProduct < 0 ? 0 : fromCountProduct;
+    	productsForRepresentation = products.slice(parseInt(first), parseInt(limit)+parseInt(first));
+    	showProductsAndUpcsFromCategory('none', productsForRepresentation);
+    	window.scrollTo(0, 0);
+	}
+
+	function getPaginationDiv(length) {
+		var paginationDiv = '<div class="pagination">';
+		paginationDiv += '<div class="links">';
+
+		var pagesAmount = Math.ceil(length / limit);
+		for (var i = 1; i <= pagesAmount; i++) {
+			if (i == page) {
+				paginationDiv += '<b>'+page+'</b>';
+				continue;
+			}
+			paginationDiv += '<a value="'+i+'" onclick="changePage(this)">'+i+'</a>';
+		}
+		paginationDiv += '</div>';
+		paginationDiv += '<div class="results">Showing '+Math.min(((page-1)*limit + 1), length)+' to '+Math.min(limit*page, length+page*limit, length)+' from '+length+' (pages: '+pagesAmount+')</div>';
+		paginationDiv += '</div>';
+		return paginationDiv;
+	}
+
+	function showProductsAndUpcsFromCategory(filterItem, inProducts) {
 		$('.product').remove();
-		$(products).each(function(index, product) {
+		$('.pagination').remove();
+		$('.product-list').first().after(getPaginationDiv(products.length));
+		var start = (parseInt(page) - 1) * limit;
+		productsForRepresentation = inProducts ? inProducts : products.slice(start, start + limit);
+		$(productsForRepresentation).each(function(index, product) {
 			var productDiv = '<div class="product-list product"><a href="https://stars.macys.com/stella-core/#legacyUI/%2FUI%2Fstella%2Fwebproduct%2Fview.html%3Fid%3D'+product.productID+'%26subtemplate%3DWebProductDisplayOverview%23product%2Fview%2F'+product.productID+'"><h3 style="margin-left: 20px;">Product '+product.productID+'</h3></a><p style="margin-left: 20px;">Description: '+product.productDescription+'</p></div>';
 			$('.product-list').first().append(productDiv);
 			var count = 0;
@@ -226,7 +277,7 @@
 				var linkToImage2 = 'https://stars.macys.com/preview'+reversedLink + 'final/'+imageIdInt+'-3000x3000.jpg';
 
 				upcDiv += '<div class="image">';
-				upcDiv += '<a class="image-popup-vertical-fit" href="'+linkToImage+'">';
+				upcDiv += '<a class="image-popup-vertical-fit" href="'+linkToImage2+'">';
 				upcDiv += '<img src="'+ linkToImage +'"></a>';
 				upcDiv += '</a>';
 				upcDiv += '</div>';
@@ -240,7 +291,7 @@
 						+'\n<b>displayColorName:</b> '+value.displayColorName
 						+'\n<b>computerVisionResult:</b> ';
 				$.each(value.computerVisionResult, function(index, colorDescription) {
-					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'% '+'\n<b>distanceFromColorNormal:</b>'+colorDescription.distanceFromColorNormal
+					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'% <b>LAB</b>: '+colorDescription.labColorDesctiption+' \n<b> distanceFromColorNormal:</b>'+colorDescription.distanceFromColorNormal
 				});
 				upcDiv +='</div>';
 				upcDiv += '</div>';
