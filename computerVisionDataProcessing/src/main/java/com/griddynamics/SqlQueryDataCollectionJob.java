@@ -78,11 +78,11 @@ public class SqlQueryDataCollectionJob {
 
     public static void main(String[] args) throws IOException {
 
-        boolean debugMode = true;
+        boolean debugMode = false;
         final AttributeService starsService = new AttributeService("http://11.120.149.99:8888");
 
         SparkConf config = new SparkConf();
-        config.setMaster("local");
+        config.setMaster("local[16]");
         config.setAppName("SqlQueryDataCollectionJob");
         JavaSparkContext sparkContext = new JavaSparkContext(config);
         SQLContext sqlContext = new SQLContext(sparkContext);
@@ -99,7 +99,7 @@ public class SqlQueryDataCollectionJob {
         options.put("upperBound", String.valueOf(partitions));
         options.put("numPartitions", String.valueOf(partitions));
 
-        final int processedRowPerCategory = 1000;
+        final int processedRowPerCategory = 10000;
 
 
         //createRootFolderAndCategorySubFolders
