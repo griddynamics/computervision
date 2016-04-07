@@ -135,7 +135,8 @@ public class Colors {
                 new double[]{+45.88, +14.00, -46.00},
                 new double[]{+47.84, +12.00, -45.00},
                 new double[]{+49.41, +11.00, -45.00},
-                new double[]{+43.92, +15.00, -46.00}));
+                new double[]{+43.92, +15.00, -46.00},
+                new double[]{23.0, 36.0, -58.0}));
 
         COLORS_PALETTE.put(GREEN, Arrays.asList(
                 new double[]{+47.00, -22.50, +04.78},
@@ -170,14 +171,17 @@ public class Colors {
                 new double[]{+63.92, -57.00, +41.00},
                 new double[]{+65.09, -57.00, +40.00},
                 new double[]{+59.60, -55.00, +41.00},
-                new double[]{+65.88, -57.00, +40.00}));
+                new double[]{+65.88, -57.00, +40.00},
+                new double[]{ 73.0, -43.0, 0.0 },
+                new double[]{72.0, -46.0, 3.0}));
 
         COLORS_PALETTE.put(SILVER, Arrays.asList(
                 new double[]{+77.64, +00.00, +00.00},
                 new double[]{+93.33, +00.00, +00.00},
                 new double[]{+85.49, +00.00, +00.00},
                 new double[]{+74.90, +00.00, +00.00},
-                new double[]{+71.37, +00.00, +00.00}
+                new double[]{+71.37, +00.00, +00.00},
+                new double[]{42.0, 0.0, -2.0}
 
 //                new double[]{+57.00, -03.36, -04.97},
 //                new double[]{+62.00, -02.42, -04.37},
@@ -307,7 +311,8 @@ public class Colors {
                 new double[]{+73.72, +39.00, -13.00},
                 new double[]{+76.86, +36.00, -12.00},
                 new double[]{+75.29, +37.00, -12.00},
-                new double[]{+72.54, +40.00, -12.00}));
+                new double[]{+72.54, +40.00, -12.00},
+                new double[]{51.0, 70.0, 12.0 }));
 
 
         COLORS_PALETTE.put(PURPLE, Arrays.asList(
@@ -337,7 +342,9 @@ public class Colors {
                 new double[]{+58.82, +50.00, +68.00},
                 new double[]{+61.17, +45.00, +69.00},
                 new double[]{+63.0, +35.0, +20.0},
-                new double[]{79.0, 14.0, 65.0}));
+                new double[]{79.0, 14.0, 65.0},
+                new double[]{29.0, 26.0, 27.0 },
+                new double[]{41.0, 41.0, 32.0}));
 
 
 
@@ -348,7 +355,9 @@ public class Colors {
                 new double[]{+72.15, +02.00, +74.00},
                 new double[]{+85.09, -03.00, +61.00},
                 new double[]{+68.62, +04.00, +72.00},
-                new double[]{+78, 4, 52}));
+                new double[]{+78, 4, 52},
+                new double[]{ 59.0, 9.0, 10.0},
+                new double[]{65.0, 26.0, 52.0}));
     }
 
 }

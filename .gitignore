@@ -16,6 +16,7 @@
 *.ear
 target
 
+computerVisionStaticUI_shapes
 rootFolder_3_1000
 rootFolder_5000
 rootFolder*

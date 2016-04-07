@@ -100,7 +100,7 @@ public class SqlQueryDataCollectionJob {
         options.put("upperBound", String.valueOf(partitions));
         options.put("numPartitions", String.valueOf(partitions));
 
-        final int processedRowPerCategory = 1000;
+        final int processedRowPerCategory = 5000;
 
 
         //createRootFolderAndCategorySubFolders
@@ -156,6 +156,13 @@ public class SqlQueryDataCollectionJob {
 
                                 }
                             });
+
+//            if (category.equals(Categories.RugsCommon)){
+//                //get shape attribute
+//                DataFrame rugsShape = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" +query + ")").load();
+//
+//
+//            }
 
             //process color to upc and set status
             JavaRDD<FlatProductImageUpc> productJavaRDD = denormalizedPojo.join(imagesRecognitionResult).map(new Function<Tuple2<Integer, Tuple2<FlatProductImageUpc, Image>>, FlatProductImageUpc>() {
