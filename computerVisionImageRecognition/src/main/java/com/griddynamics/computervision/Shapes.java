@@ -1,4 +1,4 @@
-package processing;
+package com.griddynamics.computervision;
 
 public enum Shapes {
 

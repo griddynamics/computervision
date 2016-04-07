@@ -32,6 +32,8 @@ public class Product implements Serializable {
         upc.setDescription(flatProduct.getDescription());
         upc.setImageUrl(flatProduct.getImageUrl());
         upc.setDisplayColorName(flatProduct.getDisplayColorName());
+        upc.setShape(flatProduct.getShape());
+        upc.setOriginalShape(flatProduct.getOriginalShape());
 
         upcSet.add(upc);
 

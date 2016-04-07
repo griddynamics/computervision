@@ -1,4 +1,4 @@
-package processing;
+package com.griddynamics.computervision;
 
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;

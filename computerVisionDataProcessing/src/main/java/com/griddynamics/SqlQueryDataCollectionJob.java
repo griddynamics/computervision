@@ -1,6 +1,7 @@
 package com.griddynamics;
 
 import com.google.gson.Gson;
+import com.griddynamics.computervision.Shapes;
 import com.griddynamics.functions.ProcessImagesFunction;
 import com.griddynamics.functions.ProcessRowToFlatProductUpcItemFunction;
 import com.griddynamics.pojo.dataProcessing.FlatProductImageUpc;
@@ -99,7 +100,7 @@ public class SqlQueryDataCollectionJob {
         options.put("upperBound", String.valueOf(partitions));
         options.put("numPartitions", String.valueOf(partitions));
 
-        final int processedRowPerCategory = 10000;
+        final int processedRowPerCategory = 1000;
 
 
         //createRootFolderAndCategorySubFolders
@@ -115,7 +116,7 @@ public class SqlQueryDataCollectionJob {
         for (final Categories category : Categories.values()){
             final String path = ROOT_FOLDER +category.name();
 
-            String query = String.format(SELECT_QUERY,partitions, category.getCategoryList(), processedRowPerCategory);
+            String query = String.format(SELECT_QUERY,partitions, category.getCategoriesList(), processedRowPerCategory);
             DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" +query + ")").load();
             selectDataFrame.cache();
 
@@ -161,6 +162,8 @@ public class SqlQueryDataCollectionJob {
                 public FlatProductImageUpc call(Tuple2<Integer, Tuple2<FlatProductImageUpc, Image>> v1) throws Exception {
                     FlatProductImageUpc product = v1._2()._1();
                     Image image = v1._2()._2();
+                    product.setShape(image.getShape());
+                    product.setIdenticalShapes(isIdenticalShapes(product.getOriginalShape(), image.getShape()));
                     product.setComputerVisionResult(image.getComputerVisionResult());
                     product.setComputerVisionRecognition(VisualRecognitionUtil.evaluateRecognitionResult(product.getColorNormal(), image.getComputerVisionResult()));
                     product.setImageUrl(image.getUrl());
@@ -233,6 +236,11 @@ public class SqlQueryDataCollectionJob {
         writer.close();
     }
 
+    private static boolean isIdenticalShapes(String originalShape, Shapes shape) {
+        // comparison process
+        return false;
+    }
+
     private static Statistic calculateStatistic(Categories category, JavaRDD<FlatProductImageUpc> productJavaRDD) {
         // calculate some statistic
         long amountOfUpc = productJavaRDD.count();
@@ -262,7 +270,7 @@ public class SqlQueryDataCollectionJob {
             }
         }).count();
 
-        return new Statistic(category.name(),category.getCategoryList(),
+        return new Statistic(category.name(),category.getCategoriesList(),
                 amountOfUpc,
                 amountOfSuspiciousUpc,
                 amountOfSuspiciousMulti,

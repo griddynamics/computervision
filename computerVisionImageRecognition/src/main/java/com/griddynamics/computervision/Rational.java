@@ -1,6 +1,6 @@
-package processing;
+package com.griddynamics.computervision;
 
-class Rational implements Comparable<Rational> {
+public class Rational implements Comparable<Rational> {
     private static Rational zero = new Rational(0, 1);
 
     private int num;   // the numerator

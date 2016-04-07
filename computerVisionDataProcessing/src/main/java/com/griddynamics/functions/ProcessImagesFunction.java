@@ -3,7 +3,10 @@ package com.griddynamics.functions;
 import com.griddynamics.SqlQueryDataCollectionJob;
 import com.griddynamics.computervision.ColorDescription;
 import com.griddynamics.computervision.ColorsRecognitionUtil;
+import com.griddynamics.computervision.ShapeRecognition;
+import com.griddynamics.computervision.Shapes;
 import com.griddynamics.pojo.starsDomain.Categories;
+import com.griddynamics.pojo.starsDomain.ShapeDetectionStrategy;
 import com.griddynamics.utils.DataCollectionJobUtils;
 import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.sql.Row;
@@ -36,6 +39,12 @@ public class ProcessImagesFunction implements PairFunction<Row, Integer, Image> 
             try {
                 TreeSet<ColorDescription> colorDescriptions = ColorsRecognitionUtil.getColorDescriptions(picture);
                 Image image = new Image(image_id, colorDescriptions, urlString);
+                ShapeDetectionStrategy shapeDetectionStrategy = category.getShapeDetectionStrategy();
+                if (shapeDetectionStrategy != null && shapeDetectionStrategy.equals(ShapeDetectionStrategy.RUGS)) {
+                    Shapes shape =  ShapeRecognition.getShape(picture);
+                    image.setShape(shape);
+                }
+
                 return new Tuple2(image_id, image);
             } catch (Exception ex) {
                 System.out.println("unable to process " + urlString);

@@ -1,6 +1,7 @@
 package com.griddynamics.pojo.dataProcessing;
 
 import com.griddynamics.computervision.ColorDescription;
+import com.griddynamics.computervision.Shapes;
 
 import java.io.Serializable;
 import java.util.TreeSet;
@@ -19,7 +20,9 @@ public class Upc implements Serializable {
     String imageUrl;
     TreeSet<ColorDescription> computerVisionResult = new TreeSet<>();
     Integer computerVisionRecognition;
-    private String description;
+    String description;
+    Shapes shape;
+    String originalShape;
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
@@ -88,5 +91,13 @@ public class Upc implements Serializable {
         result = 31 * result + (computerVisionResult != null ? computerVisionResult.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
+    }
+
+    public void setShape(Shapes shape) {
+        this.shape = shape;
+    }
+
+    public void setOriginalShape(String originalShape) {
+        this.originalShape = originalShape;
     }
 }
