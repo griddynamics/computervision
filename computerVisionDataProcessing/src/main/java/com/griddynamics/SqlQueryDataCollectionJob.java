@@ -11,6 +11,7 @@ import com.griddynamics.pojo.dataProcessing.Statistic;
 import com.griddynamics.pojo.starsDomain.Categories;
 import com.griddynamics.services.AttributeService;
 import com.griddynamics.utils.DataCollectionJobUtils;
+import com.griddynamics.utils.EnumByNameComparator;
 import com.griddynamics.utils.VisualRecognitionUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.spark.SparkConf;
@@ -28,6 +29,7 @@ import scala.Tuple2;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -100,12 +102,15 @@ public class SqlQueryDataCollectionJob {
         options.put("upperBound", String.valueOf(partitions));
         options.put("numPartitions", String.valueOf(partitions));
 
-        final int processedRowPerCategory = 5000;
+        final int processedRowPerCategory = 100;
 
 
         //createRootFolderAndCategorySubFolders
         createRootFolderAndCategorySubFolders();
-        writeToJson(ROOT_FOLDER+"categories.json", gson.toJson(Categories.values()));
+        Categories[] values = Categories.values();
+        //todo aaa - another way to list categories
+        Arrays.sort(values, EnumByNameComparator.INSTANCE);
+        writeToJson(ROOT_FOLDER + "categories.json", gson.toJson(values));
 
 
 //        //ALARM!!! REMOVE FOLDER WITH PREVISOUR RESULT
