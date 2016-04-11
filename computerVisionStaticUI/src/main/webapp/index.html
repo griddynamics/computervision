@@ -32,6 +32,7 @@
 			<div class="category-details">
 				<div class="category-details-top">
 					<div class="category-h1 input-group" style="margin-top: 20px; margin-left: 20px; width: 103.6%;">
+						<div><h3 style="color:red;">Visual attribution Prototype</h3></div>
 						<div class="input-group">
 							<span class="input-group-addon" id="basic-addon3">Category Name:</span>
 							<select id="selected-category-name" class="form-control">
@@ -59,10 +60,10 @@
 			</div>
 		</div>
 		<!--<div id="spinner" class="spinner" style="display:none;">-->
-			<!--<img id="img-spinner" src="spinner.gif" alt="Loading"/>-->
+		<!--<img id="img-spinner" src="spinner.gif" alt="Loading"/>-->
 		<!--</div>-->
 	</div>
-	</div>
+</div>
 </body>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
@@ -96,10 +97,10 @@
 
 			data.addRow(['Total Amount', statisticJson.totalUpc, '#3899E2']);
 			data.addRow(['Suspicious', statisticJson.suspicious, '#990000']);
-			data.addRow(['Normal', statisticJson.totalUpc - statisticJson.suspicious, '#009933']);
-			data.addRow(['Suspicious Multi', statisticJson.amountOfSuspiciousMulti, '#E1E100']);
-			data.addRow(['Color_Normal Is No Dominant', statisticJson.amountOfColorNormalIsNoDominant, '#FF9933']);
-			data.addRow(['Color_Normal Is Not In List', statisticJson.amountOfColorNormalIsNotInList, '#990000']);
+			data.addRow(['Correct color', statisticJson.totalUpc - statisticJson.suspicious, '#009933']);
+			data.addRow(['Suspicious Multicolor', statisticJson.amountOfSuspiciousMulti, '#E1E100']);
+			data.addRow(['Wrong dominant color', statisticJson.amountOfColorNormalIsNoDominant, '#FF9933']);
+			data.addRow(['Dominant color missing', statisticJson.amountOfColorNormalIsNotInList, '#990000']);
 
 			var chartWrapper = new google.visualization.ChartWrapper({
 				chartType: 'ColumnChart',
@@ -214,12 +215,12 @@
 	}
 
 	function changePage(ths) {
-    	page = $(ths).attr('value');
-    	var fromCountProduct = (parseInt($(ths).attr('value')) - 1)*limit;
-    	var first = fromCountProduct < 0 ? 0 : fromCountProduct;
-    	productsForRepresentation = products.slice(parseInt(first), parseInt(limit)+parseInt(first));
-    	showProductsAndUpcsFromCategory('none', productsForRepresentation);
-    	window.scrollTo(0, 0);
+		page = $(ths).attr('value');
+		var fromCountProduct = (parseInt($(ths).attr('value')) - 1)*limit;
+		var first = fromCountProduct < 0 ? 0 : fromCountProduct;
+		productsForRepresentation = products.slice(parseInt(first), parseInt(limit)+parseInt(first));
+		showProductsAndUpcsFromCategory('none', productsForRepresentation);
+		window.scrollTo(0, 0);
 	}
 
 	function getPaginationDiv(length) {
@@ -247,7 +248,7 @@
 		var start = (parseInt(page) - 1) * limit;
 		productsForRepresentation = inProducts ? inProducts : products.slice(start, start + limit);
 		$(productsForRepresentation).each(function(index, product) {
-			var productDiv = '<div class="product-list product"><a href="https://stars.macys.com/stella-core/#legacyUI/%2FUI%2Fstella%2Fwebproduct%2Fview.html%3Fid%3D'+product.productID+'%26subtemplate%3DWebProductDisplayOverview%23product%2Fview%2F'+product.productID+'"><h3 style="margin-left: 20px;">Product '+product.productID+'</h3></a><p style="margin-left: 20px;">Description: '+product.productDescription+'</p></div>';
+			var productDiv = '<div class="product-list product"><a href="http://stella.federated.fds/UI/stella/webproduct/view-single.html?id'+product.productID+'"><h3 style="margin-left: 20px;">Product '+product.productID+'</h3></a><p style="margin-left: 20px;">Description: '+product.productDescription+'</p></div>';
 			$('.product-list').first().append(productDiv);
 			var count = 0;
 			$(product.upcSet).each(function(index, value) {
@@ -287,14 +288,13 @@
 				upcDiv += '<div class="name"><b>UPC_ID: </b>'+value.upcId+'</div>';
 				upcDiv += '<div class="description" style="white-space: pre; height: 100%;">'
 						+value.description
-						+'\n<b>colrNormalId:</b> '+value.colrNormalId
+						+'\n<b>colorNormalId:</b> '+value.colrNormalId
 						+'\n<b>colorNormal:</b> '+value.colorNormal
 						+'\n<b>displayColorName:</b> '+value.displayColorName
-						+'\n<b>shape:</b> '+value.displayColorName
 
 						+'\n<b>computerVisionResult:</b> ';
 				$.each(value.computerVisionResult, function(index, colorDescription) {
-					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'% <b>LAB</b>: '+colorDescription.labColorDesctiption+' \n<b> distanceFromColorNormal:</b>'+colorDescription.distanceFromColorNormal
+					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'%'
 				});
 				upcDiv +='</div>';
 				upcDiv += '</div>';
