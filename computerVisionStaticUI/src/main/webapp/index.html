@@ -46,9 +46,9 @@
 							<select id="sortSelect">
 								<option value="none">None</option>
 								<option value="0">Correct color</option>
-								<option value="1">Suspicious (Multi)</option>
-								<option value="2">Wrong dominant color</option>
-								<option value="3">Dominant color missing</option>
+								<option value="1">Suspicious MultiColor</option>
+								<option value="2">Suspicious color normalr</option>
+								<option value="3">Wrong color normal</option>
 							</select>
 						</div>
 					</div>
@@ -99,8 +99,8 @@
 			data.addRow(['Suspicious', statisticJson.suspicious, '#990000']);
 			data.addRow(['Correct color', statisticJson.totalUpc - statisticJson.suspicious, '#009933']);
 			data.addRow(['Suspicious Multicolor', statisticJson.amountOfSuspiciousMulti, '#E1E100']);
-			data.addRow(['Wrong dominant color', statisticJson.amountOfColorNormalIsNoDominant, '#FF9933']);
-			data.addRow(['Dominant color missing', statisticJson.amountOfColorNormalIsNotInList, '#990000']);
+			data.addRow(['Suspicious color normal', statisticJson.amountOfColorNormalIsNoDominant, '#FF9933']);
+			data.addRow(['Wrong color normal', statisticJson.amountOfColorNormalIsNotInList, '#990000']);
 
 			var chartWrapper = new google.visualization.ChartWrapper({
 				chartType: 'ColumnChart',
