@@ -281,9 +281,8 @@
 				upcDiv += '<div class="name"><b>UPC_ID: </b>'+value.upcId+'</div>';
 				upcDiv += '<div class="description" style="white-space: pre; height: 100%;">'
 						+value.description
-						+'\n<b>colorNormalId:</b> '+value.colrNormalId
-						+'\n<b>colorNormal:</b> '+value.colorNormal
-						+'\n<b>displayColorName:</b> '+value.displayColorName
+						+'\n'
+						+'\n<p style="font-size:130%;">colorNormal: '+value.colorNormal+'</p>'
 
 						+'\n<b>computerVisionResult:</b> ';
 				$.each(value.computerVisionResult, function(index, colorDescription) {
