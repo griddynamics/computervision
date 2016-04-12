@@ -5,7 +5,8 @@ import com.griddynamics.computervision.ColorDescription;
 import com.griddynamics.computervision.ColorsRecognitionUtil;
 import com.griddynamics.computervision.ShapeRecognition;
 import com.griddynamics.computervision.Shapes;
-import com.griddynamics.pojo.starsDomain.Categories;
+import com.griddynamics.pojo.starsDomain.CategoryEnum;
+import com.griddynamics.pojo.starsDomain.ICategory;
 import com.griddynamics.pojo.starsDomain.ShapeDetectionStrategy;
 import com.griddynamics.utils.DataCollectionJobUtils;
 import org.apache.spark.api.java.function.PairFunction;
@@ -23,9 +24,9 @@ import java.util.TreeSet;
  */
 public class ProcessImagesFunction implements PairFunction<Row, Integer, Image> {
     private final String path;
-    private final Categories category;
+    private final ICategory category;
 
-    public ProcessImagesFunction(String path, Categories category) {
+    public ProcessImagesFunction(String path, ICategory category) {
         this.path = path;
         this.category = category;
     }

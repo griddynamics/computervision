@@ -1,5 +1,7 @@
 package com.griddynamics;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterators;
 import com.google.gson.Gson;
 import com.griddynamics.computervision.Shapes;
 import com.griddynamics.functions.ProcessImagesFunction;
@@ -8,7 +10,9 @@ import com.griddynamics.pojo.dataProcessing.FlatProductImageUpc;
 import com.griddynamics.pojo.dataProcessing.Image;
 import com.griddynamics.pojo.dataProcessing.Product;
 import com.griddynamics.pojo.dataProcessing.Statistic;
-import com.griddynamics.pojo.starsDomain.Categories;
+import com.griddynamics.pojo.starsDomain.Category;
+import com.griddynamics.pojo.starsDomain.CategoryEnum;
+import com.griddynamics.pojo.starsDomain.ICategory;
 import com.griddynamics.services.AttributeService;
 import com.griddynamics.utils.DataCollectionJobUtils;
 import com.griddynamics.utils.EnumByNameComparator;
@@ -22,14 +26,18 @@ import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.sql.DataFrame;
+import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
 import org.opencv.core.Core;
 import scala.Tuple2;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +62,18 @@ public class SqlQueryDataCollectionJob {
             ex.printStackTrace();
         }
     }
+
+    public static final String SELECT_CATEGORY_QUERY= "select  " +
+            "CATEGORY.CATEGORY_NAME, " +
+            "CATEGORY.CATEGORY_ID, " +
+            "mod(CATEGORY.CATEGORY_ID, %d) AS ID_MOD " +
+            "from CATEGORY " +
+            "JOIN PRODUCT on PRODUCT.CATEGORY_ID = CATEGORY.CATEGORY_ID and  PRODUCT.STATE_ID = 2\n" +
+            "JOIN PRODUCT_DESTINATION_CHANNEL ON PRODUCT_DESTINATION_CHANNEL.PRODUCT_ID = PRODUCT.PRODUCT_ID\n" +
+            "                                      AND PRODUCT_DESTINATION_CHANNEL.PUBLISH_FLAG='Y' AND PRODUCT_DESTINATION_CHANNEL.CURRENT_FLAG='Y'\n" +
+            "\n" +
+            "group by CATEGORY.CATEGORY_ID, CATEGORY.CATEGORY_NAME\n" +
+            "order by count (PRODUCT.PRODUCT_ID) desc\n";
 
     public static final String SELECT_QUERY= "select distinct\n" +
             "  --   *\n" +
@@ -95,7 +115,8 @@ public class SqlQueryDataCollectionJob {
         options.put("driver", "oracle.jdbc.OracleDriver");
         options.put("user", "macys");
         options.put("password", "macys");
-        options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01");
+        options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01"); //mcom
+//        jdbc:oracle:thin:@dml1-scan:1521/bpmstg01 //bcom
 
         options.put("partitionColumn", "ID_MOD");
         options.put("lowerBound", "1");
@@ -107,21 +128,36 @@ public class SqlQueryDataCollectionJob {
 
         //createRootFolderAndCategorySubFolders
         createRootFolderAndCategorySubFolders();
-        Categories[] values = Categories.values();
+//        CategoryEnum[] values = CategoryEnum.values();
         //todo aaa - another way to list categories
-        Arrays.sort(values, EnumByNameComparator.INSTANCE);
-        writeToJson(ROOT_FOLDER + "categories.json", gson.toJson(values));
+//        Arrays.sort(values, EnumByNameComparator.INSTANCE);
+//        writeToJson(ROOT_FOLDER + "categories.json", gson.toJson(values));
 
+
+        // get all categories:
+        String categoryQuery = String.format(SELECT_CATEGORY_QUERY, partitions);
+        DataFrame categories = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + categoryQuery + ")").load();
+        categories.show(10);
+        Collection<Category> categoriesCollection = categories.toJavaRDD().map(new Function<Row, Category>() {
+            @Override
+            public Category call(Row row) throws Exception {
+
+                return new Category(row.<String>getAs("CATEGORY_NAME"), row.<BigDecimal>getAs("CATEGORY_ID").intValue());
+            }
+        }).collect();
+
+        System.out.println("Going to process "+ categoriesCollection.size()+ " categories");
 
 //        //ALARM!!! REMOVE FOLDER WITH PREVISOUR RESULT
-        for (final Categories category : Categories.values()) {
-            DataCollectionJobUtils.checkFolderExistance(ROOT_FOLDER + category.name());
-        }
+//        for (final ICategory category : categoriesCollection) { // CategoryEnum.values()
+//            DataCollectionJobUtils.checkFolderExistance(ROOT_FOLDER + category.getCategoryName());
+//        }
 
-        for (final Categories category : Categories.values()){
-            final String path = ROOT_FOLDER +category.name();
+        for (final ICategory category : categoriesCollection){
+            final String path = ROOT_FOLDER +category.getCategoryName();
+            DataCollectionJobUtils.checkFolderExistance(path);
 
-            String query = String.format(SELECT_QUERY,partitions, category.getCategoriesList(), processedRowPerCategory);
+            String query = String.format(SELECT_QUERY,partitions, category.getCategoriesJoinedString(), processedRowPerCategory);
             DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" +query + ")").load();
             selectDataFrame.cache();
 
@@ -227,6 +263,14 @@ public class SqlQueryDataCollectionJob {
 
         }
 
+                writeToJson(ROOT_FOLDER + "categories.json", gson.toJson(Collections2.transform(categoriesCollection, new com.google.common.base.Function<Category, String>() {
+                    @Nullable
+                    @Override
+                    public String apply(Category input) {
+                        return input.getCategoryName();
+                    }
+                })));
+
 
 
     }
@@ -253,7 +297,7 @@ public class SqlQueryDataCollectionJob {
         return false;
     }
 
-    private static Statistic calculateStatistic(Categories category, JavaRDD<FlatProductImageUpc> productJavaRDD) {
+    private static Statistic calculateStatistic(ICategory category, JavaRDD<FlatProductImageUpc> productJavaRDD) {
         // calculate some statistic
         long amountOfUpc = productJavaRDD.count();
 
@@ -282,7 +326,7 @@ public class SqlQueryDataCollectionJob {
             }
         }).count();
 
-        return new Statistic(category.name(),category.getCategoriesList(),
+        return new Statistic(category.getCategoryName(),category.getCategoriesJoinedString(),
                 amountOfUpc,
                 amountOfSuspiciousUpc,
                 amountOfSuspiciousMulti,
