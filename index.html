@@ -4,6 +4,8 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="stylesheet.css">
 	<link rel="stylesheet" type="text/css" href="pagespeed.css">
+	<link rel="stylesheet" type="text/css" href="custom.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -54,6 +56,34 @@
 				<div>
 					<div id="chart_div"></div>
 					<div class="product-list"></div>
+							<!-- Modal -->
+							<div class="modal fade" id="modal" role="dialog">
+    							<div class="modal-dialog">
+    						  		<!-- Modal content-->
+      								<div class="modal-content">
+   	   									<div class="modal-header">
+    	      								<button type="button" class="close" data-dismiss="modal">&times;</button>
+          									<h4 class="modal-title">Product editing window</h4>
+        								</div>
+        								<div class="modal-body">
+          									<div class="input-group">
+												<span class="input-group-addon" id="basic-addon3">setColorNormal:</span>
+												<select id="setColorNormal" class="form-control">
+													<option value="default">Select color</option>
+												</select>
+											</div>
+	        							</div>
+    	    							<div class="modal-footer">
+        									<div class="checkbox" style="float: left;">
+        										<label>
+          											<input id="excludeFromAnalysisCheckbox" type="checkbox"> ExcludeFromAnalysisCheckbox
+        										</label>
+      										</div>
+          									<button type="button" class="btn btn-default" data-dismiss="modal">Save</button>
+        								</div>
+      								</div>      
+    							</div>
+  							</div>
 				</div>
 			</div>
 		</div>
@@ -74,6 +104,7 @@
 		});
 	});
 	$('#sortSelect').change(function() {
+		page = 1;
 		checkInputAndShowCategoryProducts($('#selected-category-name').val() ,$('#sortSelect').val());
 	});
 
@@ -221,6 +252,24 @@
     	window.scrollTo(0, 0);
 	}
 
+	function showModalEditingProductWindow(upcLink) {
+			$('#setColorNormal').find('option').remove().end().append('<option value="default">Select color</option>').val('default');
+			$('#excludeFromAnalysisCheckbox').removeAttr('checked');
+			var colored = false;
+			$($(upcLink).attr('colors').split(',')).each(function(i, v) {
+				if (v === 'computervisionresult') {
+					colored = true;
+					return true;
+				}
+				if (colored) {
+					$('#setColorNormal').append('<option style="background-color: #E8E8E8;" value="'+v+'">'+v+'</option>');
+				} else {
+					$('#setColorNormal').append('<option value="'+v+'">'+v+'</option>');
+				}
+			});
+			$('#modal').modal();
+		}
+
 	function getPaginationDiv(length) {
 		var paginationDiv = '<div class="pagination">';
 		paginationDiv += '<div class="links">';
@@ -283,7 +332,7 @@
 				upcDiv += '</div>';
 
 				//upcDiv += '<div class="image"><a><img src="'+ linkToImage +'"></a></div>';
-				upcDiv += '<div class="name"><b>UPC_ID: </b>'+value.upcId+'</div>';
+				upcDiv += '<div class="name"><b>UPC_ID: </b>'+value.upcId+'<button data-toggle="modal" data-target="#modal-transparent" onclick="showModalEditingProductWindow(this)" colors="'+getColorsArray(value)+'" class="btn-link" style="float: right;"><i style="font-size: large;" class="fa fa-pencil-square-o" aria-hidden="true"></i></button></div>';
 				upcDiv += '<div class="description" style="white-space: pre; height: 100%;">'
 						+value.description
 						+'\n<b>colrNormalId:</b> '+value.colrNormalId
@@ -297,6 +346,16 @@
 				upcDiv += '</div>';
 				$('.product-list').last().append(upcDiv);
 				count++;
+
+				function getColorsArray(value) {
+					var r = [];
+					r.push(value.displayColorName);
+					r.push("computervisionresult");
+					$.each(value.computerVisionResult, function(index, colorDescription) {
+						r.push(colorDescription.name);
+					});
+					return r;
+				}
 			});
 			if (count == 0) $('.product-list').last().remove();
 		});
@@ -332,6 +391,15 @@
 				enabled: true,
 				duration: 300 // don't foget to change the duration also in CSS
 			}
+		});
+
+		$(".modal-transparent").on('show.bs.modal', function () {
+  			setTimeout( function() {
+    			$(".modal-backdrop").addClass("modal-backdrop-transparent");
+  			}, 0);
+		});
+		$(".modal-transparent").on('hidden.bs.modal', function () {
+  			$(".modal-backdrop").addClass("modal-backdrop-transparent");
 		});
 	}
 </script>
