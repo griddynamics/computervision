@@ -5,7 +5,7 @@ import com.griddynamics.computervision.ColorDescription;
 import com.griddynamics.computervision.ColorsRecognitionUtil;
 import com.griddynamics.computervision.ShapeRecognition;
 import com.griddynamics.computervision.Shapes;
-import com.griddynamics.pojo.starsDomain.CategoryEnum;
+import com.griddynamics.pojo.dataProcessing.ImageRoleType;
 import com.griddynamics.pojo.starsDomain.ICategory;
 import com.griddynamics.pojo.starsDomain.ShapeDetectionStrategy;
 import com.griddynamics.utils.DataCollectionJobUtils;
@@ -34,16 +34,17 @@ public class ProcessImagesFunction implements PairFunction<Row, Integer, Image> 
     @Override
     public Tuple2<Integer, Image> call(Row row) throws Exception {
         Integer image_id = row.<BigDecimal>getAs("IMAGE_ID").intValue();
-        String urlString = DataCollectionJobUtils.buildURL(image_id.intValue());
+        ImageRoleType imageRoleType = ImageRoleType.valueOf(row.<String>getAs("COLORWAY_IMAGE_ROLE_TYPE"));
+        String urlString = DataCollectionJobUtils.buildURL(image_id.intValue(), imageRoleType.getSuffix());
         File picture = DataCollectionJobUtils.downOrloadImage(urlString, path + SqlQueryDataCollectionJob.DOWNLOAD_IMAGES_FOLDER);
         if (picture != null) {
             try {
-                TreeSet<ColorDescription> colorDescriptions = ColorsRecognitionUtil.getColorDescriptions(picture);
-                Image image = new Image(image_id, colorDescriptions, urlString);
+                TreeSet<ColorDescription> colorDescriptions = ColorsRecognitionUtil.getColorDescriptions(picture, category.isBodyContains());
+                Image image = new Image(image_id, colorDescriptions, urlString, imageRoleType);
                 ShapeDetectionStrategy shapeDetectionStrategy = category.getShapeDetectionStrategy();
                 if (shapeDetectionStrategy != null && shapeDetectionStrategy.equals(ShapeDetectionStrategy.RUGS)) {
                     Shapes shape =  ShapeRecognition.getShape(picture);
-                    image.setShape(shape);
+//                    image.setShape(shape);
                 }
 
                 return new Tuple2(image_id, image);

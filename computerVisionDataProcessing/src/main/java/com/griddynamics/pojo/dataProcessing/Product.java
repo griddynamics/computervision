@@ -1,8 +1,8 @@
 package com.griddynamics.pojo.dataProcessing;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by npakhomova on 3/6/16.
@@ -10,43 +10,14 @@ import java.util.Set;
 public class Product implements Serializable {
 
     Integer productID;
-    Set<Upc> upcSet = new HashSet<>();
+    Map<Integer, Upc> upcMap = new HashMap<>();
     Category category;
     private String productDescription;
-
-    public Product(FlatProductImageUpc flatProduct) {
-        productID = flatProduct.getProductID();
-        productDescription = flatProduct.getProductDescription();
-
-        category = new Category();
-        category.setCategoryId(flatProduct.getCategoryId());
-        category.setCategoryName(flatProduct.getCategoryName());
-
-        Upc upc = new Upc();
-        upc.setImageId(flatProduct.getImageId());
-        upc.setUpcId(flatProduct.getUpcId());
-        upc.setColorNormal(flatProduct.getColorNormal());
-        upc.setColrNormalId(flatProduct.getColrNormalId());
-        upc.setComputerVisionRecognition(flatProduct.getComputerVisionRecognition());
-        upc.setComputerVisionResult(flatProduct.getComputerVisionResult());
-        upc.setDescription(flatProduct.getDescription());
-        upc.setImageUrl(flatProduct.getImageUrl());
-        upc.setDisplayColorName(flatProduct.getDisplayColorName());
-        upc.setShape(flatProduct.getShape());
-        upc.setOriginalShape(flatProduct.getOriginalShape());
-
-        upcSet.add(upc);
-
-    }
 
     public Integer getProductID() {
         return productID;
     }
 
-
-    public Set<Upc> getUpcSet() {
-        return upcSet;
-    }
 
     public Category getCategory() {
         return category;
@@ -56,8 +27,23 @@ public class Product implements Serializable {
     public void merge(Product next) {
         assert this.getProductID().equals(next.getProductID());
         assert this.getCategory().equals(next.getCategory());
-
-        upcSet.addAll(next.getUpcSet());
+        upcMap.putAll(next.upcMap);
     }
 
+    public void setCategory(Category category) {
+        this.category = category;
+
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
+    }
+
+    public void addUpc(Upc upc) {
+        upcMap.put(upc.upcId, upc);
+    }
 }

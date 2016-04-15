@@ -21,8 +21,10 @@
 	<!-- jQuery 1.7.2+ or Zepto.js 1.0+ -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
 	<!-- Magnific Popup core JS file -->
-	<script src="magnific-popup/jquery.magnific-popup.js"></script>
+    <!--<script src="magnific-popup/jquery.magnific-popup.js"></script>-->
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
 <body>
@@ -64,6 +66,36 @@
 		<!--</div>-->
 	</div>
 </div>
+
+<div id="decline-dialog" class="modal fade" tabindex="-1" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Declined</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Color Normal Assignment is correct. <br>
+                    Go to product editing
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Go to product editing</button>
+                <button type="button" class="btn btn-primary">Cancel</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<style>
+    .well {
+        background-color: rgba(245, 245, 245, 0.4);
+    }
+</style>
+
 </body>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
@@ -74,17 +106,21 @@
 				$('#selected-category-name').append('<option value="'+value+'">'+value+'</option>');
 			} );
 		});
+
+//        $("body").on("click", ".thumbs-up-button", function () {
+//            $("#accept-dialog").modal();
+//        });
+//
+//        $("body").on("click", ".thumbs-down-button", function () {
+//            $("#decline-dialog").modal();
+//        });
+
 	});
 	$('#sortSelect').change(function() {
 		checkInputAndShowCategoryProducts($('#selected-category-name').val() ,$('#sortSelect').val());
 	});
 
-	function reverse(s) {
-		var o = [];
-		for (var i = 0, len = s.length; i <= len; i++)
-			o.push(s.charAt(len - i));
-		return o.join('');
-	}
+
 
 	google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
 
@@ -234,6 +270,28 @@
 		return paginationDiv;
 	}
 
+    function getThumbsPanel(value) {
+
+        if (value.computerVisionRecognition === 0) {
+            return "";
+        }
+
+        var thumbs =
+                '<div style="text-align: center">' +
+                    '<div class="btn-group">' +
+                    '    <button type="button" class="thumbs-up-button btn btn-lg btn-default" aria-label="Left Align">' +
+                    '        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">' +
+                    '        </span>' +
+                    '    </button>' +
+                    '    <button type="button" class="thumbs-down-button btn btn-lg btn-default" aria-label="Center Align">' +
+                    '        <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>' +
+                    '    </button>' +
+                    '</div>' +
+                '</div>';
+
+        return thumbs;
+    }
+
 	function showProductsAndUpcsFromCategory(filterItem, inProducts) {
 		$('.product').remove();
 		$('.pagination').remove();
@@ -241,55 +299,76 @@
 		var start = (parseInt(page) - 1) * limit;
 		productsForRepresentation = inProducts ? inProducts : products.slice(start, start + limit);
 		$(productsForRepresentation).each(function(index, product) {
-			var productDiv = '<div class="product-list product"><a href="http://stella.federated.fds/UI/stella/webproduct/view-single.html?id'+product.productID+'"><h3 style="margin-left: 20px;">Product '+product.productID+'</h3></a><p style="margin-left: 20px;">Description: '+product.productDescription+'</p></div>';
+			var productDiv = '<div class="product-list product"><a href="http://mdc2vr5016:8080/UI/stella/webproduct/view-single.html?id='+product.productID+'"><h3 style="margin-left: 20px;">Product '+product.productID+'</h3></a><p style="margin-left: 20px;">Description: '+product.productDescription+'</p></div>';
 			$('.product-list').first().append(productDiv);
 			var count = 0;
-			$(product.upcSet).each(function(index, value) {
+
+			$(Object.keys(product.upcMap)).each(function(index, key) {
+				var value= product.upcMap[key];
 				if (filterItem != 'none' && value.computerVisionRecognition != filterItem) return false;
 				var upcDiv = '<div>';
-				upcDiv += '<div class="right">';
-				upcDiv += '<div style="text-align: center;">';
-				upcDiv += '<div class="state">';
-				upcDiv += '<b>Color check:</b><br/>'
-				upcDiv += '<img src="'+getImageSrcForComputerVisionRecognition(value)+'" style="margin: 40px 0px 20px 8px;" title="'+getImageTitleForComputerVisionRecognition(value)+'"></img>';
-				upcDiv += '</div>';
-				upcDiv += '</div>';
-				upcDiv += '</div>';
+
 				upcDiv += '<div class="left">';
-				var linkToImage = '/';
-
-				var imageIdInt = parseInt(value.imageId, 10);
-				for (var i=1; i<9; i++) {
-
-					linkToImage += parseInt((imageIdInt % parseInt(Math.pow(10,i), 10) / parseInt(Math.pow(10,i-1), 10)), 10);
-					if ((i % 2) == 0){
-						linkToImage += '/';
-					}
-				}
-
-				var reversedLink = reverse(linkToImage);
-				linkToImage = 'https://stars.macys.com/preview'+reversedLink + 'final/'+imageIdInt+'-214x261.jpg';
-				var linkToImage2 = 'https://stars.macys.com/preview'+reversedLink + 'final/'+imageIdInt+'-3000x3000.jpg';
-
+				upcDiv += '<table style="width:1100px">';
+				upcDiv +='<tr><th>UPC</th><th>Color Name</th><th>Color Family</th><th>Primary picture</th><th>CV Color</th><th>Swatch Picture</th><th>CV Color</th><th>Color check</th></tr>';
+				upcDiv += '<tr>';
+				upcDiv += '<td>'+value.upcId+'</td>';
+				upcDiv += '<td><p>'+value.displayColorName+'</p></td>';
+				upcDiv += '<td><p style="font-size:130%;">'+value.colorNormal+'</p></td>';
+				upcDiv += '<td>';
 				upcDiv += '<div class="image">';
-				upcDiv += '<a class="image-popup-vertical-fit" href="'+linkToImage+'">';
-				upcDiv += '<img src="'+ linkToImage +'"></a>';
+				upcDiv += '<a class="image-popup-vertical-fit" href="'+value.images['CPRI'].url+'">';
+				upcDiv += '<img src="'+ value.images['CPRI'].url +'"></a>';
 				upcDiv += '</a>';
 				upcDiv += '</div>';
-
-				//upcDiv += '<div class="image"><a><img src="'+ linkToImage +'"></a></div>';
-				upcDiv += '<div class="name"><b>UPC_ID: </b>'+value.upcId+'</div>';
-				upcDiv += '<div class="description" style="white-space: pre; height: 100%;">'
-						+value.description
-						+'\n'
-						+'\n<p style="font-size:130%;">colorNormal: '+value.colorNormal+'</p>'
-
-						+'\n<b>computerVisionResult:</b> ';
-				$.each(value.computerVisionResult, function(index, colorDescription) {
+				upcDiv += '</td>';
+				upcDiv += '<td>';
+				upcDiv += '<div class="description" style="white-space: pre; height: 100%;">';
+				$.each(value.images['CPRI'].computerVisionResult, function(index, colorDescription) {
 					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'%'
 				});
 				upcDiv +='</div>';
+				upcDiv += '</td>';
+				upcDiv += '<td>';
+				var additionalImage = null;
+				if(value.images['CSW'] !=null){
+					 additionalImage = value.images['CSW'];
+				} else if (value.images['CADD']!=null ){
+					additionalImage = value.images['CADD'];
+				}
+				if (additionalImage !=null ) {
+					upcDiv += '<div class="image">';
+					upcDiv += '<a class="image-popup-vertical-fit" href="' + additionalImage.url + '">';
+					upcDiv += '<img src="' + additionalImage.url + '"></a>';
+					upcDiv += '</a>';
+					upcDiv += '</div>';
+				}
+
+				upcDiv += '</td>';
+				upcDiv += '<td>';
+				upcDiv += '<div class="description" style="white-space: pre; height: 100%;">';
+				if (additionalImage !=null ) {
+				$.each(additionalImage.computerVisionResult, function(index, colorDescription) {
+					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'%'
+				});
+				}
 				upcDiv += '</div>';
+				upcDiv += '</td>';
+				upcDiv += '<td>';
+				upcDiv += '<div class="image">';
+
+				upcDiv += '<img src="' + getImageSrcForComputerVisionRecognition(value) + '" style="margin: 10px 0px 10px 8px;" title="' + getImageTitleForComputerVisionRecognition(value) + '"></img>';
+
+				upcDiv += getThumbsPanel(value);
+				upcDiv += '</div>';
+				upcDiv += '</td>';
+//
+				upcDiv += '</tr>';
+
+//
+				upcDiv += '</table>';
+
+//
 				$('.product-list').last().append(upcDiv);
 				count++;
 			});

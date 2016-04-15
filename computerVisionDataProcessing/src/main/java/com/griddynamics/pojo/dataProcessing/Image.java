@@ -12,13 +12,18 @@ import java.util.TreeSet;
 public class Image implements Serializable {
     Integer imageId;
     String url;
-    private Shapes shape;
+    ImageRoleType imageRoleType;
     TreeSet<ColorDescription> computerVisionResult;
 
-    public Image(Integer imageId, TreeSet<ColorDescription> computerVisionResult, String url) {
+    public Image(Integer imageId, TreeSet<ColorDescription> computerVisionResult, String url, ImageRoleType imageRoleType) {
         this.imageId = imageId;
         this.computerVisionResult = computerVisionResult;
         this.url = url;
+        this.imageRoleType = imageRoleType;
+    }
+
+    public Integer getImageId() {
+        return imageId;
     }
 
     public String getUrl() {
@@ -29,13 +34,6 @@ public class Image implements Serializable {
         return computerVisionResult;
     }
 
-    public Shapes getShape() {
-        return shape;
-    }
-
-    public void setShape(Shapes shape) {
-        this.shape = shape;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -57,4 +55,8 @@ public class Image implements Serializable {
         result = 31 * result + (computerVisionResult != null ? computerVisionResult.hashCode() : 0);
         return result;
     }
+
+
+
+
 }

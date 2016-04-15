@@ -3,10 +3,17 @@ package com.griddynamics.computervision;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfDouble;
+import org.opencv.core.MatOfFloat;
+import org.opencv.core.MatOfRect;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.core.TermCriteria;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-
+import org.opencv.objdetect.HOGDescriptor;
 
 
 import java.io.File;
@@ -26,12 +33,14 @@ public class ColorsRecognitionUtil {
 
 
 
-    public static TreeSet<ColorDescription> getColorDescriptions(File imageFile) {
+    public static TreeSet<ColorDescription> getColorDescriptions(File imageFile, boolean isBodyCutNecessary) {
 
         Mat imageForSegmentation = Imgcodecs.imread(imageFile.getAbsolutePath());
+        if (isBodyCutNecessary){
+            imageForSegmentation = detectBody(imageForSegmentation);
+        }
+//        ImageShow.imshow(imageForSegmentation,"image");
         Mat mask = Mask.getMask(imageForSegmentation, false); // todo get deal with strategies latter
-
-        // Some magic
         Core.bitwise_and(imageForSegmentation, mask, imageForSegmentation);
         Imgproc.medianBlur(imageForSegmentation, imageForSegmentation, 3);
         Imgproc.cvtColor(imageForSegmentation, imageForSegmentation, Imgproc.COLOR_BGR2Lab);
@@ -196,5 +205,41 @@ public class ColorsRecognitionUtil {
         return imagePreparedByMask;
     }
 
+    public static Mat detectBody(Mat image) {
+//        Mat image = Imgcodecs.imread(file.getAbsolutePath());
+        Mat imageWithBounds = image.clone();
+        final HOGDescriptor hog = new HOGDescriptor();
+        final MatOfFloat descriptors = HOGDescriptor.getDefaultPeopleDetector();
+        hog.setSVMDetector(descriptors);
+        final MatOfRect foundLocations = new MatOfRect();
+        final MatOfDouble foundWeights = new MatOfDouble();
+        final Size winStride = new Size(8, 8);
+        final Size padding = new Size(32, 32);
+        final Point rectPoint1 = new Point();
+        final Point rectPoint2 = new Point();
+        final Point fontPoint = new Point();
+        int frames = 0;
+        int framesWithPeople = 0;
+        final Scalar rectColor = new Scalar(0, 255, 0);
+        final Scalar fontColor = new Scalar(255, 255, 255);
+        final long startTime = System.currentTimeMillis();
+
+        hog.detectMultiScale(image, foundLocations, foundWeights, 0.0, winStride, padding, 1.05, 2.0, false);
+        // CHECKSTYLE:ON MagicNumber
+        Mat submat = image.clone();
+        if (foundLocations.rows() > 0) {
+            framesWithPeople++;
+            List<Double> weightList = foundWeights.toList();
+            List<Rect> rectList = foundLocations.toList();
+            int i = 0;
+
+            for (Rect rect : rectList) {
+                submat = image.submat(rect);
+
+            }
+        }
+        return submat;
+//        ImageShow.imshow(submat, "image");
+    }
 }
 

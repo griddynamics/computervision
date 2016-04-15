@@ -1,7 +1,4 @@
-package com.griddynamics.utils;
-
-import com.griddynamics.SqlQueryDataCollectionJob;
-import org.apache.commons.io.FileUtils;
+package com.griddynamics.computervision;
 
 import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
@@ -14,6 +11,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
+
+
 /**
  * Created by npakhomova on 3/7/16.
  */
@@ -21,7 +21,7 @@ public class DataCollectionJobUtils {
 
     public static final String SUFFIX_SMALL = "214x261.jpg";
     public static final String SUFFIX_BIG = "3000x3000.jpg"; // to long to process
-//    public static String STARS_SERVICE_PREFIX = "https://stars.macys.com/preview";
+    //    public static String STARS_SERVICE_PREFIX = "https://stars.macys.com/preview";
 //    http://raymcompreviewprod/03/34/44/41/final/3344441-214x261.jpg
     public static String STARS_SERVICE_PREFIX = "http://raymcompreviewprod";
 
@@ -95,7 +95,7 @@ public class DataCollectionJobUtils {
     }
 
 
-    public static String buildURL(int imageId, String suffix) {
+    public static String buildURL(int imageId) {
         StringBuilder builder = new StringBuilder("/");
         for (int i = 1; i < 9; i++) {
 
@@ -104,21 +104,8 @@ public class DataCollectionJobUtils {
                 builder.append("/");
             }
         }
-        return STARS_SERVICE_PREFIX + String.format("%sfinal/%d-" + suffix, builder.reverse().toString(), imageId);
+        return STARS_SERVICE_PREFIX + String.format("%sfinal/%d-" + SUFFIX_SMALL, builder.reverse().toString(), imageId);
     }
 
-    public static void checkFolderExistance(String path) throws IOException {
-        File file = new File(path);
-        if (file.exists()) {
-            FileUtils.deleteDirectory(file);
-            System.out.println("ALARM!!! remove working folder: " + path);
-            FileUtils.deleteDirectory(file);
-        }
-        file.mkdir();
-        File downloads = new File(path + SqlQueryDataCollectionJob.DOWNLOAD_IMAGES_FOLDER);
-        downloads.mkdir();
 
-
-        System.out.println("Working Folder: " + file.getAbsolutePath());
-    }
 }

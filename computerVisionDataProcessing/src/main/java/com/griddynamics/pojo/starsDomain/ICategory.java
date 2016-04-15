@@ -15,4 +15,6 @@ public interface ICategory extends Serializable {
     public String getCategoryName();
 
     public Set<Integer> getCategoryIds() ;
+
+    boolean isBodyContains();
 }

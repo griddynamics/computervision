@@ -2,34 +2,75 @@ package com.griddynamics.pojo.dataProcessing;
 
 import com.griddynamics.computervision.ColorDescription;
 import com.griddynamics.computervision.Shapes;
+import com.griddynamics.utils.VisualRecognitionUtil;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
  * Created by npakhomova on 3/16/16.
  */
 public class Upc implements Serializable {
+
+    // usially one upc has 2 images - swatch and primary
+    Map<ImageRoleType,Image> images = new HashMap<>();
+
+
     Integer upcId;
-    Integer imageId;
-    Integer colrNormalId;
+
+    Integer colorNormalId;
     String colorNormal;
     String displayColorName;
 
 
-    String imageUrl;
-    TreeSet<ColorDescription> computerVisionResult = new TreeSet<>();
-    Integer computerVisionRecognition;
-    String description;
-    Shapes shape;
-    String originalShape;
+    Integer computerVisionRecognition = -1 ;
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    String description;
+
+
+    public void merge(Upc upc) {
+        assert upcId.equals(upc.upcId);
+        images.putAll(upc.images);
+        this.computerVisionRecognition = Math.max(computerVisionRecognition, upc.computerVisionRecognition);
+
+
     }
 
-    public void setColrNormalId(Integer colrNormalId) {
-        this.colrNormalId = colrNormalId;
+
+    public Map<ImageRoleType, Image> getImages() {
+        return images;
+    }
+
+    public Integer getUpcId() {
+        return upcId;
+    }
+
+    public Integer getColorNormalId() {
+        return colorNormalId;
+    }
+
+    public String getColorNormal() {
+        return colorNormal;
+    }
+
+    public String getDisplayColorName() {
+        return displayColorName;
+    }
+
+    public Integer getComputerVisionRecognition() {
+        return computerVisionRecognition;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setColorNormalId(Integer colorNormalId) {
+        this.colorNormalId = colorNormalId;
     }
 
     public void setComputerVisionRecognition(Integer computerVisionRecognition) {
@@ -40,19 +81,12 @@ public class Upc implements Serializable {
         this.upcId = upcId;
     }
 
-    public void setImageId(Integer imageId) {
-        this.imageId = imageId;
-    }
 
     public void setColorNormal(String colorNormal) {
         this.colorNormal = colorNormal;
     }
 
 
-    public void setComputerVisionResult(TreeSet<ColorDescription> computerVisionResult) {
-        this.computerVisionResult.addAll(computerVisionResult);
-
-    }
 
     public void setDisplayColorName(String displayColorName) {
         this.displayColorName = displayColorName;
@@ -70,12 +104,9 @@ public class Upc implements Serializable {
         Upc upc = (Upc) o;
 
         if (upcId != null ? !upcId.equals(upc.upcId) : upc.upcId != null) return false;
-        if (imageId != null ? !imageId.equals(upc.imageId) : upc.imageId != null) return false;
-        if (colrNormalId != null ? !colrNormalId.equals(upc.colrNormalId) : upc.colrNormalId != null) return false;
+        if (colorNormalId != null ? !colorNormalId.equals(upc.colorNormalId) : upc.colorNormalId != null) return false;
         if (colorNormal != null ? !colorNormal.equals(upc.colorNormal) : upc.colorNormal != null) return false;
         if (displayColorName != null ? !displayColorName.equals(upc.displayColorName) : upc.displayColorName != null)
-            return false;
-        if (computerVisionResult != null ? !computerVisionResult.equals(upc.computerVisionResult) : upc.computerVisionResult != null)
             return false;
         return !(description != null ? !description.equals(upc.description) : upc.description != null);
 
@@ -84,20 +115,24 @@ public class Upc implements Serializable {
     @Override
     public int hashCode() {
         int result = upcId != null ? upcId.hashCode() : 0;
-        result = 31 * result + (imageId != null ? imageId.hashCode() : 0);
-        result = 31 * result + (colrNormalId != null ? colrNormalId.hashCode() : 0);
+        result = 31 * result + (colorNormalId != null ? colorNormalId.hashCode() : 0);
         result = 31 * result + (colorNormal != null ? colorNormal.hashCode() : 0);
         result = 31 * result + (displayColorName != null ? displayColorName.hashCode() : 0);
-        result = 31 * result + (computerVisionResult != null ? computerVisionResult.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
-    public void setShape(Shapes shape) {
-        this.shape = shape;
+
+    public void addImage(Image processedImageResult) {
+        this.computerVisionRecognition = Math.max(computerVisionRecognition, VisualRecognitionUtil.evaluateRecognitionResult(colorNormal, processedImageResult.getComputerVisionResult()));
+        this.images.put(processedImageResult.imageRoleType, processedImageResult);
+
     }
 
-    public void setOriginalShape(String originalShape) {
-        this.originalShape = originalShape;
+    public Integer getPrimaryImageId() {
+        if (images.containsKey(ImageRoleType.CPRI)) {
+            return images.get(ImageRoleType.CPRI).getImageId();
+        }
+        return -1;
     }
 }

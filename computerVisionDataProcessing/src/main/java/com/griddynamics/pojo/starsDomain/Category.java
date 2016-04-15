@@ -32,15 +32,16 @@ public class Category implements ICategory {
 
     @Override
     public String getCategoryName() {
-        return categoryName;
+        return categoryName.replaceAll(" ","_");
     }
 
     public Set<Integer> getCategoryIds() {
         return categoryIds;
     }
 
-    public void merge(Category category){
-        assert categoryName.equals(category.getCategoryName());
-        categoryIds.addAll(category.getCategoryIds());
+    @Override
+    public boolean isBodyContains() {
+        return false;
     }
+
 }
