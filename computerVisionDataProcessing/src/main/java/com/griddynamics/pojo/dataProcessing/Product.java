@@ -2,7 +2,9 @@ package com.griddynamics.pojo.dataProcessing;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by npakhomova on 3/6/16.
@@ -10,7 +12,7 @@ import java.util.Map;
 public class Product implements Serializable {
 
     Integer productID;
-    Map<Integer, Upc> upcMap = new HashMap<>();
+    Set<Upc> upcSet = new HashSet<>();
     Category category;
     private String productDescription;
 
@@ -27,7 +29,7 @@ public class Product implements Serializable {
     public void merge(Product next) {
         assert this.getProductID().equals(next.getProductID());
         assert this.getCategory().equals(next.getCategory());
-        upcMap.putAll(next.upcMap);
+        upcSet.addAll(next.upcSet);
     }
 
     public void setCategory(Category category) {
@@ -44,6 +46,6 @@ public class Product implements Serializable {
     }
 
     public void addUpc(Upc upc) {
-        upcMap.put(upc.upcId, upc);
+        upcSet.add(upc);
     }
 }

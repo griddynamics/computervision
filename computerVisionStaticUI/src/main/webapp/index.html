@@ -303,8 +303,7 @@
 			$('.product-list').first().append(productDiv);
 			var count = 0;
 
-			$(Object.keys(product.upcMap)).each(function(index, key) {
-				var value= product.upcMap[key];
+			$(product.upcSet).each(function(index, value) {
 				if (filterItem != 'none' && value.computerVisionRecognition != filterItem) return false;
 				var upcDiv = '<div>';
 
