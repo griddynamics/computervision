@@ -11,16 +11,17 @@ import java.util.List;
 
 public class HeelRecognition{
 
-    private static final double FACTOR = 0.05;
+    private static final double FACTOR = 0.06;
 
     public static boolean isBootWithHeel(File file) {
 
+        System.out.println(file.getName());
         Mat image = Imgcodecs.imread(file.getAbsolutePath());
 
         Mat mask = Mask.getMask(image, false);
-        ImageShow.imshow(mask, "mask");
+//        ImageShow.imshow(mask, "mask");
 
-        ImageShow.imshow(crop(mask), "mask");
+//        ImageShow.imshow(crop(mask), "mask");
 
         Mat cropped = crop(mask);
         int whcs = 0;
@@ -29,7 +30,7 @@ public class HeelRecognition{
         int ws = 0;
         int we = 0;
         int countOfCropping = 1;
-        ImageShow.imshow(cropped, "cropped" + countOfCropping);
+//        ImageShow.imshow(cropped, "cropped" + countOfCropping);
 
         boolean stop = false;
         while (!stop) {
@@ -49,11 +50,11 @@ public class HeelRecognition{
                         we = i;
                     }
                     whce++;
-                } else if (whce != 0) {
+                } else {
                     blc++;
                 }
             }
-            if ((blc == 0 || (blc != 0 && whcs == 0)) && countOfCropping < 3) {
+            if ((blc < (double) (cropped.width() / 10)  || (blc != 0 && whcs == 0)) && countOfCropping < 3) {
                 cropped = crop(cropped);
                 whcs = 0;
                 whce = 0;
@@ -61,20 +62,13 @@ public class HeelRecognition{
                 ws = 0;
                 we = 0;
                 countOfCropping++;
-                ImageShow.imshow(cropped, "cropped" + countOfCropping);
+//                ImageShow.imshow(cropped, "cropped" + countOfCropping);
             } else {
                 stop = true;
             }
         }
 
-        if (blc == 0) {
-            int row = 0;
-            double[] pointF = cropped.get(row, whcs);
-            while (pointF[0] == 0) {
-                row++;
-                pointF = cropped.get(row, whcs);
-            }
-
+        if (blc < (cropped.width() / 10)) {
             return false;
         } else {
             return true;
@@ -87,7 +81,6 @@ public class HeelRecognition{
         List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
         Imgproc.cvtColor(result, result, Imgproc.COLOR_BGR2GRAY);
         Imgproc.findContours(result, contours, new Mat(), Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
-        ArrayList<Integer> indexesForDraw = new ArrayList<>();
         double maxArea = 0;
         if (!contours.isEmpty()) {
             int max = 0;
@@ -99,7 +92,12 @@ public class HeelRecognition{
                 }
             }
             Rect boundingRect = Imgproc.boundingRect(contours.get(max));
-            Rect croppedRect = new Rect(boundingRect.x,boundingRect.y,boundingRect.width, (int) (boundingRect.height * (1 - FACTOR)));
+            Rect croppedRect = null;
+            if (boundingRect.width > boundingRect.height) {
+                croppedRect = new Rect(boundingRect.x, boundingRect.y, boundingRect.width, (int) (boundingRect.height * (1 - FACTOR)));
+            } else {
+                croppedRect = new Rect(boundingRect.x, boundingRect.y + (boundingRect.height - boundingRect.width), boundingRect.width, (int) (boundingRect.width * (1 - FACTOR)));
+            }
             return new Mat(image, croppedRect);
         } else {
             return image;
