@@ -38,7 +38,6 @@ public class Preparation{
                             imageMat = resize(imageMat);
                         }
                         Imgcodecs.imwrite(destination + File.separator + image.getName(), imageMat);
-
                     }
                 } catch (IOException e) {
                     continue;
@@ -65,14 +64,14 @@ public class Preparation{
     private static Mat resize(Mat image){
         int h = image.height();
         int w = image.width();
+
         int max_dim = ( w >= h ) ? w : h;
         float scale = ( ( float ) TARGET_DIM ) / max_dim;
 
         if ( w >= h ) {
             w = TARGET_DIM;
             h = (int) (h * scale);
-        }
-        else {
+        } else {
             h = TARGET_DIM;
             w = (int) (w * scale);
         }
@@ -97,6 +96,9 @@ public class Preparation{
                 }
             }
             Rect boundingRect = Imgproc.boundingRect(contours.get(max));
+            if (boundingRect.width < boundingRect.height) {
+                boundingRect = new Rect(boundingRect.x, boundingRect.y + (boundingRect.height - boundingRect.width), boundingRect.width, boundingRect.width);
+            }
             return new Mat(image, boundingRect);
         } else {
             return image;
