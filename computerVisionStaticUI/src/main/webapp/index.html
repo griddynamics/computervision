@@ -77,9 +77,7 @@
                 <div id="heelHeight" class="tab-pane fade in active">
                     <table id="heelHeightTable" class="table">
 
-                        <tbody id="heelHeightTableBody">
 
-                        </tbody>
                     </table>
                 </div>
             </div>
@@ -120,6 +118,14 @@
     .well {
         background-color: rgba(245, 245, 245, 0.4);
     }
+    /*.product-list div {*/
+        /*border: none !important;*/
+        /*box-shadow: none !important;*/
+        /*margin-bottom: 10px;*/
+    /*}*/
+    /*.product-list .product{*/
+        /*border-bottom: solid grey 1px;*/
+    /*}*/
 </style>
 
 </body>
@@ -131,25 +137,23 @@
 
     $(document).ready(function () {
 
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $.getJSON('rootFolder/categories.json', function (resultJson) {
+            $(resultJson).each(function (index, value) {
+                $('#selected-category-name').append('<option value="' + value + '">' + value + '</option>');
+            });
+
+            $('#sortSelect').change(function () {
+                checkInputAndShowCategoryProducts($('#selected-category-name').val(), $('#sortSelect').val());
+            });
+
+            google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
+        });
+
+        $('li a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+
             var target = $(e.target).attr("href") // activated tab
             if (target == '#heelHeight') {
                 drawHeelHeighttable();
-            } else {
-
-                $.getJSON('rootFolder/categories.json', function (resultJson) {
-                    $(resultJson).each(function (index, value) {
-                        $('#selected-category-name').append('<option value="' + value + '">' + value + '</option>');
-                    });
-
-                    $('#sortSelect').change(function () {
-                        checkInputAndShowCategoryProducts($('#selected-category-name').val(), $('#sortSelect').val());
-                    });
-
-
-                    google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
-                });
-
             }
         });
     });
@@ -157,8 +161,12 @@
 
     function drawHeelHeighttable() {
 
-        var tableHead = '<thead><tr><th>Prodict ID</th><th>Product Description</th><th>Heel Height Attribute</th><th>Computed Heel Height</th><th>Picture</th> </tr></thead>'
+        $('#heelHeightTable').empty();
+
+        var tableHead = '<thead><tr><th>Prodict ID</th><th>Product Description</th><th>Heel Height Attribute</th><th>Computed Heel Height</th><th>ratio</th><th>Picture</th> </tr></thead>'
+
         $('#heelHeightTable').append(tableHead);
+        $('#heelHeightTable').append('<tbody id="heelHeightTableBody"></tbody>');
 
         showForEachAttrValue("Flat");
         showForEachAttrValue("Ultra_High");
@@ -171,7 +179,7 @@
         $.getJSON('heightHellPictures/'+path+'/result.json', function (productList) {
             $(productList).each(function (index, product) {
                 var tableRow = null;
-                if (product.heelHeightAttributeVerification == 3) {
+                if (product.heelAttributeValue != product.cvRecognizedValue) {
                     tableRow += '<tr  class="danger">';
                 } else {
                     tableRow += '<tr>';
@@ -179,7 +187,8 @@
                 tableRow += '<td>' + product.productId + '</td>';
                 tableRow += '<td>' + product.productDescription + '</td>';
                 tableRow += '<td>' + product.heelAttributeValue + '</td>';
-                tableRow += '<td>' + product.heelHeightAttributeVerification + '</td>';
+                tableRow += '<td>' + product.cvRecognizedValue + '</td>';
+                tableRow += '<td>' + product.dimentionsRatio + '</td>';
                 tableRow += '<td><div style="width: 110px; height: 110px">';
                 tableRow += '<a class="image-popup-vertical-fit" href="' + product.imageURL + '">';
                 tableRow += '<img src="' + product.imageURL + '"></a>';
@@ -368,7 +377,7 @@
         var start = (parseInt(page) - 1) * limit;
         productsForRepresentation = inProducts ? inProducts : products.slice(start, start + limit);
         $(productsForRepresentation).each(function (index, product) {
-            var productDiv = '<div class="product-list product"><a href="http://mdc2vr5016:8080/UI/stella/webproduct/view-single.html?id=' + product.productID + '"><h3 style="margin-left: 20px;">Product ' + product.productID + '</h3></a><p style="margin-left: 20px;">Description: ' + product.productDescription + '</p></div>';
+            var productDiv = '<div class="product-list product"><a href="http://mdc2vr5016:8080/UI/stella/webproduct/view-single.html?id=' + product.productID + '"><h3>Product ' + product.productID + '</h3></a><p">Description: ' + product.productDescription + '</p></div>';
             $('.product-list').first().append(productDiv);
             var count = 0;
 
@@ -380,24 +389,24 @@
                 upcDiv += '<table style="width:1100px">';
                 upcDiv += '<tr><th>UPC</th><th>Color Name</th><th>Color Family</th><th>Primary picture</th><th>CV Color</th><th>Swatch Picture</th><th>CV Color</th><th>Color check</th></tr>';
                 upcDiv += '<tr>';
-                upcDiv += '<td>' + value.upcId + '</td>';
-                upcDiv += '<td><p>' + value.displayColorName + '</p></td>';
-                upcDiv += '<td><p style="font-size:130%;"><b>' + value.colorNormal + '</b></p></td>';
-                upcDiv += '<td>';
+                upcDiv += '<td width="80px">' + value.upcId + '</td>';
+                upcDiv += '<td width="150px"><p>' + value.displayColorName + '</p></td>';
+                upcDiv += '<td width="80px"><p style="font-size:130%;"><b>' + value.colorNormal + '</b></p></td>';
+                upcDiv += '<td width="120px">';
                 upcDiv += '<div class="image">';
                 upcDiv += '<a class="image-popup-vertical-fit" href="' + value.images['CPRI'].url + '">';
                 upcDiv += '<img src="' + value.images['CPRI'].url + '"></a>';
                 upcDiv += '</a>';
                 upcDiv += '</div>';
                 upcDiv += '</td>';
-                upcDiv += '<td>';
+                upcDiv += '<td width="120px">';
                 upcDiv += '<div class="description" style="white-space: pre; height: 100%;">';
                 $.each(value.images['CPRI'].computerVisionResult, function (index, colorDescription) {
                     upcDiv += '\n<b>color:</b> ' + colorDescription.name + ' ' + colorDescription.percent + '%'
                 });
                 upcDiv += '</div>';
                 upcDiv += '</td>';
-                upcDiv += '<td>';
+                upcDiv += '<td width="120px">';
                 var additionalImage = null;
                 if (value.images['CSW'] != null) {
                     additionalImage = value.images['CSW'];
@@ -422,7 +431,7 @@
                 }
                 upcDiv += '</div>';
                 upcDiv += '</td>';
-                upcDiv += '<td>';
+                upcDiv += '<td width="50px">';
                 upcDiv += '<div class="image">';
 
                 upcDiv += '<img src="' + getImageSrcForComputerVisionRecognition(value) + '" style="margin: 10px 0px 10px 8px;" title="' + getImageTitleForComputerVisionRecognition(value) + '"></img>';

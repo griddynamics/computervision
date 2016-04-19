@@ -15,7 +15,8 @@ public class HeightHeelProductRecognition implements Serializable {
     HeelHeightValue heelAttributeValue;
 
     Integer heelHeightAttributeVerification; // 0 is ok. 3 is false
-    private HeelHeightValue isHeelHeightRecognizedValue;
+    HeelHeightValue cvRecognizedValue;
+    private double dimentionsRatio;
 
     public void setProductId(Integer productId) {
         this.productId = productId;
@@ -34,14 +35,14 @@ public class HeightHeelProductRecognition implements Serializable {
         this.heelAttributeValue = heelAttributeValue;
     }
 
-    public void setIsHeelHeightRecognizedValue(HeelHeightValue isHeelHeightRecognizedValue) {
-        this.isHeelHeightRecognizedValue = isHeelHeightRecognizedValue;
+    public void setCvRecognizedValue(HeelHeightValue cvRecognizedValue) {
+        this.cvRecognizedValue = cvRecognizedValue;
     }
 
     // todo rename fields
     public void calculateWarningLevel() {
-        assert isHeelHeightRecognizedValue !=null && heelAttributeValue!=null;
-        if (heelAttributeValue.equals(isHeelHeightRecognizedValue)){
+        assert cvRecognizedValue !=null && heelAttributeValue!=null;
+        if (heelAttributeValue.equals(cvRecognizedValue)){
             this.heelHeightAttributeVerification =0;
         } else {
             this.heelHeightAttributeVerification =3;
@@ -52,5 +53,17 @@ public class HeightHeelProductRecognition implements Serializable {
 
     public Integer getProductId() {
         return productId;
+    }
+
+    public void setDimentionsRatio(double dimentionsRatio) {
+        this.dimentionsRatio = dimentionsRatio;
+    }
+
+    public double getDimentionsRatio() {
+        return dimentionsRatio;
+    }
+
+    public HeelHeightValue getHeelAttributeValue() {
+        return heelAttributeValue;
     }
 }

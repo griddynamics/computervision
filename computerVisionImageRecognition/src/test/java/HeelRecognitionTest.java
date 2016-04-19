@@ -44,4 +44,18 @@ public class HeelRecognitionTest {
 
 
     }
+
+
+    @Test
+    public void heelHeighPlaform() throws IOException {
+        String heightHeel = "http://raymcompreviewprod/02/98/25/76/final/2982576-214x261.jpg";
+        File imageFile = DataCollectionJobUtils.downOrloadImage(heightHeel, new File(".").getCanonicalPath());
+
+
+//        BodyRecognitionResult bodyRecognitionResult = BodyRecognition.detectFace(imageFile);
+        System.out.println("Is Boot with heel " + HeelRecognition.defineHeelHeight(imageFile));
+
+
+    }
+
 }

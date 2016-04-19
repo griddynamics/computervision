@@ -3,6 +3,7 @@ package com.griddynamics;
 import com.google.gson.Gson;
 import com.griddynamics.computervision.HeelHeightValue;
 import com.griddynamics.computervision.HeelRecognition;
+import com.griddynamics.computervision.HeightHeelValueResult;
 import com.griddynamics.pojo.dataProcessing.HeightHeelProductRecognition;
 import com.griddynamics.pojo.dataProcessing.ImageRoleType;
 import com.griddynamics.utils.DataCollectionJobUtils;
@@ -111,7 +112,9 @@ public class HeelRecognitionPicturesJob {
                     result.setHeelAttributeValue(HeelHeightValue.getEnum(v1.<String>getAs("VARCHAR_VALUE")));
 
                     File picture = DataCollectionJobUtils.downOrloadImage(urlString, path + SqlQueryDataCollectionJob.DOWNLOAD_IMAGES_FOLDER);
-                    result.setIsHeelHeightRecognizedValue(HeelRecognition.defineHeelHeight(picture));
+                    HeightHeelValueResult heightHeelValueResult = HeelRecognition.defineHeelHeight(picture);
+                    result.setCvRecognizedValue(heightHeelValueResult.getValue());
+                    result.setDimentionsRatio(heightHeelValueResult.getHeigthWithDimention());
                     result.calculateWarningLevel();
                     return new Tuple2<Integer, HeightHeelProductRecognition>(result.getProductId(), result);
                 }

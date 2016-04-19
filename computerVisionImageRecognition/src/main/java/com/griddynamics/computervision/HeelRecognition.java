@@ -10,32 +10,45 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by npakhomova on 4/18/16.
- */
 public class HeelRecognition {
     private static final double FACTOR = 0.06;
 
-    public static HeelHeightValue defineHeelHeight(File file) {
+    public static HeightHeelValueResult defineHeelHeight(File file) {
 
 //        System.out.println(file.getName());
         Mat image = Imgcodecs.imread(file.getAbsolutePath());
 
         Mat mask = Mask.getMask(image, false);
-        ImageShow.imshow(mask, "mask");
+//        ImageShow.imshow(mask, "mask");
 
-        ImageShow.imshow(crop(mask), "mask");
+//        ImageShow.imshow(crop(mask), "mask");
 
         Mat cropped = crop(mask);
-        int whcs = 0;
-        int whce = 0;
+
+
         int blc = 0;
         int ws = 0;
         int we = 0;
         int countOfCropping = 1;
-        ImageShow.imshow(cropped, "cropped" + countOfCropping);
+//        ImageShow.imshow(cropped, "cropped" + countOfCropping);
+        double ratio = (double) cropped.rows() / cropped.cols();
+        if (ratio > 0.6 ) {
+            // could be both...
+            return getHeightHeelValueResult(cropped, blc, countOfCropping, ratio);
+        }
+        return new HeightHeelValueResult(HeelHeightValue.Flat, ratio);
 
+
+//        System.out.println("Height to with " + ratio);
+
+    }
+
+    private static HeightHeelValueResult getHeightHeelValueResult(Mat cropped, int blc, int countOfCropping, double ratio) {
+        int ws;
+        int we;
         boolean stop = false;
+        int whce = 0;
+        int whcs = 0;
         while (!stop) {
             for (int i = 0; i < cropped.cols() / 4; i++) {
                 double[] pointF = cropped.get(cropped.rows() - 1, i);
@@ -65,16 +78,16 @@ public class HeelRecognition {
                 ws = 0;
                 we = 0;
                 countOfCropping++;
-                ImageShow.imshow(cropped, "cropped" + countOfCropping);
+//                ImageShow.imshow(cropped, "cropped" + countOfCropping);
             } else {
                 stop = true;
             }
         }
 
         if (blc < (cropped.width() / 10)) {
-            return HeelHeightValue.Flat;
+            return new HeightHeelValueResult(HeelHeightValue.Flat, ratio);
         } else {
-            return HeelHeightValue.Ultra_High;
+            return new HeightHeelValueResult(HeelHeightValue.Ultra_High,ratio);
         }
     }
 
