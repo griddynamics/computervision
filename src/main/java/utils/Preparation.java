@@ -32,26 +32,37 @@ public class Preparation{
         final File[] files = sourceDir.listFiles();
         if (sourceDir.isDirectory() && files != null && files.length != 0) {
             for (File image : files) {
-                final BufferedImage img;
                 if (image.isDirectory()) {
                     continue;
                 }
                 try {
-                    img = ImageIO.read(image);
-                    if (img != null) {
-                        image = getTempFileByName(image.getName(), img, "jpg");
-                        Mat imageMat = Imgcodecs.imread(image.getAbsolutePath());
-                        imageMat = cropByContour(imageMat, Mask.getMask(imageMat, false));
-                        if (!checkSize(imageMat)) {
-                            imageMat = resize(imageMat);
-                        }
-                        Imgcodecs.imwrite(destination + File.separator + image.getName(), imageMat);
-                    }
+                    resizeFile(image, destination, true);
                 } catch (IOException e) {
                     continue;
                 }
             }
         }
+    }
+
+    public static Mat resizeFile(File image) throws IOException {
+        return resizeFile(image, "", false);
+    }
+
+    private static Mat resizeFile(File image, String destination, boolean writeFile) throws IOException {
+        final BufferedImage img = ImageIO.read(image);
+        Mat imageMat = null;
+        if (img != null) {
+            image = getTempFileByName(image.getName(), img, "jpg");
+            imageMat = Imgcodecs.imread(image.getAbsolutePath());
+            imageMat = cropByContour(imageMat, Mask.getMask(imageMat, false));
+            if (!checkSize(imageMat)) {
+                imageMat = resize(imageMat);
+            }
+            if (writeFile) {
+                Imgcodecs.imwrite(destination + File.separator + image.getName(), imageMat);
+            }
+        }
+        return imageMat;
     }
 
     private static File getTempFileByName(String fileName, BufferedImage img, String imageFormat) throws IOException {
