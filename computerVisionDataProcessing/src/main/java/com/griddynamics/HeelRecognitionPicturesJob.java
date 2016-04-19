@@ -1,28 +1,47 @@
 package com.griddynamics;
 
+import com.google.gson.Gson;
+import com.griddynamics.computervision.HeelHeightValue;
+import com.griddynamics.computervision.HeelRecognition;
+import com.griddynamics.pojo.dataProcessing.HeightHeelProductRecognition;
 import com.griddynamics.pojo.dataProcessing.ImageRoleType;
 import com.griddynamics.utils.DataCollectionJobUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.VoidFunction;
+import org.apache.spark.api.java.function.Function2;
+import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
+import org.opencv.core.Core;
+import scala.Tuple2;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by npakhomova on 4/15/16.
  */
-public class CollectHeightHeelHeightPicturesJob {
+public class HeelRecognitionPicturesJob {
+    public static final Gson gson = new Gson();
 
 
     public static final String ROOT_FOLDER = "heightHellPictures/";
+
+    static {
+        try {
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        } catch (Throwable ex) {
+            String libraryPath = System.getProperty("java.library.path");
+            System.err.println("Check opencv dynamic libraries path '" + libraryPath + "'");
+            ex.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) throws IOException {
 
@@ -51,7 +70,7 @@ public class CollectHeightHeelHeightPicturesJob {
         //createRootFolder
         createRootFolder();
 
-        final String query ="select\n" +
+        final String query = "select distinct\n" +
                 "\n" +
                 "   PRODUCT.PRODUCT_ID,\n" +
                 "   PRODUCT.PRODUCT_DESC,\n" +
@@ -71,24 +90,45 @@ public class CollectHeightHeelHeightPicturesJob {
                 "join CATEGORY on CATEGORY.CATEGORY_ID = PRODUCT.CATEGORY_ID\n" +
                 "join UPC_FEATURE on UPC_FEATURE.UPC_ID = UPC.UPC_ID and UPC_FEATURE.COLOR_NORMAL_ID is not null\n" +
                 "join PRODUCT_ATTRIBUTE on   PRODUCT.PRODUCT_ID = PRODUCT_ATTRIBUTE.PRODUCT_ID and PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='422'\n" +
-                "where PRODUCT_IMAGE.PRODUCT_IMAGE_ROLE_TYPE ='ADD' and  PRODUCT_ATTRIBUTE.VARCHAR_VALUE like '%s'";
+                "where PRODUCT_IMAGE.PRODUCT_IMAGE_ROLE_TYPE ='ADD' and  PRODUCT_ATTRIBUTE.VARCHAR_VALUE like '%s' ";
 
-        for (HeelHeightValue value : HeelHeightValue.values()){
-            String format = String.format(query,partitions, value.attrValue);
-            final String path = ROOT_FOLDER + value;
+        for (HeelHeightValue value : HeelHeightValue.values()) {
+            String format = String.format(query, partitions, value.getValue());
+            final String path = ROOT_FOLDER + value.name();
             DataCollectionJobUtils.checkFolderExistance(path);
 
             DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + format + ")").load();
-            selectDataFrame.toJavaRDD().foreach(new VoidFunction<Row>() {
+            List<HeightHeelProductRecognition> result = selectDataFrame.distinct().toJavaRDD().mapToPair(new PairFunction<Row, Integer, HeightHeelProductRecognition>() {
                 @Override
-                public void call(Row row) throws Exception {
-                    Integer image_id = row.<BigDecimal>getAs("IMAGE_ID").intValue();
-                    ImageRoleType imageRoleType = ImageRoleType.valueOf(row.<String>getAs("COLORWAY_IMAGE_ROLE_TYPE"));
+                public Tuple2<Integer, HeightHeelProductRecognition> call(Row v1) throws Exception {
+                    HeightHeelProductRecognition result = new HeightHeelProductRecognition();
+                    Integer image_id = v1.<BigDecimal>getAs("IMAGE_ID").intValue();
+                    ImageRoleType imageRoleType = ImageRoleType.valueOf(v1.<String>getAs("COLORWAY_IMAGE_ROLE_TYPE"));
                     String urlString = DataCollectionJobUtils.buildURL(image_id.intValue(), imageRoleType.getSuffix());
-                    File picture = DataCollectionJobUtils.downOrloadImage(urlString, path + SqlQueryDataCollectionJob.DOWNLOAD_IMAGES_FOLDER);
+                    result.setImageURL(urlString);
+                    result.setProductDescription(v1.<String>getAs("PRODUCT_DESC"));
+                    result.setProductId(v1.<BigDecimal>getAs("PRODUCT_ID").intValue());
+                    result.setHeelAttributeValue(HeelHeightValue.getEnum(v1.<String>getAs("VARCHAR_VALUE")));
 
+                    File picture = DataCollectionJobUtils.downOrloadImage(urlString, path + SqlQueryDataCollectionJob.DOWNLOAD_IMAGES_FOLDER);
+                    result.setIsHeelHeightRecognizedValue(HeelRecognition.defineHeelHeight(picture));
+                    result.calculateWarningLevel();
+                    return new Tuple2<Integer, HeightHeelProductRecognition>(result.getProductId(), result);
                 }
-            });
+            }).reduceByKey(new Function2<HeightHeelProductRecognition, HeightHeelProductRecognition, HeightHeelProductRecognition>() {
+                @Override
+                public HeightHeelProductRecognition call(HeightHeelProductRecognition v1, HeightHeelProductRecognition v2) throws Exception {
+                    return v1;
+                }
+            }).values().collect();
+            try {
+                //write converted json data to a file named "result.json"
+                SqlQueryDataCollectionJob.writeToJson(path + "/result.json", gson.toJson(result));
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
 
 
@@ -107,23 +147,5 @@ public class CollectHeightHeelHeightPicturesJob {
 
     }
 
-     static enum HeelHeightValue {
 
-       Flat("Flat%"),
-       High("High%"),
-       Mid("Mid%"),
-       Low("Low%"),
-       Ultra_High("Ultra%");
-
-         private String attrValue;
-
-         HeelHeightValue(String mid) {
-
-             this.attrValue = mid;
-         }
-
-         public String getAttrValue() {
-             return attrValue;
-         }
-     }
 }

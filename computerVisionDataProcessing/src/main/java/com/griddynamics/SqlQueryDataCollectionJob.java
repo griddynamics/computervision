@@ -76,7 +76,7 @@ public class SqlQueryDataCollectionJob {
             " join PRODUCT_DESTINATION_CHANNEL ON PRODUCT_DESTINATION_CHANNEL.PRODUCT_ID = PRODUCT.PRODUCT_ID AND PRODUCT_DESTINATION_CHANNEL.PUBLISH_FLAG='Y' AND PRODUCT_DESTINATION_CHANNEL.CURRENT_FLAG='Y'\n" +
             " join CATEGORY on CATEGORY.CATEGORY_ID = PRODUCT.CATEGORY_ID\n" +
             " join UPC_FEATURE on UPC_FEATURE.UPC_ID = UPC.UPC_ID and UPC_FEATURE.COLOR_NORMAL_ID is not null\n" +
-            " ";
+            " where CATEGORY.CATEGORY_ID=5991";
 
     public static final String SELECT_QUERY = "select distinct\n" +
             "\n" +
@@ -102,7 +102,7 @@ public class SqlQueryDataCollectionJob {
             "JOIN PRODUCT_DESTINATION_CHANNEL ON PRODUCT_DESTINATION_CHANNEL.PRODUCT_ID = PRODUCT.PRODUCT_ID AND PRODUCT_DESTINATION_CHANNEL.PUBLISH_FLAG='Y' AND PRODUCT_DESTINATION_CHANNEL.CURRENT_FLAG='Y'\n" +
             "join CATEGORY on CATEGORY.CATEGORY_ID = PRODUCT.CATEGORY_ID\n" +
             "join UPC_FEATURE on UPC_FEATURE.UPC_ID = UPC.UPC_ID and UPC_FEATURE.COLOR_NORMAL_ID is not null \n"+
-            "WHERE  CATEGORY.CATEGORY_ID in (%s)  ";
+            "WHERE  CATEGORY.CATEGORY_ID in (%s) ";
 
 
     public static void main(String[] args) throws IOException {
@@ -304,7 +304,7 @@ public class SqlQueryDataCollectionJob {
 
     }
 
-    private static void writeToJson(String fileName, String str) throws IOException {
+    public static void writeToJson(String fileName, String str) throws IOException {
         FileWriter writer = new FileWriter(fileName);
         writer.write(str);
         writer.close();

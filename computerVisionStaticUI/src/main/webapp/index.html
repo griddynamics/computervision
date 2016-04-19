@@ -1,73 +1,96 @@
-
 <!DOCTYPE html>
 <html dir="ltr" lang="ru">
 <head>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" type="text/css" href="stylesheet.css">
-	<link rel="stylesheet" type="text/css" href="pagespeed.css">
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="pagespeed.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
-	<script type="text/javascript" src='http://codepen.io/assets/libs/fullpage/jquery.js'></script>
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script type="text/javascript" src='http://codepen.io/assets/libs/fullpage/jquery.js'></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
 
-	<!-- Magnific Popup core CSS file -->
-	<link rel="stylesheet" href="magnific-popup/magnific-popup.css">
+    <!-- Magnific Popup core CSS file -->
+    <link rel="stylesheet" href="magnific-popup/magnific-popup.css">
 
-	<!-- jQuery 1.7.2+ or Zepto.js 1.0+ -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <!-- jQuery 1.7.2+ or Zepto.js 1.0+ -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-	<!-- Magnific Popup core JS file -->
+    <!-- Magnific Popup core JS file -->
     <!--<script src="magnific-popup/jquery.magnific-popup.js"></script>-->
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
 <body>
 <div id="container-100" style="height: 100%;">
-	<div id="container">
-		<div id="content">
-			<div class="category-details">
-				<div class="category-details-top">
-					<div class="category-h1 input-group" style="margin-top: 20px; margin-left: 20px; width: 103.6%;">
-						<div><h3 style="color:red; text-align: center">Visual attribution Prototype</h3></div>
-						<div class="input-group">
-							<span class="input-group-addon" id="basic-addon3">Category Name:</span>
-							<select id="selected-category-name" class="form-control">
-								<option value="default">Select category</option>
-							</select>
-						</div>
-					</div>
-					<div class="product-filter" style="margin-bottom: 20px; margin-right: -80px;">
-						<div class="sort">
-							<b class="sortb">Filter by color check:</b>
-							<select id="sortSelect">
-								<option value="none">None</option>
-								<option value="0">Correct color</option>
-								<option value="1">Suspicious MultiColor</option>
-								<option value="2">Suspicious color normalr</option>
-								<option value="3">Wrong color normal</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div>
-					<div id="chart_div"></div>
-					<div class="product-list"></div>
-				</div>
-			</div>
-		</div>
-		<!--<div id="spinner" class="spinner" style="display:none;">-->
-		<!--<img id="img-spinner" src="spinner.gif" alt="Loading"/>-->
-		<!--</div>-->
-	</div>
+    <div id="container">
+        <div id="content">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#colorNormal">Color Family attribute</a></li>
+                <li><a data-toggle="tab" href="#heelHeight">Heel height attribute</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="colorNormal" class="tab-pane fade in active">
+                    <div class="category-details">
+
+                        <div class="category-details-top">
+                            <div class="category-h1 input-group"
+                                 style="margin-top: 20px; margin-left: 20px; width: 103.6%;">
+                                <div><h3 style="color:red; text-align: center">Visual attribution Prototype</h3></div>
+
+                                <!--<div class="tab-content">-->
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon3">Category Name:</span>
+                                    <select id="selected-category-name" class="form-control">
+                                        <option value="default">Select category</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="product-filter" style="margin-bottom: 20px; margin-right: -80px;">
+                                <div class="sort">
+                                    <b class="sortb">Filter by color check:</b>
+                                    <select id="sortSelect">
+                                        <option value="none">None</option>
+                                        <option value="0">Correct color</option>
+                                        <option value="1">Suspicious MultiColor</option>
+                                        <option value="2">Suspicious color normalr</option>
+                                        <option value="3">Wrong color normal</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div id="chart_div"></div>
+                            <div class="product-list"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="heelHeight" class="tab-pane fade in active">
+                    <table id="heelHeightTable" class="table">
+
+                        <tbody id="heelHeightTableBody">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--<div id="spinner" class="spinner" style="display:none;">-->
+        <!--<img id="img-spinner" src="spinner.gif" alt="Loading"/>-->
+        <!--</div>-->
+    </div>
 </div>
 
-<div id="decline-dialog" class="modal fade" tabindex="-1" >
+<div id="decline-dialog" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -86,9 +109,12 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Go to product editing</button>
                 <button type="button" class="btn btn-primary">Cancel</button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 <style>
     .well {
@@ -99,13 +125,60 @@
 </body>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-	var selectedCategoryName;
-	$(document).ready(function() {
-		$.getJSON('rootFolder/categories.json', function(resultJson) {
-			$(resultJson).each(function (index, value){
-				$('#selected-category-name').append('<option value="'+value+'">'+value+'</option>');
-			} );
-		});
+    var selectedCategoryName;
+
+    function drawHeelHeighttable() {
+
+        var tableHead = '<thead><tr><th>Prodict ID</th><th>Product Description</th><th>Heel Height Attribute</th><th>Computed Heel Height</th><th>Picture</th> </tr></thead>'
+        $('#heelHeightTable').append(tableHead);
+
+        showForEachAttrValue("Flat");
+        showForEachAttrValue("Ultra_High");
+
+
+    }
+
+
+    function showForEachAttrValue(path) {
+        $.getJSON('heightHellPictures/'+path+'/result.json', function (productList) {
+            $(productList).each(function (index, product) {
+                var tableRow = null;
+                if (product.heelHeightAttributeVerification == 3) {
+                    tableRow += '<tr  class="danger">';
+                } else {
+                    tableRow += '<tr>';
+                }
+                tableRow += '<td>' + product.productId + '</td>';
+                tableRow += '<td>' + product.productDescription + '</td>';
+                tableRow += '<td>' + product.heelAttributeValue + '</td>';
+                tableRow += '<td>' + product.heelHeightAttributeVerification + '</td>';
+                tableRow += '<td><div style="width: 110px; height: 110px">';
+                tableRow += '<a class="image-popup-vertical-fit" href="' + product.imageURL + '">';
+                tableRow += '<img src="' + product.imageURL + '"></a>';
+                tableRow += '</a>';
+                tableRow += '</div></td>';
+                tableRow += '</tr>';
+                $('#heelHeightTableBody').append(tableRow);
+            });
+        });
+    }
+
+
+    $(document).ready(function () {
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var target = $(e.target).attr("href") // activated tab
+            if (target == '#heelHeight') {
+                drawHeelHeighttable();
+            }
+        });
+
+
+        $.getJSON('rootFolder/categories.json', function (resultJson) {
+            $(resultJson).each(function (index, value) {
+                $('#selected-category-name').append('<option value="' + value + '">' + value + '</option>');
+            });
+        });
 
 //        $("body").on("click", ".thumbs-up-button", function () {
 //            $("#accept-dialog").modal();
@@ -115,160 +188,160 @@
 //            $("#decline-dialog").modal();
 //        });
 
-	});
-	$('#sortSelect').change(function() {
-		checkInputAndShowCategoryProducts($('#selected-category-name').val() ,$('#sortSelect').val());
-	});
+    });
+    $('#sortSelect').change(function () {
+        checkInputAndShowCategoryProducts($('#selected-category-name').val(), $('#sortSelect').val());
+    });
 
 
+    google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
 
-	google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
-
-	function drawChart() {
+    function drawChart() {
 
 
-		$.getJSON('rootFolder/' + selectedCategoryName + '/statistic.json', function(statisticJson) {
+        $.getJSON('rootFolder/' + selectedCategoryName + '/statistic.json', function (statisticJson) {
 
 
 
 //
-			var data = new google.visualization.DataTable();
-			data.addColumn('string', 'UPC color recognition');
-			data.addColumn('number', 'Amount');
-			data.addColumn({type: 'string'});
-			data.addColumn('number', 'order')
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'UPC color recognition');
+            data.addColumn('number', 'Amount');
+            data.addColumn({type: 'string'});
+            data.addColumn('number', 'order')
 //
-			data.addRow(['Correct color', statisticJson.totalUpc - statisticJson.suspicious, 'green',0]);
-			data.addRow(['Suspicious Multicolor', statisticJson.amountOfSuspiciousMulti, 'yellow',1]);
-			data.addRow(['Suspicious color normal', statisticJson.amountOfColorNormalIsNoDominant, 'orange',2]);
-			data.addRow(['Wrong color normal', statisticJson.amountOfColorNormalIsNotInList, 'red',3]);
+            data.addRow(['Correct color', statisticJson.totalUpc - statisticJson.suspicious, 'green', 0]);
+            data.addRow(['Suspicious Multicolor', statisticJson.amountOfSuspiciousMulti, 'yellow', 1]);
+            data.addRow(['Suspicious color normal', statisticJson.amountOfColorNormalIsNoDominant, 'orange', 2]);
+            data.addRow(['Wrong color normal', statisticJson.amountOfColorNormalIsNotInList, 'red', 3]);
 ////
-			var chartWrapper = new google.visualization.ChartWrapper({
-				chartType: 'PieChart',
-				containerId: 'chart_div',
-				dataTable: data,
-				options: {
-					is3D: true,
-					slices: {
-						0: { color: 'green' },
-						1: { color: 'yellow' },
-						2: { color: 'orange'},
-						3: { color: 'red'}
-					},
-					chartArea:{left:20,top:0,width:'100%',height:'100%'}
-				}
-			});
-			chartWrapper.draw();
-			function selectHandler(){
-				var selectedItem = chartWrapper.getChart().getSelection()[0];
-				if (selectedItem) {
-					var topping = data.getValue(selectedItem.row, 3);
-					checkInputAndShowCategoryProducts($('#selected-category-name').val() ,topping);
+            var chartWrapper = new google.visualization.ChartWrapper({
+                chartType: 'PieChart',
+                containerId: 'chart_div',
+                dataTable: data,
+                options: {
+                    is3D: true,
+                    slices: {
+                        0: {color: 'green'},
+                        1: {color: 'yellow'},
+                        2: {color: 'orange'},
+                        3: {color: 'red'}
+                    },
+                    chartArea: {left: 20, top: 0, width: '100%', height: '100%'}
+                }
+            });
+            chartWrapper.draw();
+            function selectHandler() {
+                var selectedItem = chartWrapper.getChart().getSelection()[0];
+                if (selectedItem) {
+                    var topping = data.getValue(selectedItem.row, 3);
+                    checkInputAndShowCategoryProducts($('#selected-category-name').val(), topping);
 //					alert('The user selected ' + topping);
-				}
-			}
-			google.visualization.events.addListener(chartWrapper.getChart(), 'select', selectHandler);
-		});
-	}
+                }
+            }
 
-	google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
+            google.visualization.events.addListener(chartWrapper.getChart(), 'select', selectHandler);
+        });
+    }
 
-	$('#selected-category-name').change(function(event){
-		if ($('#selected-category-name').val() != 'Select categoty') {
-			checkInputAndShowCategoryProducts($('#selected-category-name').val() ,$('#sortSelect').val());
-			selectedCategoryName = $('#selected-category-name').val();
-			drawChart();
-		}
-	});
+    google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
 
-	var products;
-	var productsForRepresentation;
-	var page = 1;
-	var limit = 50;
+    $('#selected-category-name').change(function (event) {
+        if ($('#selected-category-name').val() != 'Select categoty') {
+            checkInputAndShowCategoryProducts($('#selected-category-name').val(), $('#sortSelect').val());
+            selectedCategoryName = $('#selected-category-name').val();
+            drawChart();
+        }
+    });
 
-	function checkInputAndShowCategoryProducts(categoryName, filterItem) {
-		if (categoryName) {
+    var products;
+    var productsForRepresentation;
+    var page = 1;
+    var limit = 50;
+
+    function checkInputAndShowCategoryProducts(categoryName, filterItem) {
+        if (categoryName) {
 //			$('#spinner').show();
-			$.getJSON('rootFolder/' + categoryName + '/result.json', function(resultJson) {
-				document.title = categoryName;
-				if (!filterItem || filterItem !== 'none') {
-					products = $.grep(resultJson, function(i, n) {
-						var productFilterCheck = false;
-						i.upcSet = $.grep(i.upcSet, function(inI, inN) {
-							if (inI.computerVisionRecognition == filterItem) {
-								productFilterCheck = true;
-								return true;
-							}
-						});
-						if (productFilterCheck) return true;
-					});
-				} else {
-					products = resultJson;
-				}
-				showProductsAndUpcsFromCategory(filterItem);
+            $.getJSON('rootFolder/' + categoryName + '/result.json', function (resultJson) {
+                document.title = categoryName;
+                if (!filterItem || filterItem !== 'none') {
+                    products = $.grep(resultJson, function (i, n) {
+                        var productFilterCheck = false;
+                        i.upcSet = $.grep(i.upcSet, function (inI, inN) {
+                            if (inI.computerVisionRecognition == filterItem) {
+                                productFilterCheck = true;
+                                return true;
+                            }
+                        });
+                        if (productFilterCheck) return true;
+                    });
+                } else {
+                    products = resultJson;
+                }
+                showProductsAndUpcsFromCategory(filterItem);
 //				$('#spinner').hide();
-			});
-		} else {
-			alert('Wrong category id');
-		}
-	}
+            });
+        } else {
+            alert('Wrong category id');
+        }
+    }
 
-	function getImageSrcForComputerVisionRecognition(value) {
-		if (value.computerVisionRecognition == 0) {
-			return 'lg-success-flat.png';
-		}
-		if (value.computerVisionRecognition == 1) {
-			return 'lg-alertY-flat.png';
-		}
-		if (value.computerVisionRecognition == 2) {
-			return 'lg-alertO-flat.png';
-		}
-		if (value.computerVisionRecognition == 3) {
-			return 'lg-failed-flat.png';
-		}
-	}
+    function getImageSrcForComputerVisionRecognition(value) {
+        if (value.computerVisionRecognition == 0) {
+            return 'lg-success-flat.png';
+        }
+        if (value.computerVisionRecognition == 1) {
+            return 'lg-alertY-flat.png';
+        }
+        if (value.computerVisionRecognition == 2) {
+            return 'lg-alertO-flat.png';
+        }
+        if (value.computerVisionRecognition == 3) {
+            return 'lg-failed-flat.png';
+        }
+    }
 
-	function getImageTitleForComputerVisionRecognition(value) {
-		if (value.computerVisionRecognition == 0) {
-			return 'COLOR_NORMAL is equal to dominant color';
-		}
-		if (value.computerVisionRecognition == 1) {
-			return ' COLOR_NORMAL is not MULTI and we have no dominant';
-		}
-		if (value.computerVisionRecognition == 2) {
-			return 'COLOR_NORMAL is not dominant in CV_COLORS';
-		}
-		if (value.computerVisionRecognition == 3) {
-			return 'COLOR_NORMAL does not present in CV_COLORS';
-		}
-	}
+    function getImageTitleForComputerVisionRecognition(value) {
+        if (value.computerVisionRecognition == 0) {
+            return 'COLOR_NORMAL is equal to dominant color';
+        }
+        if (value.computerVisionRecognition == 1) {
+            return ' COLOR_NORMAL is not MULTI and we have no dominant';
+        }
+        if (value.computerVisionRecognition == 2) {
+            return 'COLOR_NORMAL is not dominant in CV_COLORS';
+        }
+        if (value.computerVisionRecognition == 3) {
+            return 'COLOR_NORMAL does not present in CV_COLORS';
+        }
+    }
 
-	function changePage(ths) {
-		page = $(ths).attr('value');
-		var fromCountProduct = (parseInt($(ths).attr('value')) - 1)*limit;
-		var first = fromCountProduct < 0 ? 0 : fromCountProduct;
-		productsForRepresentation = products.slice(parseInt(first), parseInt(limit)+parseInt(first));
-		showProductsAndUpcsFromCategory('none', productsForRepresentation);
-		window.scrollTo(0, 0);
-	}
+    function changePage(ths) {
+        page = $(ths).attr('value');
+        var fromCountProduct = (parseInt($(ths).attr('value')) - 1) * limit;
+        var first = fromCountProduct < 0 ? 0 : fromCountProduct;
+        productsForRepresentation = products.slice(parseInt(first), parseInt(limit) + parseInt(first));
+        showProductsAndUpcsFromCategory('none', productsForRepresentation);
+        window.scrollTo(0, 0);
+    }
 
-	function getPaginationDiv(length) {
-		var paginationDiv = '<div class="pagination">';
-		paginationDiv += '<div class="links">';
+    function getPaginationDiv(length) {
+        var paginationDiv = '<div class="pagination">';
+        paginationDiv += '<div class="links">';
 
-		var pagesAmount = Math.ceil(length / limit);
-		for (var i = 1; i <= pagesAmount; i++) {
-			if (i == page) {
-				paginationDiv += '<b>'+page+'</b>';
-				continue;
-			}
-			paginationDiv += '<a value="'+i+'" onclick="changePage(this)">'+i+'</a>';
-		}
-		paginationDiv += '</div>';
-		paginationDiv += '<div class="results">Showing '+Math.min(((page-1)*limit + 1), length)+' to '+Math.min(limit*page, length+page*limit, length)+' from '+length+' (pages: '+pagesAmount+')</div>';
-		paginationDiv += '</div>';
-		return paginationDiv;
-	}
+        var pagesAmount = Math.ceil(length / limit);
+        for (var i = 1; i <= pagesAmount; i++) {
+            if (i == page) {
+                paginationDiv += '<b>' + page + '</b>';
+                continue;
+            }
+            paginationDiv += '<a value="' + i + '" onclick="changePage(this)">' + i + '</a>';
+        }
+        paginationDiv += '</div>';
+        paginationDiv += '<div class="results">Showing ' + Math.min(((page - 1) * limit + 1), length) + ' to ' + Math.min(limit * page, length + page * limit, length) + ' from ' + length + ' (pages: ' + pagesAmount + ')</div>';
+        paginationDiv += '</div>';
+        return paginationDiv;
+    }
 
     function getThumbsPanel(value) {
 
@@ -278,134 +351,134 @@
 
         var thumbs =
                 '<div style="text-align: center">' +
-                    '<div class="btn-group">' +
-                    '    <button type="button" class="thumbs-up-button btn btn-lg btn-default" aria-label="Left Align">' +
-                    '        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">' +
-                    '        </span>' +
-                    '    </button>' +
-                    '    <button type="button" class="thumbs-down-button btn btn-lg btn-default" aria-label="Center Align">' +
-                    '        <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>' +
-                    '    </button>' +
-                    '</div>' +
+                '<div class="btn-group">' +
+                '    <button type="button" class="thumbs-up-button btn btn-lg btn-default" aria-label="Left Align">' +
+                '        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">' +
+                '        </span>' +
+                '    </button>' +
+                '    <button type="button" class="thumbs-down-button btn btn-lg btn-default" aria-label="Center Align">' +
+                '        <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>' +
+                '    </button>' +
+                '</div>' +
                 '</div>';
 
         return thumbs;
     }
 
-	function showProductsAndUpcsFromCategory(filterItem, inProducts) {
-		$('.product').remove();
-		$('.pagination').remove();
-		$('.product-list').first().before(getPaginationDiv(products.length)).after(getPaginationDiv(products.length));
-		var start = (parseInt(page) - 1) * limit;
-		productsForRepresentation = inProducts ? inProducts : products.slice(start, start + limit);
-		$(productsForRepresentation).each(function(index, product) {
-			var productDiv = '<div class="product-list product"><a href="http://mdc2vr5016:8080/UI/stella/webproduct/view-single.html?id='+product.productID+'"><h3 style="margin-left: 20px;">Product '+product.productID+'</h3></a><p style="margin-left: 20px;">Description: '+product.productDescription+'</p></div>';
-			$('.product-list').first().append(productDiv);
-			var count = 0;
+    function showProductsAndUpcsFromCategory(filterItem, inProducts) {
+        $('.product').remove();
+        $('.pagination').remove();
+        $('.product-list').first().before(getPaginationDiv(products.length)).after(getPaginationDiv(products.length));
+        var start = (parseInt(page) - 1) * limit;
+        productsForRepresentation = inProducts ? inProducts : products.slice(start, start + limit);
+        $(productsForRepresentation).each(function (index, product) {
+            var productDiv = '<div class="product-list product"><a href="http://mdc2vr5016:8080/UI/stella/webproduct/view-single.html?id=' + product.productID + '"><h3 style="margin-left: 20px;">Product ' + product.productID + '</h3></a><p style="margin-left: 20px;">Description: ' + product.productDescription + '</p></div>';
+            $('.product-list').first().append(productDiv);
+            var count = 0;
 
-			$(product.upcSet).each(function(index, value) {
-				if (filterItem != 'none' && value.computerVisionRecognition != filterItem) return false;
-				var upcDiv = '<div>';
+            $(product.upcSet).each(function (index, value) {
+                if (filterItem != 'none' && value.computerVisionRecognition != filterItem) return false;
+                var upcDiv = '<div>';
 
-				upcDiv += '<div class="left">';
-				upcDiv += '<table style="width:1100px">';
-				upcDiv +='<tr><th>UPC</th><th>Color Name</th><th>Color Family</th><th>Primary picture</th><th>CV Color</th><th>Swatch Picture</th><th>CV Color</th><th>Color check</th></tr>';
-				upcDiv += '<tr>';
-				upcDiv += '<td>'+value.upcId+'</td>';
-				upcDiv += '<td><p>'+value.displayColorName+'</p></td>';
-				upcDiv += '<td><p style="font-size:130%;"><b>'+value.colorNormal+'</b></p></td>';
-				upcDiv += '<td>';
-				upcDiv += '<div class="image">';
-				upcDiv += '<a class="image-popup-vertical-fit" href="'+value.images['CPRI'].url+'">';
-				upcDiv += '<img src="'+ value.images['CPRI'].url +'"></a>';
-				upcDiv += '</a>';
-				upcDiv += '</div>';
-				upcDiv += '</td>';
-				upcDiv += '<td>';
-				upcDiv += '<div class="description" style="white-space: pre; height: 100%;">';
-				$.each(value.images['CPRI'].computerVisionResult, function(index, colorDescription) {
-					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'%'
-				});
-				upcDiv +='</div>';
-				upcDiv += '</td>';
-				upcDiv += '<td>';
-				var additionalImage = null;
-				if(value.images['CSW'] !=null){
-					 additionalImage = value.images['CSW'];
-				} else if (value.images['CADD']!=null ){
-					additionalImage = value.images['CADD'];
-				}
-				if (additionalImage !=null ) {
-					upcDiv += '<div class="image">';
-					upcDiv += '<a class="image-popup-vertical-fit" href="' + additionalImage.url + '">';
-					upcDiv += '<img src="' + additionalImage.url + '"></a>';
-					upcDiv += '</a>';
-					upcDiv += '</div>';
-				}
+                upcDiv += '<div class="left">';
+                upcDiv += '<table style="width:1100px">';
+                upcDiv += '<tr><th>UPC</th><th>Color Name</th><th>Color Family</th><th>Primary picture</th><th>CV Color</th><th>Swatch Picture</th><th>CV Color</th><th>Color check</th></tr>';
+                upcDiv += '<tr>';
+                upcDiv += '<td>' + value.upcId + '</td>';
+                upcDiv += '<td><p>' + value.displayColorName + '</p></td>';
+                upcDiv += '<td><p style="font-size:130%;"><b>' + value.colorNormal + '</b></p></td>';
+                upcDiv += '<td>';
+                upcDiv += '<div class="image">';
+                upcDiv += '<a class="image-popup-vertical-fit" href="' + value.images['CPRI'].url + '">';
+                upcDiv += '<img src="' + value.images['CPRI'].url + '"></a>';
+                upcDiv += '</a>';
+                upcDiv += '</div>';
+                upcDiv += '</td>';
+                upcDiv += '<td>';
+                upcDiv += '<div class="description" style="white-space: pre; height: 100%;">';
+                $.each(value.images['CPRI'].computerVisionResult, function (index, colorDescription) {
+                    upcDiv += '\n<b>color:</b> ' + colorDescription.name + ' ' + colorDescription.percent + '%'
+                });
+                upcDiv += '</div>';
+                upcDiv += '</td>';
+                upcDiv += '<td>';
+                var additionalImage = null;
+                if (value.images['CSW'] != null) {
+                    additionalImage = value.images['CSW'];
+                } else if (value.images['CADD'] != null) {
+                    additionalImage = value.images['CADD'];
+                }
+                if (additionalImage != null) {
+                    upcDiv += '<div class="image">';
+                    upcDiv += '<a class="image-popup-vertical-fit" href="' + additionalImage.url + '">';
+                    upcDiv += '<img src="' + additionalImage.url + '"></a>';
+                    upcDiv += '</a>';
+                    upcDiv += '</div>';
+                }
 
-				upcDiv += '</td>';
-				upcDiv += '<td>';
-				upcDiv += '<div class="description" style="white-space: pre; height: 100%;">';
-				if (additionalImage !=null ) {
-				$.each(additionalImage.computerVisionResult, function(index, colorDescription) {
-					upcDiv += '\n<b>color:</b> '+colorDescription.name+' '+ colorDescription.percent+'%'
-				});
-				}
-				upcDiv += '</div>';
-				upcDiv += '</td>';
-				upcDiv += '<td>';
-				upcDiv += '<div class="image">';
+                upcDiv += '</td>';
+                upcDiv += '<td>';
+                upcDiv += '<div class="description" style="white-space: pre; height: 100%;">';
+                if (additionalImage != null) {
+                    $.each(additionalImage.computerVisionResult, function (index, colorDescription) {
+                        upcDiv += '\n<b>color:</b> ' + colorDescription.name + ' ' + colorDescription.percent + '%'
+                    });
+                }
+                upcDiv += '</div>';
+                upcDiv += '</td>';
+                upcDiv += '<td>';
+                upcDiv += '<div class="image">';
 
-				upcDiv += '<img src="' + getImageSrcForComputerVisionRecognition(value) + '" style="margin: 10px 0px 10px 8px;" title="' + getImageTitleForComputerVisionRecognition(value) + '"></img>';
+                upcDiv += '<img src="' + getImageSrcForComputerVisionRecognition(value) + '" style="margin: 10px 0px 10px 8px;" title="' + getImageTitleForComputerVisionRecognition(value) + '"></img>';
 
-				upcDiv += getThumbsPanel(value);
-				upcDiv += '</div>';
-				upcDiv += '</td>';
+                upcDiv += getThumbsPanel(value);
+                upcDiv += '</div>';
+                upcDiv += '</td>';
 //
-				upcDiv += '</tr>';
-
-//
-				upcDiv += '</table>';
+                upcDiv += '</tr>';
 
 //
-				$('.product-list').last().append(upcDiv);
-				count++;
-			});
-			if (count == 0) $('.product-list').last().remove();
-		});
+                upcDiv += '</table>';
 
-		$('.image-popup-vertical-fit').magnificPopup({
-			type: 'image',
-			closeOnContentClick: true,
-			mainClass: 'mfp-img-mobile',
-			image: {
-				verticalFit: true
-			}
+//
+                $('.product-list').last().append(upcDiv);
+                count++;
+            });
+            if (count == 0) $('.product-list').last().remove();
+        });
 
-		});
+        $('.image-popup-vertical-fit').magnificPopup({
+            type: 'image',
+            closeOnContentClick: true,
+            mainClass: 'mfp-img-mobile',
+            image: {
+                verticalFit: true
+            }
 
-		$('.image-popup-fit-width').magnificPopup({
-			type: 'image',
-			closeOnContentClick: true,
-			image: {
-				verticalFit: false
-			}
-		});
+        });
 
-		$('.image-popup-no-margins').magnificPopup({
-			type: 'image',
-			closeOnContentClick: true,
-			closeBtnInside: false,
-			fixedContentPos: true,
-			mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
-			image: {
-				verticalFit: true
-			},
-			zoom: {
-				enabled: true,
-				duration: 300 // don't foget to change the duration also in CSS
-			}
-		});
-	}
+        $('.image-popup-fit-width').magnificPopup({
+            type: 'image',
+            closeOnContentClick: true,
+            image: {
+                verticalFit: false
+            }
+        });
+
+        $('.image-popup-no-margins').magnificPopup({
+            type: 'image',
+            closeOnContentClick: true,
+            closeBtnInside: false,
+            fixedContentPos: true,
+            mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
+            image: {
+                verticalFit: true
+            },
+            zoom: {
+                enabled: true,
+                duration: 300 // don't foget to change the duration also in CSS
+            }
+        });
+    }
 </script>
 </html>

@@ -89,7 +89,8 @@ public class Colors {
                 new double[]{+47.84, +68.00, +51.00},
                 new double[]{+46.27, +68.00, +55.00},
                 new double[]{+48.62, +69.00, +51.00},
-                new double[]{+47.45, +69.00, +54.00}));
+                new double[]{+47.45, +69.00, +54.00},
+                new double[]{7.0, 26.0, 10.0}));
 
         COLORS_PALETTE.put(BLUE, Arrays.asList(
                 new double[]{+35.00, -02.30, -21.88},
@@ -312,7 +313,8 @@ public class Colors {
                 new double[]{+76.86, +36.00, -12.00},
                 new double[]{+75.29, +37.00, -12.00},
                 new double[]{+72.54, +40.00, -12.00},
-                new double[]{51.0, 70.0, 12.0 }));
+                new double[]{51.0, 70.0, 12.0 },
+                new double[]{ 86.0, 9.0, 3.0 }));
 
 
         COLORS_PALETTE.put(PURPLE, Arrays.asList(
