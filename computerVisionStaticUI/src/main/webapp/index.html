@@ -127,6 +127,34 @@
 <script type="text/javascript">
     var selectedCategoryName;
 
+
+
+    $(document).ready(function () {
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var target = $(e.target).attr("href") // activated tab
+            if (target == '#heelHeight') {
+                drawHeelHeighttable();
+            } else {
+
+                $.getJSON('rootFolder/categories.json', function (resultJson) {
+                    $(resultJson).each(function (index, value) {
+                        $('#selected-category-name').append('<option value="' + value + '">' + value + '</option>');
+                    });
+
+                    $('#sortSelect').change(function () {
+                        checkInputAndShowCategoryProducts($('#selected-category-name').val(), $('#sortSelect').val());
+                    });
+
+
+                    google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
+                });
+
+            }
+        });
+    });
+
+
     function drawHeelHeighttable() {
 
         var tableHead = '<thead><tr><th>Prodict ID</th><th>Product Description</th><th>Heel Height Attribute</th><th>Computed Heel Height</th><th>Picture</th> </tr></thead>'
@@ -163,38 +191,6 @@
         });
     }
 
-
-    $(document).ready(function () {
-
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            var target = $(e.target).attr("href") // activated tab
-            if (target == '#heelHeight') {
-                drawHeelHeighttable();
-            }
-        });
-
-
-        $.getJSON('rootFolder/categories.json', function (resultJson) {
-            $(resultJson).each(function (index, value) {
-                $('#selected-category-name').append('<option value="' + value + '">' + value + '</option>');
-            });
-        });
-
-//        $("body").on("click", ".thumbs-up-button", function () {
-//            $("#accept-dialog").modal();
-//        });
-//
-//        $("body").on("click", ".thumbs-down-button", function () {
-//            $("#decline-dialog").modal();
-//        });
-
-    });
-    $('#sortSelect').change(function () {
-        checkInputAndShowCategoryProducts($('#selected-category-name').val(), $('#sortSelect').val());
-    });
-
-
-    google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
 
     function drawChart() {
 
