@@ -17,7 +17,7 @@ public class HeelRecognition{
 
     private static final double FACTOR = 0.06;
 
-    public static boolean isHighHillByHaar(File imageFile, String cascadePath) throws IOException {
+    public static boolean isHighHeelByHaar(File imageFile, String cascadePath) throws IOException {
         boolean result = false;
 //        Mat image = Preparation.resizeFile(imageFile);
         Mat image = Imgcodecs.imread(imageFile.getAbsolutePath());
