@@ -10,14 +10,22 @@ import processing.Mask;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Preparation{
 
-    private static final int TARGET_DIM = 100;
+    private static final int OBJECTS_COUNT = 1;
+
+    private static final int RECTANGLE_X = 0;
+
+    private static final int RECTANGLE_Y = 0;
+
+    private static final int TARGET_DIM = 80;
 
     public static void prepare(String source, String destination) {
         File sourceDir = new File(source);
@@ -103,5 +111,26 @@ public class Preparation{
         } else {
             return image;
         }
+    }
+
+    public static void fillFileContainer(File sourceFolder, File targetFile, String relativePathToFile, boolean isPositive) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(targetFile, true));
+        for (File file : sourceFolder.listFiles()) {
+            if (file.isFile()) {
+                BufferedImage bimg = ImageIO.read(file);
+                int width = bimg.getWidth();
+                int height = bimg.getHeight();
+                StringBuilder stringBuilder = new StringBuilder(relativePathToFile).append(file.getName());
+                if (isPositive) {
+                    stringBuilder.append("  ").append(OBJECTS_COUNT)
+                            .append("  ").append(RECTANGLE_X)
+                            .append(" ").append(RECTANGLE_Y)
+                            .append(" ").append(width).append(" ").append(height);
+                }
+                writer.write(stringBuilder.toString());
+                writer.newLine();
+            }
+        }
+        writer.close();
     }
 }
