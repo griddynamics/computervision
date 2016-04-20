@@ -135,8 +135,8 @@ public class Preparation{
                 if (isPositive) {
                     stringBuilder.append("  ").append(OBJECTS_COUNT)
                             .append("  ").append(RECTANGLE_X)
-                            .append(" ").append(RECTANGLE_Y)
-                            .append(" ").append(width).append(" ").append(height);
+                            .append(" ").append(height-height/2-1)
+                            .append(" ").append(width/3).append(" ").append(height/2);
                 }
                 writer.write(stringBuilder.toString());
                 writer.newLine();

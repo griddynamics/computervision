@@ -7,6 +7,7 @@ import org.opencv.core.Rect;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
+import utils.Preparation;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +20,8 @@ public class HeelRecognition{
 
     public static boolean isHighHeelByHaar(File imageFile, String cascadePath) throws IOException {
         boolean result = false;
-//        Mat image = Preparation.resizeFile(imageFile);
-        Mat image = Imgcodecs.imread(imageFile.getAbsolutePath());
+        Mat image = Preparation.resizeFile(imageFile);
+//        Mat image = Imgcodecs.imread(imageFile.getAbsolutePath());
         Mat grey = new Mat();
         Imgproc.cvtColor(image, grey, Imgproc.COLOR_BGR2GRAY);
         CascadeClassifier cascadeClassifier = new CascadeClassifier(cascadePath);
