@@ -75,7 +75,8 @@
                     </div>
                 </div>
                 <div id="heelHeight" class="tab-pane fade in active">
-                    <div class="product-filter" style="margin-bottom: 20px; margin-right: -80px;">
+                    <div id="myTabContainer" style="display:none">
+                    <div class="product-filter" style="margin-bottom: 20px;">
                         <div class="sort">
                             <b class="sortb">Filter </b>
                             <select id="sortSelectHeelAttribute">
@@ -86,18 +87,36 @@
                         </div>
                     </div>
                     <!-- another tab -->
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#Flat">flat</a></li>
-                        <li><a data-toggle="tab"  href="#Ultra_High">height</a></li>
-                    </ul>
-                    <div id="Flat"  class="tab-pane fade in active">
-                        <table id="heelTableFlat" class="table"/>
 
-                    </div>
-                    <div id="Ultra_High"  class="tab-pane fade in active">
-                        <table id="heelTableUltra_High" class="table"/>
-                    </div>
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#Flat">Flat</a></li>
+                            <li><a data-toggle="tab" href="#Low">Low</a></li>
+                            <li><a data-toggle="tab" href="#Mid">Mid</a></li>
+                            <li><a data-toggle="tab" href="#High">Height</a></li>
+                            <li><a data-toggle="tab" href="#Ultra_High">Ultra Height</a></li>
+                        </ul>
 
+
+                        <div id="Flat" class="tab-pane fade in active">
+                            <table id="heelTableFlat" class="table"/>
+
+                        </div>
+                        <div id="Low" class="tab-pane fade in active">
+                            <table id="heelTableLow" class="table"/>
+
+                        </div>
+                        <div id="Mid" class="tab-pane fade in active">
+                            <table id="heelTableMid" class="table"/>
+
+                        </div>
+                        <div id="High" class="tab-pane fade in active">
+                            <table id="heelTableHigh" class="table"/>
+
+                        </div>
+                        <div id="Ultra_High" class="tab-pane fade in active">
+                            <table id="heelTableUltra_High" class="table"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -151,7 +170,8 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
     var selectedCategoryName;
-    var heelfilterValue
+    var currentHeelfilterValue='none';
+    var currentTabSelected ='#Flat';
 
 
 
@@ -169,31 +189,56 @@
             google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
         });
 
+        $('#sortSelectHeelAttribute').change(function () {
+            currentHeelfilterValue = $('#sortSelectHeelAttribute').val();
+//            alert (currentHeelfilterValue);
+//            alert (currentTabSelected);
+            drawHeelHeighttable(currentTabSelected,currentHeelfilterValue);
+        });
+
         $('li a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            heelfilterValue = $('#sortSelectHeelAttribute').val();
 
+            currentTabSelected = $(e.target).attr("href");
+             if(currentTabSelected == '#heelHeight'){
+                 $('#myTabContainer').show();
+                 drawHeelHeighttable('#Flat',currentHeelfilterValue);
+             } else if (currentTabSelected == '#colorNormal'){
+                 $('#myTabContainer').hide();
+             }
 
-            $('#sortSelectHeelAttribute').change(function () {
-                heelfilterValue = $('#sortSelectHeelAttribute').val();
+            if (currentTabSelected == '#Flat'
+            || currentTabSelected== '#Ultra_High'
+            || currentTabSelected == '#High'
+            || currentTabSelected == '#Low'
+            || currentTabSelected == '#Mid' ) {
+//                alert (currentHeelfilterValue);
+//                alert (currentTabSelected);
 
-                drawHeelHeighttable(target,heelfilterValue);
-            });
-
-            var target = $(e.target).attr("href"); // activated tab
-            if (target == '#Flat' || target== '#Ultra_High') {
-
-                drawHeelHeighttable(target,heelfilterValue);
+                drawHeelHeighttable(currentTabSelected,currentHeelfilterValue);
             }
         });
+
+
     });
 
 
     function drawHeelHeighttable(source, filterValue) {
         var tableName = '#heelTable'+source.substr(1);
+        $('#heelHeightTableBody').empty();
         $('#heelTableFlat').empty();
+        $('#heelTableHigh').empty();
+        $('#heelTableLow').empty();
+        $('#heelTableMid').empty();
         $('#heelTableUltra_High').empty();
+//        alert(source);
 
-        var tableHead = '<thead><tr><th>Prodict ID</th><th>Product Description</th><th>Heel Height Attribute</th><th>Computed Heel Height</th><th>ratio</th><th>Picture</th> </tr></thead>'
+        var tableHead = '<thead><tr><th>Prodict ID</th>' +
+                '<th>Product Description</th>' +
+                '<th>Heel Height Attribute</th>' +
+//                '<th>Computed Heel Height</th>' +
+//                '<th>ratio</th>' +
+                '<th>Picture</th> ' +
+                '</tr></thead>'
 
         $(tableName).append(tableHead);
         $(tableName).append('<tbody id="heelHeightTableBody"></tbody>');
@@ -211,9 +256,11 @@
             $(productList).each(function (index, product) {
                 var isDisplay = true;
                 if (filterValue == 'correct'){
-                    isDisplay = product.heelAttributeValue == product.cvRecognizedValue
+//                    alert('blabal'+product.passedRecognition == true);
+                    isDisplay = product.passedRecognition == true;
+
                 } else if (filterValue == 'incorrect'){
-                    isDisplay = product.heelAttributeValue != product.cvRecognizedValue
+                    isDisplay = product.passedRecognition == false;
                 }
                 if (isDisplay) {
                     var tableRow = null;
@@ -224,9 +271,9 @@
                     }
                     tableRow += '<td>' + product.productId + '</td>';
                     tableRow += '<td>' + product.productDescription + '</td>';
-                    tableRow += '<td>' + product.heelAttributeValue + '</td>';
-                    tableRow += '<td>' + product.cvRecognizedValue + '</td>';
-                    tableRow += '<td>' + product.dimentionsRatio + '</td>';
+                    tableRow += '<td>' + product.originalHeelAttributeValue + '</td>';
+//                    tableRow += '<td>' + product.cvRecognizedValue + '</td>';
+//                    tableRow += '<td>' + product.dimentionsRatio + '</td>';
                     tableRow += '<td><div style="width: 110px; height: 110px">';
                     tableRow += '<a class="image-popup-vertical-fit" href="' + product.imageURL + '">';
                     tableRow += '<img src="' + product.imageURL + '"></a>';

@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeelRecognition {
+public class HeelRecognitionUtil {
     private static final double FACTOR = 0.06;
 
     public static HeightHeelValueResult defineHeelHeight(File file) {
@@ -26,24 +26,21 @@ public class HeelRecognition {
         Mat cropped = crop(mask);
 
 
-        int blc = 0;
-        int ws = 0;
-        int we = 0;
-        int countOfCropping = 1;
+
 //        ImageShow.imshow(cropped, "cropped" + countOfCropping);
         double ratio = (double) cropped.rows() / cropped.cols();
+        System.out.println("Ration is : " + ratio);
         if (ratio > 0.6 ) {
             // could be both...
-            return getHeightHeelValueResult(cropped, blc, countOfCropping, ratio);
+            return getHeightHeelValueResult(cropped,  ratio);
         }
         return new HeightHeelValueResult(HeelHeightValue.Flat, ratio);
 
-
-//        System.out.println("Height to with " + ratio);
-
     }
 
-    private static HeightHeelValueResult getHeightHeelValueResult(Mat cropped, int blc, int countOfCropping, double ratio) {
+    public static HeightHeelValueResult getHeightHeelValueResult(Mat cropped,  double ratio) {
+        int blc = 0;
+        int countOfCropping = 1;
         int ws;
         int we;
         boolean stop = false;
@@ -91,7 +88,7 @@ public class HeelRecognition {
         }
     }
 
-    private static Mat crop(Mat image) {
+    public static Mat crop(Mat image) {
 
         Mat result = image.clone();
         List<MatOfPoint> contours = new ArrayList<MatOfPoint>();

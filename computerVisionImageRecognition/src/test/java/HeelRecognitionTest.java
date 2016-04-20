@@ -1,5 +1,5 @@
 import com.griddynamics.computervision.DataCollectionJobUtils;
-import com.griddynamics.computervision.HeelRecognition;
+import com.griddynamics.computervision.HeelRecognitionUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.opencv.core.Core;
@@ -30,7 +30,7 @@ public class HeelRecognitionTest {
 
 
 //        BodyRecognitionResult bodyRecognitionResult = BodyRecognition.detectFace(imageFile);
-        System.out.println("Is Boot with heel " + HeelRecognition.defineHeelHeight(imageFile));
+        System.out.println("Is Boot with heel " + HeelRecognitionUtil.defineHeelHeight(imageFile));
 
 
     }
@@ -43,21 +43,21 @@ public class HeelRecognitionTest {
 
 
 //        BodyRecognitionResult bodyRecognitionResult = BodyRecognition.detectFace(imageFile);
-        System.out.println("Is Boot with heel " + HeelRecognition.defineHeelHeight(imageFile));
+        System.out.println("Is Boot with heel " + HeelRecognitionUtil.defineHeelHeight(imageFile));
 
 
     }
 
 
     @Test
-    @Ignore
+//    @Ignore
     public void heelHeighPlaform() throws IOException {
-        String heightHeel = "http://raymcompreviewprod/02/98/25/76/final/2982576-214x261.jpg";
+        String heightHeel = "http://raymcompreviewprod/03/32/70/69/final/3327069-214x261.jpg";
         File imageFile = DataCollectionJobUtils.downOrloadImage(heightHeel, new File(".").getCanonicalPath());
 
 
 //        BodyRecognitionResult bodyRecognitionResult = BodyRecognition.detectFace(imageFile);
-        System.out.println("Is Boot with heel " + HeelRecognition.defineHeelHeight(imageFile));
+        System.out.println("Is Boot with heel " + HeelRecognitionUtil.defineHeelHeight(imageFile));
 
 
     }

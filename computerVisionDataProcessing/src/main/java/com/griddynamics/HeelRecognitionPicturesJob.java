@@ -2,8 +2,6 @@ package com.griddynamics;
 
 import com.google.gson.Gson;
 import com.griddynamics.computervision.HeelHeightValue;
-import com.griddynamics.computervision.HeelRecognition;
-import com.griddynamics.computervision.HeightHeelValueResult;
 import com.griddynamics.pojo.dataProcessing.HeightHeelProductRecognition;
 import com.griddynamics.pojo.dataProcessing.ImageRoleType;
 import com.griddynamics.utils.DataCollectionJobUtils;
@@ -93,12 +91,18 @@ public class HeelRecognitionPicturesJob {
                 "join PRODUCT_ATTRIBUTE on   PRODUCT.PRODUCT_ID = PRODUCT_ATTRIBUTE.PRODUCT_ID and PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='422'\n" +
                 "where PRODUCT_IMAGE.PRODUCT_IMAGE_ROLE_TYPE ='ADD' and  PRODUCT_ATTRIBUTE.VARCHAR_VALUE like '%s' ";
 
-        for (HeelHeightValue value : HeelHeightValue.values()) {
-            String format = String.format(query, partitions, value.getValue());
-            final String path = ROOT_FOLDER + value.name();
+        for (final HeelHeightValue attributeValue : HeelHeightValue.values()) {
+            String queryString = String.format(query, partitions, attributeValue.getValue());
+            // todo do it in buildes
+            if (attributeValue.getExclusionCondition()!=null){
+                queryString = queryString + attributeValue.getExclusionCondition();
+            }
+            System.out.println(queryString);
+
+            final String path = ROOT_FOLDER + attributeValue.name();
             DataCollectionJobUtils.checkFolderExistance(path);
 
-            DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + format + ")").load();
+            DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + queryString + ")").load();
             List<HeightHeelProductRecognition> result = selectDataFrame.distinct().toJavaRDD().mapToPair(new PairFunction<Row, Integer, HeightHeelProductRecognition>() {
                 @Override
                 public Tuple2<Integer, HeightHeelProductRecognition> call(Row v1) throws Exception {
@@ -109,13 +113,11 @@ public class HeelRecognitionPicturesJob {
                     result.setImageURL(urlString);
                     result.setProductDescription(v1.<String>getAs("PRODUCT_DESC"));
                     result.setProductId(v1.<BigDecimal>getAs("PRODUCT_ID").intValue());
-                    result.setHeelAttributeValue(HeelHeightValue.getEnum(v1.<String>getAs("VARCHAR_VALUE")));
+                    result.setOriginalHeelAttributeValue(HeelHeightValue.getEnum(v1.<String>getAs("VARCHAR_VALUE")));
 
                     File picture = DataCollectionJobUtils.downOrloadImage(urlString, path + SqlQueryDataCollectionJob.DOWNLOAD_IMAGES_FOLDER);
-                    HeightHeelValueResult heightHeelValueResult = HeelRecognition.defineHeelHeight(picture);
-                    result.setCvRecognizedValue(heightHeelValueResult.getValue());
-                    result.setDimentionsRatio(heightHeelValueResult.getHeigthWithDimention());
-                    result.calculateWarningLevel();
+
+                    result.setPassedRecognition(attributeValue.getAttributeStrategy().doesApply(picture));
                     return new Tuple2<Integer, HeightHeelProductRecognition>(result.getProductId(), result);
                 }
             }).reduceByKey(new Function2<HeightHeelProductRecognition, HeightHeelProductRecognition, HeightHeelProductRecognition>() {

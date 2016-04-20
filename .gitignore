@@ -13,6 +13,8 @@
 # Package Files #
 *.war
 *.ear
+attributesTraining
+*.jpg
 target
 heightHellPictures
 computerVisionStaticUI_shapes
