@@ -2,16 +2,36 @@ package com.griddynamics.computervision;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HeelRecognitionUtil {
     private static final double FACTOR = 0.06;
+
+    public static boolean isHighHeelByHaar(File imageFile, String cascadePath) throws IOException {
+        boolean result = false;
+        Mat image = Preparation.resizeFile(imageFile);
+//        Mat image = Imgcodecs.imread(imageFile.getAbsolutePath());
+        Mat grey = new Mat();
+        Imgproc.cvtColor(image, grey, Imgproc.COLOR_BGR2GRAY);
+        CascadeClassifier cascadeClassifier = new CascadeClassifier();
+        cascadeClassifier.load(cascadePath);
+        MatOfRect matOfRect = new MatOfRect();
+        cascadeClassifier.detectMultiScale(grey, matOfRect);
+
+        if (matOfRect.toList().size() > 0) {
+            result = true;
+        }
+        return result;
+    }
 
     public static HeightHeelValueResult defineHeelHeight(File file) {
 
