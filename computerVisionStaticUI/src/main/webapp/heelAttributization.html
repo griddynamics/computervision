@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="pagespeed.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <script type="text/javascript" src='http://codepen.io/assets/libs/fullpage/jquery.js'></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+
+    <!-- Magnific Popup core CSS file -->
+    <link rel="stylesheet" href="magnific-popup/magnific-popup.css">
+
+    <!-- jQuery 1.7.2+ or Zepto.js 1.0+ -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Magnific Popup core JS file -->
+    <!--<script src="magnific-popup/jquery.magnific-popup.js"></script>-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+</head>
+<body>
+<div id="container-100" style="height: 100%;">
+    <div id="container">
+        <div id="content">
+
+            <div id="heelHeight">
+                <div class="product-filter" style="margin-bottom: 20px;">
+                    <div class="sort">
+                        <b class="sortb">Filter </b>
+                        <select id="sortSelectHeelAttribute">
+                            <option value="none">None</option>
+                            <option value="correct">Correct heel attribute</option>
+                            <option value="incorrect">Incorrect heel attribute</option>
+                        </select>
+                    </div>
+                </div>
+
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab"  onclick="drawHeelHeighttable('Flat')">Flat</a></li>
+                    <li><a data-toggle="tab" onclick="drawHeelHeighttable('Low')">Low</a></li>
+                    <li><a data-toggle="tab" onclick="drawHeelHeighttable('Mid')">Mid</a></li>
+                    <li><a data-toggle="tab" onclick="drawHeelHeighttable('High')">High</a></li>
+                    <li><a data-toggle="tab" onclick="drawHeelHeighttable('Ultra_High')">Ultra High</a></li>
+                </ul>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Prodict ID</th>
+                        <th>Product Description</th>
+                        <th>Heel Height Attribute</th>
+                        <th>Picture</th>
+                    </tr>
+                    </thead>
+                    <tbody id="heelTable" class="table"/>
+
+                </table>
+            </div>
+        </div>
+        <!--<div id="spinner" class="spinner" style="display:none;">-->
+        <!--<img id="img-spinner" src="spinner.gif" alt="Loading"/>-->
+        <!--</div>-->
+    </div>
+</div>
+
+
+<style>
+    .well {
+        background-color: rgba(245, 245, 245, 0.4);
+    }
+
+    /*.product-list div {*/
+    /*border: none !important;*/
+    /*box-shadow: none !important;*/
+    /*margin-bottom: 10px;*/
+    /*}*/
+    /*.product-list .product{*/
+    /*border-bottom: solid grey 1px;*/
+    /*}*/
+</style>
+
+</body>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    var currentHeelfilterValue = 'none';
+    var currentTabSelected = 'Flat';
+
+
+    $(document).ready(function () {
+        drawHeelHeighttable('Flat');
+
+
+        $('#sortSelectHeelAttribute').change(function () {
+            currentHeelfilterValue = $('#sortSelectHeelAttribute').val();
+            drawHeelHeighttable(currentTabSelected, currentHeelfilterValue);
+        });
+
+
+
+    });
+
+
+    function drawHeelHeighttable(path) {
+        $('#heelTable').empty();
+        currentTabSelected = path;
+        showForEachAttrValue(path, currentHeelfilterValue);
+
+
+    }
+
+
+    function showForEachAttrValue(path, filterValue) {
+
+        $.getJSON('heightHellPictures/' + path + '/result.json', function (productList) {
+            $(productList).each(function (index, product) {
+                var isDisplay = true;
+                if (filterValue == 'correct') {
+//                    alert('blabal'+product.passedRecognition == true);
+                    isDisplay = product.passedRecognition == true;
+
+                } else if (filterValue == 'incorrect') {
+                    isDisplay = product.passedRecognition == false;
+                }
+                if (isDisplay) {
+                    var tableRow  = '';
+                    if (product.heelAttributeValue != product.cvRecognizedValue) {
+                        tableRow += '<tr  class="danger">';
+                    } else {
+                        tableRow += '<tr>';
+                    }
+                    tableRow += '<td><a href="http://stella.federated.fds/UI/stella/webproduct/view-single.html?id=' + product.productId + '">' + product.productId + '</a></td>';
+
+                    tableRow += '<td>' + product.productDescription + '</td>';
+                    tableRow += '<td>' + product.originalHeelAttributeValue + '</td>';
+//                    tableRow += '<td>' + product.cvRecognizedValue + '</td>';
+//                    tableRow += '<td>' + product.dimentionsRatio + '</td>';
+                    tableRow += '<td><div style="width: 110px; height: 120px">';
+                    tableRow += '<a class="image-popup-vertical-fit" href="' + product.imageURL + '">';
+                    tableRow += '<img src="' + product.imageURL + '"></a>';
+                    tableRow += '</a>';
+                    tableRow += '</div></td>';
+                    tableRow += '</tr>';
+                    $('#heelTable').append(tableRow);
+                }
+            });
+        });
+    }
+
+
+</script>
+</html>

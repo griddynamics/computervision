@@ -4,6 +4,8 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * Created by npakhomova on 4/18/16.
@@ -55,9 +57,30 @@ public enum HeelHeightValue {
         throw new IllegalArgumentException();
     }
 
+    private static class FlatAttrRecognitionHaar implements AttributeStrategy{
+
+        @Override
+        public boolean doesApply(File picture) throws IOException {
+            return !HeelRecognitionUtil.isHighHeelByHaar(picture,"/Users/npakhomova/codebase/css/computerVisionGDSource/computerVisionDataProcessing/src/main/resources/cascades/cascade.xml");
+        }
+    }
+
+    private static class HeelAttrRecognitionHaar implements AttributeStrategy{
+
+        @Override
+        public boolean doesApply(File picture) throws IOException {
+            return HeelRecognitionUtil.isHighHeelByHaar(picture,"/Users/npakhomova/codebase/css/computerVisionGDSource/computerVisionDataProcessing/src/main/resources/cascades/cascade.xml");
+        }
+    }
+
     private static class FlatAttributeRecognitionStrategy implements AttributeStrategy {
         @Override
-        public boolean doesApply(File picture) {
+        public boolean doesApply(File picture) throws IOException {
+            //try to use neural network
+            URL resource = this.getClass().getClassLoader().getResource("cascades/cascade.xml");
+            boolean highHeelByHaar = HeelRecognitionUtil.isHighHeelByHaar(picture, resource.getPath());
+            if ( highHeelByHaar  ) return false;
+
             // try to define, does shoe is flat
             Mat image = Imgcodecs.imread(picture.getAbsolutePath());
             Mat mask = Mask.getMask(image, false);
@@ -84,7 +107,12 @@ public enum HeelHeightValue {
         }
 
         @Override
-        public boolean doesApply(File picture) {
+        public boolean doesApply(File picture) throws IOException {
+            URL resource = this.getClass().getClassLoader().getResource("cascades/cascade.xml");
+            // try to find heel by neural network
+            boolean result = HeelRecognitionUtil.isHighHeelByHaar(picture, resource.getPath());
+            if (result) return result;
+
             // try to define, does shoe is flat
             Mat image = Imgcodecs.imread(picture.getAbsolutePath());
             Mat mask = Mask.getMask(image, false);
@@ -99,6 +127,7 @@ public enum HeelHeightValue {
                 HeightHeelValueResult heightHeelValueResult = HeelRecognitionUtil.getHeightHeelValueResult(cropped, ratio);
                 return heightHeelValueResult.getValue().equals(Ultra_High);
             }
+
         }
     }
 
@@ -110,13 +139,15 @@ public enum HeelHeightValue {
         public static final String PLATFORM_ANKLE_SNEAKERS_MULE_EXCLUSION = "   and PRODUCT.PRODUCT_ID NOT IN (\n" +
         "select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where  (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='818' and PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Platform' or PRODUCT_ATTRIBUTE.VARCHAR_VALUE like 'Wedge%'))\n" +
         "      and PRODUCT.PRODUCT_ID NOT IN (\n" +
-        "  select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('814','1078')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE in ( 'Sneakers', ' Mules' , 'Mule')))\n" +
+        "  select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('814','1078')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE in ( 'Sneakers', ' Mules' , 'Mule', 'Boots')))\n" +
         "      and PRODUCT.PRODUCT_ID NOT IN (\n" +
         "  select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('813')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE in ( 'Ankle', 'Tall') )                                                                                                                                                                                                           --(PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('814','1078')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Sneakers' )\n" +
         ")";
         public static final String FLAT_EXCLUSION = "and PRODUCT.PRODUCT_ID NOT IN (" +
                 "select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where  PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='818' and " +
                 " PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Gladiator' " +
-                ")";
+                ")" +
+                " and PRODUCT.PRODUCT_ID NOT IN (\n" +
+                " select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('814','1078')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE in ( 'Sneakers', ' Mules' , 'Mule', 'Boots')))";
     }
 }

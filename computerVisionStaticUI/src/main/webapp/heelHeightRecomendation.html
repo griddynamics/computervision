@@ -35,88 +35,21 @@
     <div id="container">
         <div id="content">
             <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#colorNormal">Color Family attribute</a></li>
-                <li><a data-toggle="tab" href="#heelHeight">Heel height attribute</a></li>
+                <li class="active"><a data-toggle="tab" href="#heelHeightRecomendation">Heel height Recomendation</a></li>
+                <li ><a data-toggle="tab" href="#heelHeightRecomendation">Flat heel recomendation</a></li>
             </ul>
             <div class="tab-content">
-                <div id="colorNormal" class="tab-pane fade in active">
-                    <div class="category-details">
+                <div id="heelHeightRecomendation" class="tab-pane fade in active">
+                    <table id="heelHeightRecomendationTable" class="table">
+                        <thead>
+                        <tr>
+                            <th>Prodict ID</th>
+                            <th>Picture</th>
+                        </tr>
+                        </thead>
+                        <tbody id="heelHeightRecomendationTableBody"></tbody>
+                    </table>
 
-                        <div class="category-details-top">
-                            <div class="category-h1 input-group"
-                                 style="margin-top: 20px; margin-left: 20px; width: 103.6%;">
-                                <div><h3 style="color:red; text-align: center">Visual attribution Prototype</h3></div>
-
-                                <!--<div class="tab-content">-->
-                                <div class="input-group">
-                                    <span class="input-group-addon" id="basic-addon3">Category Name:</span>
-                                    <select id="selected-category-name" class="form-control">
-                                        <option value="default">Select category</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="product-filter" style="margin-bottom: 20px; margin-right: -80px;">
-                                <div class="sort">
-                                    <b class="sortb">Filter by color check:</b>
-                                    <select id="sortSelect">
-                                        <option value="none">None</option>
-                                        <option value="0">Correct color</option>
-                                        <option value="1">Suspicious MultiColor</option>
-                                        <option value="2">Suspicious color normalr</option>
-                                        <option value="3">Wrong color normal</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div id="chart_div"></div>
-                            <div class="product-list"></div>
-                        </div>
-                    </div>
-                </div>
-                <div id="heelHeight" class="tab-pane fade in active">
-                    <div id="myTabContainer" style="display:none">
-                    <div class="product-filter" style="margin-bottom: 20px;">
-                        <div class="sort">
-                            <b class="sortb">Filter </b>
-                            <select id="sortSelectHeelAttribute">
-                                <option value="none">None</option>
-                                <option value="correct">Correct heel attribute</option>
-                                <option value="incorrect">Incorrect heel attribute</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- another tab -->
-
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#Flat">Flat</a></li>
-                            <li><a data-toggle="tab" href="#Low">Low</a></li>
-                            <li><a data-toggle="tab" href="#Mid">Mid</a></li>
-                            <li><a data-toggle="tab" href="#High">Height</a></li>
-                            <li><a data-toggle="tab" href="#Ultra_High">Ultra Height</a></li>
-                        </ul>
-
-
-                        <div id="Flat" class="tab-pane fade in active">
-                            <table id="heelTableFlat" class="table"/>
-
-                        </div>
-                        <div id="Low" class="tab-pane fade in active">
-                            <table id="heelTableLow" class="table"/>
-
-                        </div>
-                        <div id="Mid" class="tab-pane fade in active">
-                            <table id="heelTableMid" class="table"/>
-
-                        </div>
-                        <div id="High" class="tab-pane fade in active">
-                            <table id="heelTableHigh" class="table"/>
-
-                        </div>
-                        <div id="Ultra_High" class="tab-pane fade in active">
-                            <table id="heelTableUltra_High" class="table"/>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -156,13 +89,14 @@
     .well {
         background-color: rgba(245, 245, 245, 0.4);
     }
+
     /*.product-list div {*/
-        /*border: none !important;*/
-        /*box-shadow: none !important;*/
-        /*margin-bottom: 10px;*/
+    /*border: none !important;*/
+    /*box-shadow: none !important;*/
+    /*margin-bottom: 10px;*/
     /*}*/
     /*.product-list .product{*/
-        /*border-bottom: solid grey 1px;*/
+    /*border-bottom: solid grey 1px;*/
     /*}*/
 </style>
 
@@ -170,66 +104,49 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
     var selectedCategoryName;
-    var currentHeelfilterValue='none';
-    var currentTabSelected ='#Flat';
-
+    var currentHeelfilterValue = 'none';
+    var currentTabSelected = '#Flat';
 
 
     $(document).ready(function () {
 
-        $.getJSON('rootFolder/categories.json', function (resultJson) {
-            $(resultJson).each(function (index, value) {
-                $('#selected-category-name').append('<option value="' + value + '">' + value + '</option>');
-            });
-
-            $('#sortSelect').change(function () {
-                checkInputAndShowCategoryProducts($('#selected-category-name').val(), $('#sortSelect').val());
-            });
-
-            google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
-        });
-
-        $('#sortSelectHeelAttribute').change(function () {
-            currentHeelfilterValue = $('#sortSelectHeelAttribute').val();
-//            alert (currentHeelfilterValue);
-//            alert (currentTabSelected);
-            drawHeelHeighttable(currentTabSelected,currentHeelfilterValue);
-        });
-
-        $('li a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-
-            currentTabSelected = $(e.target).attr("href");
-             if(currentTabSelected == '#heelHeight'){
-                 $('#myTabContainer').show();
-                 drawHeelHeighttable('#Flat',currentHeelfilterValue);
-             } else if (currentTabSelected == '#colorNormal'){
-                 $('#myTabContainer').hide();
-             }
-
-            if (currentTabSelected == '#Flat'
-            || currentTabSelected== '#Ultra_High'
-            || currentTabSelected == '#High'
-            || currentTabSelected == '#Low'
-            || currentTabSelected == '#Mid' ) {
-//                alert (currentHeelfilterValue);
-//                alert (currentTabSelected);
-
-                drawHeelHeighttable(currentTabSelected,currentHeelfilterValue);
-            }
-        });
-
+            drawHeelRecomendation();
 
     });
 
+    function drawHeelRecomendation() {
+
+        $.getJSON('heelAssignment/heelCandidates.json', function (productList) {
+
+
+            $(productList).each(function (index, product) {
+                var tableRow;
+                tableRow += '<tr>';
+//                tableRow += '<td><a target="_blank" href="http://mdc2vr5016:8080/UI/stella/webproduct/view-single.html?id=' + product.productId + '>' + product.productId + '</a></td>';
+                tableRow += '<td><a href="http://stella.federated.fds/UI/stella/webproduct/view-single.html?id=' + product.productId + '">' + product.productId + '</a></td>';
+                tableRow += '<td><div style="width: 110px; height: 120px">';
+                tableRow += '<a class="image-popup-vertical-fit" href="' + product.url + '">';
+                tableRow += '<img src="' + product.url + '"></a>';
+                tableRow += '</a>';
+                tableRow += '</div></td>';
+                tableRow += '</tr>';
+                $('#heelHeightRecomendationTableBody').append(tableRow);
+            });
+
+        });
+
+    }
+
 
     function drawHeelHeighttable(source, filterValue) {
-        var tableName = '#heelTable'+source.substr(1);
+        var tableName = '#heelTable' + source.substr(1);
         $('#heelHeightTableBody').empty();
         $('#heelTableFlat').empty();
         $('#heelTableHigh').empty();
         $('#heelTableLow').empty();
         $('#heelTableMid').empty();
         $('#heelTableUltra_High').empty();
+        $('#heelHeightRecomendationTable').empty();
 //        alert(source);
 
         var tableHead = '<thead><tr><th>Prodict ID</th>' +
@@ -246,20 +163,18 @@
         showForEachAttrValue(source.substr(1), filterValue);
 
 
-
-
     }
 
 
     function showForEachAttrValue(path, filterValue) {
-        $.getJSON('heightHellPictures/'+path+'/result.json', function (productList) {
+        $.getJSON('heightHellPictures/' + path + '/result.json', function (productList) {
             $(productList).each(function (index, product) {
                 var isDisplay = true;
-                if (filterValue == 'correct'){
+                if (filterValue == 'correct') {
 //                    alert('blabal'+product.passedRecognition == true);
                     isDisplay = product.passedRecognition == true;
 
-                } else if (filterValue == 'incorrect'){
+                } else if (filterValue == 'incorrect') {
                     isDisplay = product.passedRecognition == false;
                 }
                 if (isDisplay) {

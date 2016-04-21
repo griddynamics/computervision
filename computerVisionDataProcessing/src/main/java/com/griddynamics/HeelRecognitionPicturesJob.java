@@ -58,6 +58,7 @@ public class HeelRecognitionPicturesJob {
         options.put("password", "macys");
         //jdbc:oracle:thin:@mdc2vr4230:1521/starsdev - 1% database
 //        options.put("url", "jdbc:oracle:thin:@//mdc2vr4230:1521/starsdev"); //mcom
+//        options.put("url", "jdbc:oracle:thin:@//mdc2vr4230:1521/starsdev"); //mcom
         options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01"); //mcom
 //        jdbc:oracle:thin:@dml1-scan:1521/bpmstg01 //bcom
 

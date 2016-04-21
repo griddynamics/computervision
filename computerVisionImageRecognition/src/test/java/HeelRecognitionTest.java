@@ -29,7 +29,7 @@ public class HeelRecognitionTest {
 
         String cascadePath = "src/main/resources/cascades/cascade.xml";
         String flatHeel = "http://raymcompreviewprod/00/88/69/03/final/886903-214x261.jpg";
-        String highHeel = "http://raymcompreviewprod/00/98/91/28/final/989128-214x261.jpg";
+        String highHeel = "http://raymcompreviewprod/01/38/61/86/final/1386186-214x261.jpg";
         File flat = DataCollectionJobUtils.downOrloadImage(flatHeel, new File(".").getCanonicalPath());
         File high = DataCollectionJobUtils.downOrloadImage(highHeel, new File(".").getCanonicalPath());
 
