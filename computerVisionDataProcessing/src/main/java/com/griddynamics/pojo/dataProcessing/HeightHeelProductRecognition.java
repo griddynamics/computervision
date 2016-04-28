@@ -1,6 +1,7 @@
 package com.griddynamics.pojo.dataProcessing;
 
-import com.griddynamics.computervision.HeelHeightValue;
+import com.griddynamics.computervision.HeelHeightBCOMValue;
+import com.griddynamics.computervision.HeelHeightMCOMValue;
 
 import java.io.Serializable;
 
@@ -12,7 +13,7 @@ public class HeightHeelProductRecognition implements Serializable {
     Integer productId;
     String productDescription;
     String imageURL;
-    HeelHeightValue originalHeelAttributeValue;
+    HeelHeightBCOMValue originalHeelAttributeValue;
     boolean passedRecognition;
 
     public void setProductId(Integer productId) {
@@ -28,7 +29,7 @@ public class HeightHeelProductRecognition implements Serializable {
         this.imageURL = imageURL;
     }
 
-    public void setOriginalHeelAttributeValue(HeelHeightValue heelAttributeValue) {
+    public void setOriginalHeelAttributeValue(HeelHeightBCOMValue heelAttributeValue) {
         this.originalHeelAttributeValue = heelAttributeValue;
     }
 
@@ -38,7 +39,7 @@ public class HeightHeelProductRecognition implements Serializable {
     }
 
 
-    public HeelHeightValue getOriginalHeelAttributeValue() {
+    public HeelHeightBCOMValue getOriginalHeelAttributeValue() {
         return originalHeelAttributeValue;
     }
 

@@ -54,7 +54,7 @@ public class HeelRecognitionUtil {
             // could be both...
             return getHeightHeelValueResult(cropped,  ratio);
         }
-        return new HeightHeelValueResult(HeelHeightValue.Flat, ratio);
+        return new HeightHeelValueResult(HeelHeightMCOMValue.Flat, ratio);
 
     }
 
@@ -102,9 +102,9 @@ public class HeelRecognitionUtil {
         }
 
         if (blc < (cropped.width() / 10)) {
-            return new HeightHeelValueResult(HeelHeightValue.Flat, ratio);
+            return new HeightHeelValueResult(HeelHeightMCOMValue.Flat, ratio);
         } else {
-            return new HeightHeelValueResult(HeelHeightValue.Ultra_High,ratio);
+            return new HeightHeelValueResult(HeelHeightMCOMValue.Ultra_High,ratio);
         }
     }
 

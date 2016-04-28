@@ -1,9 +1,6 @@
 package com.griddynamics.computervision;
 
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Rect;
-import org.opencv.core.Size;
+import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -55,7 +52,7 @@ public class Preparation {
         if (img != null) {
             image = getTempFileByName(image.getName(), img, "jpg");
             imageMat = Imgcodecs.imread(image.getAbsolutePath());
-            imageMat = cropByContour(imageMat, Mask.getMask(imageMat, false));
+            imageMat = checkAndFlip(cropByContour(imageMat, Mask.getMask(imageMat, false)));
             if (checkRatio && !checkRatio(imageMat)){
                 image.delete();
                 return null;
@@ -156,5 +153,85 @@ public class Preparation {
             }
         }
         writer.close();
+    }
+
+    public static Mat checkAndFlip(Mat image) {
+
+        Mat mask = Mask.getMask(image, false);
+
+        double h = image.height();
+        double w = image.width();
+
+        int r = 0;
+        int l = 0;
+
+        if ((h / w) > 0.3) {
+            int row = image.rows() / 3;
+            for (int i = 0; i < image.cols(); i++) {
+                for (int j = row / 3; j <= row; j = j + row / 3) {
+                    double[] color = mask.get(j, i);
+                    boolean isWhite = false;
+                    if (color[0] == 255 || color[1] == 255 || color[2] == 255) {
+                        isWhite = true;
+                    }
+                    if (i < image.cols() / 2 && isWhite) {
+                        r++;
+                    } else if (isWhite) {
+                        l++;
+                    }
+                }
+            }
+            if (l > r) {
+                Mat flip = new Mat();
+                Core.flip(image, flip, 1);
+                return flip;
+            } else {
+                int size = 0;
+                int sizeW = 0;
+                int min = mask.height();
+                int max = 0;
+                int minW = mask.height();
+                int maxW = 0;
+                for (int i = mask.width() / 20; i < mask.width() / 5; i++) {
+                    for (int j = 2; j < mask.rows() - 2; j++) {
+                        double[] color = mask.get(j, i);
+                        double[] colorW = mask.get(j, mask.cols() - i);
+                        boolean isWhite = false;
+                        boolean isWhiteW = false;
+                        if (color[0] == 255 || color[1] == 255 || color[2] == 255) {
+                            isWhite = true;
+                        }
+                        if (colorW[0] == 255 || colorW[1] == 255 || colorW[2] == 255) {
+                            isWhiteW = true;
+                        }
+                        if (isWhite) {
+                            min = min > j ? j : min;
+                            max = max < j ? j : max;
+                        }
+                        if (isWhiteW) {
+                            minW = minW > j ? j : minW;
+                            maxW = maxW < j ? j : maxW;
+                        }
+                    }
+                    int delta = max - min;
+                    size = size > delta ? size : delta;
+                    int deltaW = maxW - minW;
+                    sizeW = sizeW > deltaW ? sizeW : deltaW;
+                    min = mask.height();
+                    max = 0;
+                    minW = mask.height();
+                    maxW = 0;
+                }
+                if (size < sizeW) {
+                    Mat flip = new Mat();
+                    Core.flip(image, flip, 1);
+                    return flip;
+                } else {
+                    return image;
+                }
+            }
+        } else {
+            return image;
+        }
     }
 }

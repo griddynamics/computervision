@@ -1,7 +1,8 @@
 package com.griddynamics;
 
 import com.google.gson.Gson;
-import com.griddynamics.computervision.HeelHeightValue;
+import com.griddynamics.computervision.HeelHeightBCOMValue;
+import com.griddynamics.computervision.HeelHeightMCOMValue;
 import com.griddynamics.pojo.dataProcessing.HeightHeelProductRecognition;
 import com.griddynamics.pojo.dataProcessing.ImageRoleType;
 import com.griddynamics.utils.DataCollectionJobUtils;
@@ -59,7 +60,8 @@ public class HeelRecognitionPicturesJob {
         //jdbc:oracle:thin:@mdc2vr4230:1521/starsdev - 1% database
 //        options.put("url", "jdbc:oracle:thin:@//mdc2vr4230:1521/starsdev"); //mcom
 //        options.put("url", "jdbc:oracle:thin:@//mdc2vr4230:1521/starsdev"); //mcom
-        options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01"); //mcom
+//        options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01"); //mcom
+        options.put("url", "jdbc:oracle:thin:@//dml1-scan:1521/bpmstg01"); //bcom
 //        jdbc:oracle:thin:@dml1-scan:1521/bpmstg01 //bcom
 
         options.put("partitionColumn", "ID_MOD");
@@ -89,10 +91,10 @@ public class HeelRecognitionPicturesJob {
                 "JOIN PRODUCT_DESTINATION_CHANNEL ON PRODUCT_DESTINATION_CHANNEL.PRODUCT_ID = PRODUCT.PRODUCT_ID AND PRODUCT_DESTINATION_CHANNEL.PUBLISH_FLAG='Y' AND PRODUCT_DESTINATION_CHANNEL.CURRENT_FLAG='Y'\n" +
                 "join CATEGORY on CATEGORY.CATEGORY_ID = PRODUCT.CATEGORY_ID\n" +
                 "join UPC_FEATURE on UPC_FEATURE.UPC_ID = UPC.UPC_ID and UPC_FEATURE.COLOR_NORMAL_ID is not null\n" +
-                "join PRODUCT_ATTRIBUTE on   PRODUCT.PRODUCT_ID = PRODUCT_ATTRIBUTE.PRODUCT_ID and PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='422'\n" +
+                "join PRODUCT_ATTRIBUTE on   PRODUCT.PRODUCT_ID = PRODUCT_ATTRIBUTE.PRODUCT_ID and PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='1528'\n" +
                 "where PRODUCT_IMAGE.PRODUCT_IMAGE_ROLE_TYPE ='ADD' and  PRODUCT_ATTRIBUTE.VARCHAR_VALUE like '%s' ";
 
-        for (final HeelHeightValue attributeValue : HeelHeightValue.values()) {
+        for (final HeelHeightBCOMValue attributeValue : HeelHeightBCOMValue.values()) {
             String queryString = String.format(query, partitions, attributeValue.getValue());
             // todo do it in buildes
             if (attributeValue.getExclusionCondition()!=null){
@@ -114,7 +116,7 @@ public class HeelRecognitionPicturesJob {
                     result.setImageURL(urlString);
                     result.setProductDescription(v1.<String>getAs("PRODUCT_DESC"));
                     result.setProductId(v1.<BigDecimal>getAs("PRODUCT_ID").intValue());
-                    result.setOriginalHeelAttributeValue(HeelHeightValue.getEnum(v1.<String>getAs("VARCHAR_VALUE")));
+                    result.setOriginalHeelAttributeValue(HeelHeightBCOMValue.getEnum(v1.<String>getAs("VARCHAR_VALUE")));
 
                     File picture = DataCollectionJobUtils.downOrloadImage(urlString, path + SqlQueryDataCollectionJob.DOWNLOAD_IMAGES_FOLDER);
 

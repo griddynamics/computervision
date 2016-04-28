@@ -23,7 +23,8 @@ public class DataCollectionJobUtils {
     public static final String SUFFIX_BIG = "3000x3000.jpg"; // to long to process
 //    public static String STARS_SERVICE_PREFIX = "https://stars.macys.com/preview";
 //    http://raymcompreviewprod/03/34/44/41/final/3344441-214x261.jpg
-    public static String STARS_SERVICE_PREFIX = "http://raymcompreviewprod";
+//    public static String STARS_SERVICE_PREFIX = "http://raymcompreviewprod"; //mcom
+    public static String STARS_SERVICE_PREFIX = "http://raybcompreviewprod"; //bcom
 
     static {
 

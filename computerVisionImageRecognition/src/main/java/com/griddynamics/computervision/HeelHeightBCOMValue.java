@@ -8,27 +8,35 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * Created by npakhomova on 4/18/16.
+ * Created by npakhomova on 4/22/16.
  */
-public enum HeelHeightValue {
+public enum HeelHeightBCOMValue {
+    /**"3""-4"" High Heel"
+     "<1"" Flat"
+     Low
+     High
+     "Very High"
+     "1""-2"" Low Heel"
+     "2""-3"" Mid Heel"
+     ">4"" Ultra High Heel"
+     Mid*/
 
-    Flat("Flat 0-1\"", new FlatAttributeRecognitionStrategy(), " " + Constants.FLAT_EXCLUSION),
-    High("High 3-4\"", new HeelAttributeRecognitionStrategy(0.43),Constants.PLATFORM_ANKLE_SNEAKERS_MULE_EXCLUSION),
-    Mid("Mid 2-3\"", new HeelAttributeRecognitionStrategy(0.35),Constants.PLATFORM_ANKLE_SNEAKERS_MULE_EXCLUSION),
-    Low("Low 1-2\"", new FlatAttributeRecognitionStrategy(),Constants.FLAT_EXCLUSION),
-    Ultra_High("Ultra High 4\" & over", new HeelAttributeRecognitionStrategy(0.43),
-            Constants.PLATFORM_ANKLE_SNEAKERS_MULE_EXCLUSION);
+//    Flat("<1\" Flat", new FlatAttributeRecognitionStrategy()),
+//    Low("1\"-2\" Low Heel", new FlatAttributeRecognitionStrategy()),
+//    Mid("2\"-3\" Mid Heel", new HeelAttributeRecognitionStrategy(0.35)),
+    High("3\"-4\" High Heel", new HeelAttributeRecognitionStrategy(0.43)),
+    Ultra_High(">4\" Ultra High Heel", new HeelAttributeRecognitionStrategy(0.43));
 
     private String value;
     private AttributeStrategy attributeStrategy;
     private String exclusionCondition;
 
-    HeelHeightValue(String mid, AttributeStrategy attributeStrategy) {
+    HeelHeightBCOMValue(String mid, AttributeStrategy attributeStrategy) {
         this.value = mid;
         this.attributeStrategy = attributeStrategy;
     }
 
-    HeelHeightValue(String mid, AttributeStrategy attributeStrategy, String exclusionCondition) {
+    HeelHeightBCOMValue(String mid, AttributeStrategy attributeStrategy, String exclusionCondition) {
         this.value = mid;
         this.attributeStrategy = attributeStrategy;
         this.exclusionCondition = exclusionCondition;
@@ -51,8 +59,8 @@ public enum HeelHeightValue {
         return this.getValue();
     }
 
-    public static HeelHeightValue getEnum(String value) {
-        for (HeelHeightValue v : values())
+    public static HeelHeightBCOMValue getEnum(String value) {
+        for (HeelHeightBCOMValue v : values())
             if (v.getValue().equalsIgnoreCase(value)) return v;
         throw new IllegalArgumentException();
     }
@@ -92,8 +100,9 @@ public enum HeelHeightValue {
             if (ratio < 0.55){ // this is definitelly flat
                 return true;
             } else { // try another approach
-                HeightHeelValueResult heightHeelValueResult = HeelRecognitionUtil.getHeightHeelValueResult(cropped, ratio);
-                return heightHeelValueResult.getValue().equals(Flat);
+//                HeightHeelValueResult heightHeelValueResult = HeelRecognitionUtil.getHeightHeelValueResult(cropped, ratio);
+//                return heightHeelValueResult.getValue().equals(Flat);
+                return false;
             }
 
         }
@@ -133,16 +142,16 @@ public enum HeelHeightValue {
 
 
     private static class Constants {
-//        public static final String PLATFORM_ANKLE_SNEAKERS_MULE_EXCLUSION = " and PRODUCT.PRODUCT_ID NOT IN (select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where  PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='818' and " +
+        //        public static final String PLATFORM_ANKLE_SNEAKERS_MULE_EXCLUSION = " and PRODUCT.PRODUCT_ID NOT IN (select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where  PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='818' and " +
 //                "PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Platform' " +
 //                "or PRODUCT_ATTRIBUTE.VARCHAR_VALUE like 'Wedge%') ";
         public static final String PLATFORM_ANKLE_SNEAKERS_MULE_EXCLUSION = "   and PRODUCT.PRODUCT_ID NOT IN (\n" +
-        "select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where  (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='818' and PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Platform' or PRODUCT_ATTRIBUTE.VARCHAR_VALUE like 'Wedge%'))\n" +
-        "      and PRODUCT.PRODUCT_ID NOT IN (\n" +
-        "  select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('814','1078')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE in ( 'Sneakers', ' Mules' , 'Mule', 'Boots')))\n" +
-        "      and PRODUCT.PRODUCT_ID NOT IN (\n" +
-        "  select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('813')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE in ( 'Ankle', 'Tall') )                                                                                                                                                                                                           --(PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('814','1078')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Sneakers' )\n" +
-        ")";
+                "select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where  (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='818' and PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Platform' or PRODUCT_ATTRIBUTE.VARCHAR_VALUE like 'Wedge%'))\n" +
+                "      and PRODUCT.PRODUCT_ID NOT IN (\n" +
+                "  select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('814','1078')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE in ( 'Sneakers', ' Mules' , 'Mule', 'Boots')))\n" +
+                "      and PRODUCT.PRODUCT_ID NOT IN (\n" +
+                "  select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where (PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('813')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE in ( 'Ankle', 'Tall') )                                                                                                                                                                                                           --(PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('814','1078')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Sneakers' )\n" +
+                ")";
         public static final String FLAT_EXCLUSION = "and PRODUCT.PRODUCT_ID NOT IN (" +
                 "select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where  PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='818' and " +
                 " PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Gladiator' " +

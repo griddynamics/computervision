@@ -5,15 +5,15 @@ package com.griddynamics.computervision;
  */
 public class HeightHeelValueResult {
 
-    HeelHeightValue value;
+    HeelHeightMCOMValue value;
     double heigthWithDimention;
 
-    public HeightHeelValueResult(HeelHeightValue value, double heigthWithDimention) {
+    public HeightHeelValueResult(HeelHeightMCOMValue value, double heigthWithDimention) {
         this.value = value;
         this.heigthWithDimention = heigthWithDimention;
     }
 
-    public HeelHeightValue getValue() {
+    public HeelHeightMCOMValue getValue() {
         return value;
     }
 

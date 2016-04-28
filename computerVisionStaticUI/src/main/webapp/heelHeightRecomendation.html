@@ -33,25 +33,32 @@
 <body>
 <div id="container-100" style="height: 100%;">
     <div id="container">
+        <div><p  style="color:red; text-align: center; font-size:130%">Product from given categories don't have assotiation with
+            <a  style="text-align: center; font-size:120%" href="http://11.120.149.228:8888/StarsAttributeService/attributeType/422">Shoe Heel Attribute</a>
+            But recognized by computer vision as Flat/Low heel boots<p></div>
         <div id="content">
             <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#heelHeightRecomendation">Heel height Recomendation</a></li>
-                <li ><a data-toggle="tab" href="#heelHeightRecomendation">Flat heel recomendation</a></li>
+                <!--<li class="active"><a data-toggle="tab"  onclick="drawHeelHeighttable('Boots')">Boots</a></li>-->
+                <!--<li><a data-toggle="tab" onclick="drawHeelHeighttable('Flats')">Flats</a></li>-->
+                <!--<li><a data-toggle="tab" onclick="drawHeelHeighttable('Pumps')">Pumps</a></li>-->
+                <!--<li><a data-toggle="tab" onclick="drawHeelHeighttable('Sandals')">Sandals</a></li>-->
+                <li class="active"><a data-toggle="tab" onclick="drawHeelHeighttable('Shoes')">Shoes</a></li>
+                <!--<li><a data-toggle="tab" onclick="drawHeelHeighttable('Slippers')">Slippers</a></li>-->
+                <!--<li><a data-toggle="tab" onclick="drawHeelHeighttable('Sneakers')">Sneakers</a></li>-->
             </ul>
-            <div class="tab-content">
-                <div id="heelHeightRecomendation" class="tab-pane fade in active">
-                    <table id="heelHeightRecomendationTable" class="table">
-                        <thead>
-                        <tr>
-                            <th>Prodict ID</th>
-                            <th>Picture</th>
-                        </tr>
-                        </thead>
-                        <tbody id="heelHeightRecomendationTableBody"></tbody>
-                    </table>
 
-                </div>
-            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Prodict ID</th>
+                    <!--<th>Product Description</th>-->
+                    <!--<th>Heel Height Attribute</th>-->
+                    <th>Picture</th>
+                </tr>
+                </thead>
+                <tbody id="heelTable" class="table"/>
+
+            </table>
         </div>
         <!--<div id="spinner" class="spinner" style="display:none;">-->
         <!--<img id="img-spinner" src="spinner.gif" alt="Loading"/>-->
@@ -59,31 +66,7 @@
     </div>
 </div>
 
-<div id="decline-dialog" class="modal fade" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title">Declined</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    Color Normal Assignment is correct. <br>
-                    Go to product editing
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Go to product editing</button>
-                <button type="button" class="btn btn-primary">Cancel</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
+
 
 <style>
     .well {
@@ -103,389 +86,55 @@
 </body>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-    var selectedCategoryName;
-    var currentHeelfilterValue = 'none';
-    var currentTabSelected = '#Flat';
+    var currentTabSelected = 'Boots';
 
 
     $(document).ready(function () {
 
-            drawHeelRecomendation();
+        drawHeelHeighttable(currentTabSelected);
 
     });
 
-    function drawHeelRecomendation() {
-
-        $.getJSON('heelAssignment/heelCandidates.json', function (productList) {
-
-
-            $(productList).each(function (index, product) {
-                var tableRow;
-                tableRow += '<tr>';
-//                tableRow += '<td><a target="_blank" href="http://mdc2vr5016:8080/UI/stella/webproduct/view-single.html?id=' + product.productId + '>' + product.productId + '</a></td>';
-                tableRow += '<td><a href="http://stella.federated.fds/UI/stella/webproduct/view-single.html?id=' + product.productId + '">' + product.productId + '</a></td>';
-                tableRow += '<td><div style="width: 110px; height: 120px">';
-                tableRow += '<a class="image-popup-vertical-fit" href="' + product.url + '">';
-                tableRow += '<img src="' + product.url + '"></a>';
-                tableRow += '</a>';
-                tableRow += '</div></td>';
-                tableRow += '</tr>';
-                $('#heelHeightRecomendationTableBody').append(tableRow);
-            });
-
-        });
-
-    }
-
-
-    function drawHeelHeighttable(source, filterValue) {
-        var tableName = '#heelTable' + source.substr(1);
-        $('#heelHeightTableBody').empty();
-        $('#heelTableFlat').empty();
-        $('#heelTableHigh').empty();
-        $('#heelTableLow').empty();
-        $('#heelTableMid').empty();
-        $('#heelTableUltra_High').empty();
-        $('#heelHeightRecomendationTable').empty();
-//        alert(source);
-
-        var tableHead = '<thead><tr><th>Prodict ID</th>' +
-                '<th>Product Description</th>' +
-                '<th>Heel Height Attribute</th>' +
-//                '<th>Computed Heel Height</th>' +
-//                '<th>ratio</th>' +
-                '<th>Picture</th> ' +
-                '</tr></thead>'
-
-        $(tableName).append(tableHead);
-        $(tableName).append('<tbody id="heelHeightTableBody"></tbody>');
-
-        showForEachAttrValue(source.substr(1), filterValue);
+    function drawHeelHeighttable(path) {
+        $('#heelTable').empty();
+        currentTabSelected = path;
+        showForEachAttrValue(path);
 
 
     }
 
 
-    function showForEachAttrValue(path, filterValue) {
-        $.getJSON('heightHellPictures/' + path + '/result.json', function (productList) {
-            $(productList).each(function (index, product) {
-                var isDisplay = true;
-                if (filterValue == 'correct') {
-//                    alert('blabal'+product.passedRecognition == true);
-                    isDisplay = product.passedRecognition == true;
+    function showForEachAttrValue(path) {
+        alert(path);
 
-                } else if (filterValue == 'incorrect') {
-                    isDisplay = product.passedRecognition == false;
-                }
+
+        $.getJSON('heelAssignment/' + path + '/resutl.json', function (productList) {
+            $(productList).each(function (index, product) {
+                var  isDisplay = product.containsHeel == true;
+//                alert(isDisplay);
+
                 if (isDisplay) {
-                    var tableRow = null;
-                    if (product.heelAttributeValue != product.cvRecognizedValue) {
-                        tableRow += '<tr  class="danger">';
-                    } else {
-                        tableRow += '<tr>';
-                    }
-                    tableRow += '<td><a href="http://stella.federated.fds/UI/stella/webproduct/view-single.html?id=' + product.productId + '">' + product.productId + '</a></td>';
+                    var tableRow  = '<tr>';
 
-                    tableRow += '<td>' + product.productDescription + '</td>';
-                    tableRow += '<td>' + product.originalHeelAttributeValue + '</td>';
+                    tableRow += '<td><a target="_blank" href="http://stella.federated.fds/UI/stella/webproduct/view-single.html?id=' + product.productId + '">' + product.productId + '</a></td>';
+
+//                    tableRow += '<td>' + product.productDescription + '</td>';
+//                    tableRow += '<td>' + product.originalHeelAttributeValue + '</td>';
 //                    tableRow += '<td>' + product.cvRecognizedValue + '</td>';
 //                    tableRow += '<td>' + product.dimentionsRatio + '</td>';
                     tableRow += '<td><div style="width: 110px; height: 120px">';
-                    tableRow += '<a class="image-popup-vertical-fit" href="' + product.imageURL + '">';
-                    tableRow += '<img src="' + product.imageURL + '"></a>';
+                    tableRow += '<a class="image-popup-vertical-fit" href="' + product.url + '">';
+                    tableRow += '<img src="' + product.url + '"></a>';
                     tableRow += '</a>';
                     tableRow += '</div></td>';
                     tableRow += '</tr>';
-                    $('#heelHeightTableBody').append(tableRow);
+                    $('#heelTable').append(tableRow);
                 }
             });
         });
     }
 
 
-    function drawChart() {
 
-
-        $.getJSON('rootFolder/' + selectedCategoryName + '/statistic.json', function (statisticJson) {
-
-
-
-//
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'UPC color recognition');
-            data.addColumn('number', 'Amount');
-            data.addColumn({type: 'string'});
-            data.addColumn('number', 'order')
-//
-            data.addRow(['Correct color', statisticJson.totalUpc - statisticJson.suspicious, 'green', 0]);
-            data.addRow(['Suspicious Multicolor', statisticJson.amountOfSuspiciousMulti, 'yellow', 1]);
-            data.addRow(['Suspicious color normal', statisticJson.amountOfColorNormalIsNoDominant, 'orange', 2]);
-            data.addRow(['Wrong color normal', statisticJson.amountOfColorNormalIsNotInList, 'red', 3]);
-////
-            var chartWrapper = new google.visualization.ChartWrapper({
-                chartType: 'PieChart',
-                containerId: 'chart_div',
-                dataTable: data,
-                options: {
-                    is3D: true,
-                    slices: {
-                        0: {color: 'green'},
-                        1: {color: 'yellow'},
-                        2: {color: 'orange'},
-                        3: {color: 'red'}
-                    },
-                    chartArea: {left: 20, top: 0, width: '100%', height: '100%'}
-                }
-            });
-            chartWrapper.draw();
-            function selectHandler() {
-                var selectedItem = chartWrapper.getChart().getSelection()[0];
-                if (selectedItem) {
-                    var topping = data.getValue(selectedItem.row, 3);
-                    checkInputAndShowCategoryProducts($('#selected-category-name').val(), topping);
-//					alert('The user selected ' + topping);
-                }
-            }
-
-            google.visualization.events.addListener(chartWrapper.getChart(), 'select', selectHandler);
-        });
-    }
-
-    google.load('visualization', '1', {packages: ['corechart'], callback: drawChart});
-
-    $('#selected-category-name').change(function (event) {
-        if ($('#selected-category-name').val() != 'Select categoty') {
-            checkInputAndShowCategoryProducts($('#selected-category-name').val(), $('#sortSelect').val());
-            selectedCategoryName = $('#selected-category-name').val();
-            drawChart();
-        }
-    });
-
-    var products;
-    var productsForRepresentation;
-    var page = 1;
-    var limit = 50;
-
-    function checkInputAndShowCategoryProducts(categoryName, filterItem) {
-        if (categoryName) {
-//			$('#spinner').show();
-            $.getJSON('rootFolder/' + categoryName + '/result.json', function (resultJson) {
-                document.title = categoryName;
-                if (!filterItem || filterItem !== 'none') {
-                    products = $.grep(resultJson, function (i, n) {
-                        var productFilterCheck = false;
-                        i.upcSet = $.grep(i.upcSet, function (inI, inN) {
-                            if (inI.computerVisionRecognition == filterItem) {
-                                productFilterCheck = true;
-                                return true;
-                            }
-                        });
-                        if (productFilterCheck) return true;
-                    });
-                } else {
-                    products = resultJson;
-                }
-                showProductsAndUpcsFromCategory(filterItem);
-//				$('#spinner').hide();
-            });
-        } else {
-            alert('Wrong category id');
-        }
-    }
-
-    function getImageSrcForComputerVisionRecognition(value) {
-        if (value.computerVisionRecognition == 0) {
-            return 'lg-success-flat.png';
-        }
-        if (value.computerVisionRecognition == 1) {
-            return 'lg-alertY-flat.png';
-        }
-        if (value.computerVisionRecognition == 2) {
-            return 'lg-alertO-flat.png';
-        }
-        if (value.computerVisionRecognition == 3) {
-            return 'lg-failed-flat.png';
-        }
-    }
-
-    function getImageTitleForComputerVisionRecognition(value) {
-        if (value.computerVisionRecognition == 0) {
-            return 'COLOR_NORMAL is equal to dominant color';
-        }
-        if (value.computerVisionRecognition == 1) {
-            return ' COLOR_NORMAL is not MULTI and we have no dominant';
-        }
-        if (value.computerVisionRecognition == 2) {
-            return 'COLOR_NORMAL is not dominant in CV_COLORS';
-        }
-        if (value.computerVisionRecognition == 3) {
-            return 'COLOR_NORMAL does not present in CV_COLORS';
-        }
-    }
-
-    function changePage(ths) {
-        page = $(ths).attr('value');
-        var fromCountProduct = (parseInt($(ths).attr('value')) - 1) * limit;
-        var first = fromCountProduct < 0 ? 0 : fromCountProduct;
-        productsForRepresentation = products.slice(parseInt(first), parseInt(limit) + parseInt(first));
-        showProductsAndUpcsFromCategory('none', productsForRepresentation);
-        window.scrollTo(0, 0);
-    }
-
-    function getPaginationDiv(length) {
-        var paginationDiv = '<div class="pagination">';
-        paginationDiv += '<div class="links">';
-
-        var pagesAmount = Math.ceil(length / limit);
-        for (var i = 1; i <= pagesAmount; i++) {
-            if (i == page) {
-                paginationDiv += '<b>' + page + '</b>';
-                continue;
-            }
-            paginationDiv += '<a value="' + i + '" onclick="changePage(this)">' + i + '</a>';
-        }
-        paginationDiv += '</div>';
-        paginationDiv += '<div class="results">Showing ' + Math.min(((page - 1) * limit + 1), length) + ' to ' + Math.min(limit * page, length + page * limit, length) + ' from ' + length + ' (pages: ' + pagesAmount + ')</div>';
-        paginationDiv += '</div>';
-        return paginationDiv;
-    }
-
-    function getThumbsPanel(value) {
-
-        if (value.computerVisionRecognition === 0) {
-            return "";
-        }
-
-        var thumbs =
-                '<div style="text-align: center">' +
-                '<div class="btn-group">' +
-                '    <button type="button" class="thumbs-up-button btn btn-lg btn-default" aria-label="Left Align">' +
-                '        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">' +
-                '        </span>' +
-                '    </button>' +
-                '    <button type="button" class="thumbs-down-button btn btn-lg btn-default" aria-label="Center Align">' +
-                '        <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>' +
-                '    </button>' +
-                '</div>' +
-                '</div>';
-
-        return thumbs;
-    }
-
-    function showProductsAndUpcsFromCategory(filterItem, inProducts) {
-        $('.product').remove();
-        $('.pagination').remove();
-        $('.product-list').first().before(getPaginationDiv(products.length)).after(getPaginationDiv(products.length));
-        var start = (parseInt(page) - 1) * limit;
-        productsForRepresentation = inProducts ? inProducts : products.slice(start, start + limit);
-        $(productsForRepresentation).each(function (index, product) {
-            var productDiv = '<div class="product-list product"><a target="_blank" href="http://mdc2vr5016:8080/UI/stella/webproduct/view-single.html?id=' + product.productID + '"><h3>Product ' + product.productID + '</h3></a><p">Description: ' + product.productDescription + '</p></div>';
-            $('.product-list').first().append(productDiv);
-            var count = 0;
-
-            $(product.upcSet).each(function (index, value) {
-                if (filterItem != 'none' && value.computerVisionRecognition != filterItem) return false;
-                var upcDiv = '<div>';
-
-                upcDiv += '<div class="left">';
-                upcDiv += '<table style="width:1100px">';
-                upcDiv += '<tr><th>UPC</th><th>Color Name</th><th>Color Family</th><th>Primary picture</th><th>CV Color</th><th>Swatch Picture</th><th>CV Color</th><th>Color check</th></tr>';
-                upcDiv += '<tr>';
-                upcDiv += '<td width="80px">' + value.upcId + '</td>';
-                upcDiv += '<td width="150px"><p>' + value.displayColorName + '</p></td>';
-                upcDiv += '<td width="80px"><p style="font-size:130%;"><b>' + value.colorNormal + '</b></p></td>';
-                upcDiv += '<td width="120px">';
-                upcDiv += '<div class="image">';
-                upcDiv += '<a class="image-popup-vertical-fit" href="' + value.images['CPRI'].url + '">';
-                upcDiv += '<img src="' + value.images['CPRI'].url + '"></a>';
-                upcDiv += '</a>';
-                upcDiv += '</div>';
-                upcDiv += '</td>';
-                upcDiv += '<td width="120px">';
-                upcDiv += '<div class="description" style="white-space: pre; height: 100%;">';
-                $.each(value.images['CPRI'].computerVisionResult, function (index, colorDescription) {
-                    upcDiv += '\n<b>color:</b> ' + colorDescription.name + ' ' + colorDescription.percent + '%'
-                });
-                upcDiv += '</div>';
-                upcDiv += '</td>';
-                upcDiv += '<td width="120px">';
-                var additionalImage = null;
-                if (value.images['CSW'] != null) {
-                    additionalImage = value.images['CSW'];
-                } else if (value.images['CADD'] != null) {
-                    additionalImage = value.images['CADD'];
-                }
-                if (additionalImage != null) {
-                    upcDiv += '<div class="image">';
-                    upcDiv += '<a class="image-popup-vertical-fit" href="' + additionalImage.url + '">';
-                    upcDiv += '<img src="' + additionalImage.url + '"></a>';
-                    upcDiv += '</a>';
-                    upcDiv += '</div>';
-                }
-
-                upcDiv += '</td>';
-                upcDiv += '<td>';
-                upcDiv += '<div class="description" style="white-space: pre; height: 100%;">';
-                if (additionalImage != null) {
-                    $.each(additionalImage.computerVisionResult, function (index, colorDescription) {
-                        upcDiv += '\n<b>color:</b> ' + colorDescription.name + ' ' + colorDescription.percent + '%'
-                    });
-                }
-                upcDiv += '</div>';
-                upcDiv += '</td>';
-                upcDiv += '<td width="50px">';
-                upcDiv += '<div class="image">';
-
-                upcDiv += '<img src="' + getImageSrcForComputerVisionRecognition(value) + '" style="margin: 10px 0px 10px 8px;" title="' + getImageTitleForComputerVisionRecognition(value) + '"></img>';
-
-                upcDiv += getThumbsPanel(value);
-                upcDiv += '</div>';
-                upcDiv += '</td>';
-//
-                upcDiv += '</tr>';
-
-//
-                upcDiv += '</table>';
-
-//
-                $('.product-list').last().append(upcDiv);
-                count++;
-            });
-            if (count == 0) $('.product-list').last().remove();
-        });
-
-        $('.image-popup-vertical-fit').magnificPopup({
-            type: 'image',
-            closeOnContentClick: true,
-            mainClass: 'mfp-img-mobile',
-            image: {
-                verticalFit: true
-            }
-
-        });
-
-        $('.image-popup-fit-width').magnificPopup({
-            type: 'image',
-            closeOnContentClick: true,
-            image: {
-                verticalFit: false
-            }
-        });
-
-        $('.image-popup-no-margins').magnificPopup({
-            type: 'image',
-            closeOnContentClick: true,
-            closeBtnInside: false,
-            fixedContentPos: true,
-            mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
-            image: {
-                verticalFit: true
-            },
-            zoom: {
-                enabled: true,
-                duration: 300 // don't foget to change the duration also in CSS
-            }
-        });
-    }
 </script>
 </html>

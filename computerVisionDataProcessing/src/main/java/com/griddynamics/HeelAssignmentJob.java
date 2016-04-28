@@ -1,9 +1,7 @@
 package com.griddynamics;
 
 import com.google.gson.Gson;
-import com.griddynamics.attributes.SanDalTypeBootAttribute;
 import com.griddynamics.computervision.HeelRecognitionUtil;
-import com.griddynamics.computervision.Preparation;
 import com.griddynamics.pojo.dataProcessing.ImageRoleType;
 import com.griddynamics.utils.DataCollectionJobUtils;
 import org.apache.commons.io.FileUtils;
@@ -52,7 +50,7 @@ public class HeelAssignmentJob {
         Map<String, String> options = prepareOptions(sparkContext);
         createRootFolder();
 
-        String sqlQuery="select\n" +
+        String sqlQuery = "select\n" +
                 "  DISTINCT\n" +
                 "  PRODUCT_IMAGE.PRODUCT_ID,\n" +
                 "  PRODUCT_IMAGE.IMAGE_ID,\n" +
@@ -64,40 +62,54 @@ public class HeelAssignmentJob {
                 "  join PRODUCT_COLORWAY_IMAGE on PRODUCT_COLORWAY_IMAGE.PRODUCT_COLORWAY_ID = PRODUCT_COLORWAY.PRODUCT_COLORWAY_ID\n" +
                 "  join PRODUCT on PRODUCT_IMAGE.PRODUCT_ID = PRODUCT.PRODUCT_ID and PRODUCT.STATE_ID = 2\n" +
                 "  JOIN PRODUCT_DESTINATION_CHANNEL ON PRODUCT_DESTINATION_CHANNEL.PRODUCT_ID = PRODUCT.PRODUCT_ID AND PRODUCT_DESTINATION_CHANNEL.PUBLISH_FLAG='Y' AND PRODUCT_DESTINATION_CHANNEL.CURRENT_FLAG='Y'\n" +
-                "  join CATEGORY on CATEGORY.CATEGORY_ID = PRODUCT.CATEGORY_ID AND  CATEGORY.CATEGORY_ID = 17570\n" +
+                "  join CATEGORY on CATEGORY.CATEGORY_ID = PRODUCT.CATEGORY_ID AND  CATEGORY.CATEGORY_ID = %d\n" +
                 "where PRODUCT_IMAGE.PRODUCT_IMAGE_SEQUENCE = 0 and PRODUCT_IMAGE.PRODUCT_IMAGE_ROLE_TYPE = 'ADD'\n" +
                 "      and PRODUCT_IMAGE.PRODUCT_ID not in (\n" +
-                "  select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('422')                                                                                                                                                                                                            --(PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('814','1078')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Sneakers' )\n" +
+                "  select distinct PRODUCT_ATTRIBUTE.PRODUCT_ID from PRODUCT_ATTRIBUTE where PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('1528')                                                                                                                                                                                                            --(PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID in ('814','1078')  and PRODUCT_ATTRIBUTE.VARCHAR_VALUE = 'Sneakers' )\n" +
                 ")";
-        String formatedQuery = String.format(sqlQuery, sparkContext.defaultParallelism());
-        DataFrame selectPositiveDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + formatedQuery + ")").load();
-        // download pictures
-
-        List<HeelCandidateProduct> heelCandidateProducts = selectPositiveDataFrame.toJavaRDD().map(new Function<Row, HeelCandidateProduct>() {
-            @Override
-            public HeelCandidateProduct call(Row v1) throws Exception {
-                Integer image_id = v1.<BigDecimal>getAs("IMAGE_ID").intValue();
-                Integer product_id = v1.<BigDecimal>getAs("PRODUCT_ID").intValue();
-                String urlString = DataCollectionJobUtils.buildURL(image_id.intValue(), ImageRoleType.CPRI.getSuffix());
-
-                File picture = DataCollectionJobUtils.downOrloadImage(urlString, ROOT_FOLDER);
-                URL resource = this.getClass().getClassLoader().getResource("cascades/cascade.xml");
-                boolean highHeelByHaar = HeelRecognitionUtil.isHighHeelByHaar(picture, resource.getPath());
 
 
-                return new HeelCandidateProduct(product_id, urlString, highHeelByHaar);
+        for (final BCOMBootCategories category : BCOMBootCategories.values()) {
+            final String path = ROOT_FOLDER + "/" + category.name();
+            DataCollectionJobUtils.checkFolderExistance(path);
+            String formatedQuery = String.format(sqlQuery, sparkContext.defaultParallelism(), category.categoryId);
+            DataFrame selectPositiveDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + formatedQuery + ")").load();
+            // download pictures
+
+            List<HeelCandidateProduct> heelCandidateProducts = selectPositiveDataFrame.toJavaRDD().map(new Function<Row, HeelCandidateProduct>() {
+                @Override
+                public HeelCandidateProduct call(Row v1) throws Exception {
+                    Integer image_id = v1.<BigDecimal>getAs("IMAGE_ID").intValue();
+                    Integer product_id = v1.<BigDecimal>getAs("PRODUCT_ID").intValue();
+                    String urlString = DataCollectionJobUtils.buildURL(image_id.intValue(), ImageRoleType.CPRI.getSuffix());
+
+
+                    File picture = DataCollectionJobUtils.downOrloadImage(urlString, path);
+                    if (picture != null) {
+                        URL resource = this.getClass().getClassLoader().getResource("cascades/cascade.xml");
+                        boolean highHeelByHaar = HeelRecognitionUtil.isHighHeelByHaar(picture, resource.getPath());
+                        return new HeelCandidateProduct(product_id, urlString, highHeelByHaar);
+                    }
+                    return null;
+
+
+
+                }
+            }).filter(new Function<HeelCandidateProduct, Boolean>() {
+                @Override
+                public Boolean call(HeelCandidateProduct v1) throws Exception {
+                    return v1 != null;
+                }
+            }).collect();
+            try {
+                //write converted json data to a file named "result.json"
+                SqlQueryDataCollectionJob.writeToJson(path+ "/resutl.json", gson.toJson(heelCandidateProducts));
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }).collect();
-        try {
-            //write converted json data to a file named "result.json"
-            SqlQueryDataCollectionJob.writeToJson(ROOT_FOLDER + "/heelCandidates.json", gson.toJson(heelCandidateProducts));
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
-
 
 
     }
@@ -132,7 +144,9 @@ public class HeelAssignmentJob {
         options.put("password", "macys");
         //jdbc:oracle:thin:@mdc2vr4230:1521/starsdev - 1% database
 //        options.put("url", "jdbc:oracle:thin:@//mdc2vr4230:1521/starsdev"); //mcom
-        options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01"); //mcom
+//        options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01"); //mcom
+        options.put("url", "jdbc:oracle:thin:@//dml1-scan:1521/bpmstg01"); //bcom
+        //jdbc:oracle:thin:@//dml1-scan:1521/bpmstg01
 //        jdbc:oracle:thin:@dml1-scan:1521/bpmstg01 //bcom
 
         options.put("partitionColumn", "ID_MOD");
@@ -142,7 +156,7 @@ public class HeelAssignmentJob {
         return options;
     }
 
-    private static class HeelCandidateProduct implements Serializable{
+    private static class HeelCandidateProduct implements Serializable {
         Integer productId;
         String url;
         boolean containsHeel;
@@ -151,6 +165,45 @@ public class HeelAssignmentJob {
             this.productId = productId;
             this.url = url;
             this.containsHeel = containsHeel;
+        }
+    }
+
+    private enum MCOMBootCategories {
+        //    "Finish Line Athletic Shoes",63268
+        Boots(25122),
+//        Sneakers(26499),
+//        Slippers(16108),
+//        Flats(50295),
+        Sandals(17570),
+        Pumps(26481);
+//        Shoes(13247);
+
+        private int categoryId;
+
+        MCOMBootCategories(int categoryId) {
+
+            this.categoryId = categoryId;
+        }
+
+        public int getCategoryId() {
+            return categoryId;
+        }
+    }
+
+    private enum BCOMBootCategories{
+
+        Shoes(16961),
+        Salvatore_Ferragamo_Women_Shoes(19210);
+
+        public int getCategoryId() {
+            return categoryId;
+        }
+
+        private int categoryId;
+
+        BCOMBootCategories(int categoryId) {
+
+            this.categoryId = categoryId;
         }
     }
 }
