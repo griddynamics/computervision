@@ -29,7 +29,7 @@ public class WearToWorkDownloadTrainigSetJob {
     public static final Joiner joiner = Joiner.on("\n");
 
 
-    public static final String ROOT_FOLDER = "wearToWorkJob2/";
+    public static final String ROOT_FOLDER = "wearToWorkJob/";
 
     private static String query = "select distinct\n" +
             "  PRODUCT.PRODUCT_ID,\n" +
@@ -74,7 +74,7 @@ public class WearToWorkDownloadTrainigSetJob {
         createRootFolder();
 
 
-            String formatedQuery = String.format(query2, sparkContext.defaultParallelism());
+            String formatedQuery = String.format(query, sparkContext.defaultParallelism());
             DataFrame selectPositiveDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + formatedQuery + ")").load();
             // download pictures
 
@@ -84,15 +84,7 @@ public class WearToWorkDownloadTrainigSetJob {
                     Integer image_id = row.<BigDecimal>getAs("IMAGE_ID").intValue();
                     DressesOnColorsPictureDownloadJob.ProductWithUrlAndColor result = new DressesOnColorsPictureDownloadJob.ProductWithUrlAndColor();
                     result.productType = row.<String>getAs("PRODUCT_TYPE_NAME");
-                    int category_id = row.<BigDecimal>getAs("CATEGORY_ID").intValue();
-                    final String path;
-                    if (category_id == 39096){
-                      path  = ROOT_FOLDER + "/wearToWorkSuit";
-                    } else {
-                        path =  ROOT_FOLDER + "/NoWearToWorkSuit";
-                    }
-
-
+                    final String path = ROOT_FOLDER + "/" + result.productType;
                     DataCollectionJobUtils.checkFolderExistance(path, false);
 
                     String urlString = DataCollectionJobUtils.buildURL(image_id.intValue(), ImageRoleType.CPRI.getSuffix());
