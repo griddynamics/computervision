@@ -23,8 +23,8 @@ public class DataCollectionJobUtils {
     public static final String SUFFIX_BIG = "3000x3000.jpg"; // to long to process
 //    public static String STARS_SERVICE_PREFIX = "https://stars.macys.com/preview";
 //    http://raymcompreviewprod/03/34/44/41/final/3344441-214x261.jpg
-//    public static String STARS_SERVICE_PREFIX = "http://raymcompreviewprod"; //mcom
-    public static String STARS_SERVICE_PREFIX = "http://raybcompreviewprod"; //bcom
+    public static String STARS_SERVICE_PREFIX = "http://raymcompreviewprod"; //mcom
+//    public static String STARS_SERVICE_PREFIX = "http://raybcompreviewprod"; //bcom
 
     static {
 
@@ -108,18 +108,20 @@ public class DataCollectionJobUtils {
         return STARS_SERVICE_PREFIX + String.format("%sfinal/%d-" + suffix, builder.reverse().toString(), imageId);
     }
 
-    public static void checkFolderExistance(String path) throws IOException {
+    public static void checkFolderExistance(String path, boolean deleteExisting) throws IOException {
         File file = new File(path);
-        if (file.exists()) {
+        if (file.exists() && deleteExisting) {
             FileUtils.deleteDirectory(file);
             System.out.println("ALARM!!! remove working folder: " + path);
             FileUtils.deleteDirectory(file);
+        } else if (!file.exists()) {
+            file.mkdir();
+            File downloads = new File(path + SqlQueryDataCollectionJob.DOWNLOAD_IMAGES_FOLDER);
+            downloads.mkdir();
+            System.out.println("Working Folder: " + file.getAbsolutePath());
         }
-        file.mkdir();
-        File downloads = new File(path + SqlQueryDataCollectionJob.DOWNLOAD_IMAGES_FOLDER);
-        downloads.mkdir();
 
 
-        System.out.println("Working Folder: " + file.getAbsolutePath());
+
     }
 }

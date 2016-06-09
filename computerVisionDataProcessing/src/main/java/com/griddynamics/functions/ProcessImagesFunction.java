@@ -37,21 +37,21 @@ public class ProcessImagesFunction implements PairFunction<Row, Integer, Image> 
         ImageRoleType imageRoleType = ImageRoleType.valueOf(row.<String>getAs("COLORWAY_IMAGE_ROLE_TYPE"));
         String urlString = DataCollectionJobUtils.buildURL(image_id.intValue(), imageRoleType.getSuffix());
         File picture = DataCollectionJobUtils.downOrloadImage(urlString, path + SqlQueryDataCollectionJob.DOWNLOAD_IMAGES_FOLDER);
-        if (picture != null) {
-            try {
-                TreeSet<ColorDescription> colorDescriptions = ColorsRecognitionUtil.getColorDescriptions(picture, category.isBodyContains());
-                Image image = new Image(image_id, colorDescriptions, urlString, imageRoleType);
-                ShapeDetectionStrategy shapeDetectionStrategy = category.getShapeDetectionStrategy();
-                if (shapeDetectionStrategy != null && shapeDetectionStrategy.equals(ShapeDetectionStrategy.RUGS)) {
-                    Shapes shape =  ShapeRecognition.getShape(picture);
-//                    image.setShape(shape);
-                }
-
-                return new Tuple2(image_id, image);
-            } catch (Exception ex) {
-                System.out.println("unable to process " + urlString);
-            }
-        }
+//        if (picture != null) {
+//            try {
+//                TreeSet<ColorDescription> colorDescriptions = ColorsRecognitionUtil.getColorDescriptions(picture, category.isBodyContains());
+//                Image image = new Image(image_id, colorDescriptions, urlString, imageRoleType);
+//                ShapeDetectionStrategy shapeDetectionStrategy = category.getShapeDetectionStrategy();
+//                if (shapeDetectionStrategy != null && shapeDetectionStrategy.equals(ShapeDetectionStrategy.RUGS)) {
+//                    Shapes shape =  ShapeRecognition.getShape(picture);
+////                    image.setShape(shape);
+//                }
+//
+//                return new Tuple2(image_id, image);
+//            } catch (Exception ex) {
+//                System.out.println("unable to process " + urlString);
+//            }
+//        }
 
         return null;
 

@@ -1,7 +1,6 @@
 package com.griddynamics.attributes;
 
 import akka.dispatch.Foreach;
-import com.griddynamics.SqlQueryDataCollectionJob;
 import com.griddynamics.pojo.dataProcessing.ImageRoleType;
 import com.griddynamics.utils.DataCollectionJobUtils;
 import org.apache.spark.sql.Row;
@@ -51,9 +50,9 @@ public enum SanDalTypeBootAttribute implements TrainableAttribute{
 
     public void createAllFolders(String rootFolder) throws IOException {
         //todo fix staff with downloaded images
-        DataCollectionJobUtils.checkFolderExistance(getAttributeContexFolder(rootFolder));
-        DataCollectionJobUtils.checkFolderExistance(getResizedImagesPath(rootFolder, "positive"));
-        DataCollectionJobUtils.checkFolderExistance(getResizedImagesPath(rootFolder, "negative"));
+        DataCollectionJobUtils.checkFolderExistance(getAttributeContexFolder(rootFolder), false);
+        DataCollectionJobUtils.checkFolderExistance(getResizedImagesPath(rootFolder, "positive"), false);
+        DataCollectionJobUtils.checkFolderExistance(getResizedImagesPath(rootFolder, "negative"), false);
 
     }
 

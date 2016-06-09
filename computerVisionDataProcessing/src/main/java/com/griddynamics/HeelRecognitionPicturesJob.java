@@ -60,8 +60,8 @@ public class HeelRecognitionPicturesJob {
         //jdbc:oracle:thin:@mdc2vr4230:1521/starsdev - 1% database
 //        options.put("url", "jdbc:oracle:thin:@//mdc2vr4230:1521/starsdev"); //mcom
 //        options.put("url", "jdbc:oracle:thin:@//mdc2vr4230:1521/starsdev"); //mcom
-//        options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01"); //mcom
-        options.put("url", "jdbc:oracle:thin:@//dml1-scan:1521/bpmstg01"); //bcom
+        options.put("url", "jdbc:oracle:thin:@//dml1-scan.federated.fds:1521/dpmstg01"); //mcom
+//        options.put("url", "jdbc:oracle:thin:@//dml1-scan:1521/bpmstg01"); //bcom
 //        jdbc:oracle:thin:@dml1-scan:1521/bpmstg01 //bcom
 
         options.put("partitionColumn", "ID_MOD");
@@ -94,7 +94,7 @@ public class HeelRecognitionPicturesJob {
                 "join PRODUCT_ATTRIBUTE on   PRODUCT.PRODUCT_ID = PRODUCT_ATTRIBUTE.PRODUCT_ID and PRODUCT_ATTRIBUTE.ATTRIBUTE_TYPE_ID='1528'\n" +
                 "where PRODUCT_IMAGE.PRODUCT_IMAGE_ROLE_TYPE ='ADD' and  PRODUCT_ATTRIBUTE.VARCHAR_VALUE like '%s' ";
 
-        for (final HeelHeightBCOMValue attributeValue : HeelHeightBCOMValue.values()) {
+        for (final HeelHeightMCOMValue attributeValue : HeelHeightMCOMValue.values()) {
             String queryString = String.format(query, partitions, attributeValue.getValue());
             // todo do it in buildes
             if (attributeValue.getExclusionCondition()!=null){
@@ -103,7 +103,7 @@ public class HeelRecognitionPicturesJob {
             System.out.println(queryString);
 
             final String path = ROOT_FOLDER + attributeValue.name();
-            DataCollectionJobUtils.checkFolderExistance(path);
+            DataCollectionJobUtils.checkFolderExistance(path, false);
 
             DataFrame selectDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + queryString + ")").load();
             List<HeightHeelProductRecognition> result = selectDataFrame.distinct().toJavaRDD().mapToPair(new PairFunction<Row, Integer, HeightHeelProductRecognition>() {
@@ -129,14 +129,14 @@ public class HeelRecognitionPicturesJob {
                     return v1;
                 }
             }).values().collect();
-            try {
+//            try {
                 //write converted json data to a file named "result.json"
-                SqlQueryDataCollectionJob.writeToJson(path + "/result.json", gson.toJson(result));
+//                SqlQueryDataCollectionJob.writeToJson(path + "/result.json", gson.toJson(result));
 
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
 
 

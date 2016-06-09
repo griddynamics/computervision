@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class AttributesNeuralNetworkTrainingJob {
 
-    public static final String ROOT_FOLDER = "attributesTraining/";
+    public static final String ROOT_FOLDER = "heelsInputDataSetTraining/";
 //
     static {
         try {

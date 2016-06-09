@@ -21,9 +21,9 @@ public enum HeelHeightBCOMValue {
      ">4"" Ultra High Heel"
      Mid*/
 
-//    Flat("<1\" Flat", new FlatAttributeRecognitionStrategy()),
-//    Low("1\"-2\" Low Heel", new FlatAttributeRecognitionStrategy()),
-//    Mid("2\"-3\" Mid Heel", new HeelAttributeRecognitionStrategy(0.35)),
+    Flat("<1\" Flat", new FlatAttributeRecognitionStrategy()),
+    Low("1\"-2\" Low Heel", new FlatAttributeRecognitionStrategy()),
+    Mid("2\"-3\" Mid Heel", new HeelAttributeRecognitionStrategy(0.35)),
     High("3\"-4\" High Heel", new HeelAttributeRecognitionStrategy(0.43)),
     Ultra_High(">4\" Ultra High Heel", new HeelAttributeRecognitionStrategy(0.43));
 

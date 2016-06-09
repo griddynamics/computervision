@@ -71,7 +71,7 @@ public class HeelAssignmentJob {
 
         for (final BCOMBootCategories category : BCOMBootCategories.values()) {
             final String path = ROOT_FOLDER + "/" + category.name();
-            DataCollectionJobUtils.checkFolderExistance(path);
+            DataCollectionJobUtils.checkFolderExistance(path, false);
             String formatedQuery = String.format(sqlQuery, sparkContext.defaultParallelism(), category.categoryId);
             DataFrame selectPositiveDataFrame = sqlContext.read().format("jdbc").options(options).option("dbtable", "(" + formatedQuery + ")").load();
             // download pictures
@@ -171,12 +171,12 @@ public class HeelAssignmentJob {
     private enum MCOMBootCategories {
         //    "Finish Line Athletic Shoes",63268
         Boots(25122),
-//        Sneakers(26499),
-//        Slippers(16108),
-//        Flats(50295),
+        Sneakers(26499),
+        Slippers(16108),
+        Flats(50295),
         Sandals(17570),
-        Pumps(26481);
-//        Shoes(13247);
+        Pumps(26481),
+        Shoes(13247);
 
         private int categoryId;
 
