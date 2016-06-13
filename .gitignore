@@ -15,8 +15,12 @@
 *.ear
 attributesTraining
 *.jpg
+computerVisionDataProcessing/classPath
+metastore_db
 heelAssignment
+dressesForColorsBcom
 target
+dressesForColors*
 heightHellPictures
 computerVisionStaticUI_shapes
 rootFolder_3_1000
