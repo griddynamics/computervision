@@ -40,8 +40,8 @@
             <ul class="nav nav-tabs">
                 <!--<li class="active"><a data-toggle="tab"  onclick="drawHeelHeighttable('Boots')">Boots</a></li>-->
                 <!--<li><a data-toggle="tab" onclick="drawHeelHeighttable('Flats')">Flats</a></li>-->
-                <!--<li><a data-toggle="tab" onclick="drawHeelHeighttable('Pumps')">Pumps</a></li>-->
-                <!--<li><a data-toggle="tab" onclick="drawHeelHeighttable('Sandals')">Sandals</a></li>-->
+                <li><a data-toggle="tab" onclick="drawHeelHeighttable('Pumps')">Pumps</a></li>
+                <li><a data-toggle="tab" onclick="drawHeelHeighttable('Sandals')">Sandals</a></li>
                 <li class="active"><a data-toggle="tab" onclick="drawHeelHeighttable('Shoes')">Shoes</a></li>
                 <!--<li><a data-toggle="tab" onclick="drawHeelHeighttable('Slippers')">Slippers</a></li>-->
                 <!--<li><a data-toggle="tab" onclick="drawHeelHeighttable('Sneakers')">Sneakers</a></li>-->
@@ -105,7 +105,7 @@
 
 
     function showForEachAttrValue(path) {
-        alert(path);
+//        alert(path);
 
 
         $.getJSON('heelAssignment/' + path + '/resutl.json', function (productList) {

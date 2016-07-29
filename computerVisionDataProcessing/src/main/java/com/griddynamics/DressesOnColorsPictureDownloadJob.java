@@ -31,7 +31,7 @@ public class DressesOnColorsPictureDownloadJob {
     public static final Joiner joiner = Joiner.on("\n");
 
 
-    public static final String ROOT_FOLDER = "shopByLidsCategoryMCOM/";
+    public static final String ROOT_FOLDER = "dressCategoryMCOMFULL/";
 
     public static void main(String[] args) throws IOException {
 
@@ -53,8 +53,8 @@ public class DressesOnColorsPictureDownloadJob {
                 "  join UPC on UPC.PRODUCT_COLORWAY_ID = PRODUCT_COLORWAY.PRODUCT_COLORWAY_ID\n" +
                 "  join UPC_FEATURE on UPC_FEATURE.UPC_ID = UPC.UPC_ID\n" +
                 "  JOIN PRODUCT on   PRODUCT.PRODUCT_ID = PRODUCT_COLORWAY.PRODUCT_ID\n" +
-                "join CATEGORY on CATEGORY.CATEGORY_ID= PRODUCT.CATEGORY_ID and CATEGORY.CATEGORY_NAME like '%%Shop By Lids%%'\n" +
-                "where UPC_FEATURE.COLOR_NORMAL_ID = %d and ROWNUM<=200";
+                "join CATEGORY on CATEGORY.CATEGORY_ID= PRODUCT.CATEGORY_ID and CATEGORY.CATEGORY_NAME like '%%Dres%%'\n" +
+                "where UPC_FEATURE.COLOR_NORMAL_ID = %d";
 
         String bcomSqlQuery ="select DISTINCT\n" +
                 "  PRODUCT_COLORWAY.PRODUCT_ID,\n" +

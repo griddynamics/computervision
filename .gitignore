@@ -16,6 +16,13 @@
 attributesTraining
 *.jpg
 computerVisionDataProcessing/classPath
+CustomUpcColorRecognitionJob
+computerVisionStaticUI_DEMO.zip
+computerVisionStaticUI_WithDressLength.zip
+dressCategoryMCOM
+dressCategoryMCOMFULL
+shopByLidsCategoryMCOM
+
 metastore_db
 heelAssignment
 dressesForColorsBcom

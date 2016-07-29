@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="pagespeed.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <script type="text/javascript" src='http://codepen.io/assets/libs/fullpage/jquery.js'></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+
+    <!-- Magnific Popup core CSS file -->
+    <link rel="stylesheet" href="magnific-popup/magnific-popup.css">
+
+    <!-- jQuery 1.7.2+ or Zepto.js 1.0+ -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Magnific Popup core JS file -->
+    <!--<script src="magnific-popup/jquery.magnific-popup.js"></script>-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+</head>
+<body>
+<div id="container-100" style="height: 100%;">
+    <div id="container">
+
+        <div id="content">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab"  onclick="drawColortable('Long_Maxi',currentfilterValue)">Long_Maxi</a></li>
+                <li><a data-toggle="tab" onclick="drawColortable('Mini',currentfilterValue)">Mini</a></li>
+                <li><a data-toggle="tab" onclick="drawColortable('AbovetheKnee',currentfilterValue)">AbovetheKnee</a></li>
+                <li><a data-toggle="tab" onclick="drawColortable('Midi_Tea_Length',currentfilterValue)">Midi_Tea_Length</a></li>
+                <li><a data-toggle="tab" onclick="drawColortable('KneeLength',currentfilterValue)">KneeLength</a></li>
+            </ul>
+
+            <div class="sort">
+                <b class="sortb">Filter </b>
+                <select id="sortSelectwarningLevel">
+                    <option value="none">None</option>
+                    <option value="correct">Correct length</option>
+                    <option value="incorrect">Incorrect length</option>
+                </select>
+            </div>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Prodict ID</th>
+                    <th>Catalog attribute value</th>
+                    <th>CV result</th>
+                    <th>Picture</th>
+                    <th>Warning</th>
+                </tr>
+                </thead>
+                <tbody id="heelTable" class="table"/>
+
+            </table>
+        </div>
+        <!--<div id="spinner" class="spinner" style="display:none;">-->
+        <!--<img id="img-spinner" src="spinner.gif" alt="Loading"/>-->
+        <!--</div>-->
+    </div>
+</div>
+
+
+
+<style>
+    .well {
+        background-color: rgba(245, 245, 245, 0.4);
+    }
+
+    /*.product-list div {*/
+    /*border: none !important;*/
+    /*box-shadow: none !important;*/
+    /*margin-bottom: 10px;*/
+    /*}*/
+    /*.product-list .product{*/
+    /*border-bottom: solid grey 1px;*/
+    /*}*/
+</style>
+
+</body>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    var currentColorSelected = 'Long_Maxi';
+    var currentfilterValue = 'none';
+
+    $('#sortSelectwarningLevel').change(function () {
+        currentfilterValue = $('#sortSelectwarningLevel').val();
+        drawColortable(currentColorSelected, currentfilterValue);
+    });
+
+
+
+    $(document).ready(function () {
+
+        drawColortable(currentColorSelected,currentfilterValue);
+
+    });
+
+    function drawColortable(path, currentfilterValueSelected) {
+//        alert(currentfilterValueSelected);
+        $('#heelTable').empty();
+        currentColorSelected = path;
+        currentfilterValue = currentfilterValueSelected;
+        showForEachAttrValue(path, currentfilterValueSelected);
+
+
+    }
+
+
+    function showForEachAttrValue(path, currentfilterValueSelected) {
+
+
+        $.getJSON('dressLengthBcom/bcomDresses' + path + 'Processed.json', function (productList) {
+            $(productList).each(function (index, product) {
+                var isDisplay = true;
+//
+                if (currentfilterValueSelected == 'correct') {
+//                    alert('blabal'+product.passedRecognition == true);
+                    isDisplay = product.warning == false;
+
+                } else if (currentfilterValueSelected == 'incorrect') {
+                    isDisplay = product.warning == true;
+                }
+                if (isDisplay) {
+
+                    var tableRow = '<tr>';
+
+                    tableRow += '<td><a target="_blank" href="http://stella.bcom.federated.fds/UI/stella/webproduct/view-single.html?id=' + product.productId + '">' + product.productId + '</a></td>';
+                    tableRow += '<td width="120px">';
+                    tableRow += '<div class="description" style="white-space: pre; height: 100%;">';
+                    tableRow +=  product.dressLengthValue;
+                    tableRow += '</div></td>';
+                    tableRow += '<td width="120px">';
+                    tableRow += '<div class="description" style="white-space: pre; height: 100%;">';
+                    tableRow += '\n<b>' +product.cvResult+'</b> \n';
+                    tableRow += 'score:' + product.cvScore;
+                    tableRow += '</div>';
+                    if (product.cvScore2 > 0.3){
+                        tableRow += '<div class="description" style="white-space: pre; height: 100%;">';
+                        tableRow += '\n<b>' +product.cvResult2+'</b> \n';
+                        tableRow += 'score:' + product.cvScore2;
+                        tableRow += '</div>';
+                    }
+
+                    tableRow += '</td>';
+//
+                    tableRow += '<td><div style="width: 110px; height: 120px">';
+                    tableRow += '<a class="image-popup-vertical-fit" href="' + product.imageUrl + '">';
+                    tableRow += '<img src="' + product.imageUrl + '"></a>';
+                    tableRow += '</a>';
+                    tableRow += '</div></td>';
+                    tableRow += '<td width="50px">';
+                    tableRow += product.warning;
+
+                    tableRow += '</div>';
+                    tableRow += '</td>';
+                    tableRow += '</tr>';
+                    $('#heelTable').append(tableRow);
+                }
+            });
+        });
+    }
+
+    function getImageSrcForComputerVisionRecognition(value) {
+        if (value == false) {
+            return 'lg-success-flat.png';
+        }
+//        if (value.computerVisionRecognition == 1) {
+//            return 'lg-alertY-flat.png';
+//        }
+//        if (value.computerVisionRecognition == 2) {
+//            return 'lg-alertO-flat.png';
+//        }
+        if (value == true) {
+            return 'lg-failed-flat.png';
+        }
+    }
+
+
+
+</script>
+</html>

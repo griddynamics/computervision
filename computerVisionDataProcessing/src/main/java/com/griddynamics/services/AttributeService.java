@@ -64,7 +64,7 @@ public class AttributeService implements Serializable {
             }
         }
 
-        StarsAttributeValue starsAttributeValue = attributeTypeMap.get(upcFeatureNormalColorId);
+        StarsAttributeValue starsAttributeValue = attributeTypeMap.get(BigDecimal.valueOf(upcFeatureNormalColorId.longValue()));
         return starsAttributeValue != null ? starsAttributeValue.getDisplayValue() : null;
     }
 
